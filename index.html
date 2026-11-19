@@ -38,7 +38,7 @@
 
     #game-container {
       width: 100%;
-      max-width: 840px;
+      max-width: 860px;
       background: var(--panel-bg);
       border: 3px solid var(--border-color);
       border-radius: 16px;
@@ -47,11 +47,12 @@
       position: relative;
     }
 
+    /* 상단 상태바 */
     #status-bar {
       display: none;
       background: #1e293b;
       color: #fff;
-      padding: 12px 20px;
+      padding: 10px 16px;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
@@ -59,19 +60,46 @@
       font-weight: 700;
     }
 
-    .stat-badge {
-      background: #334155;
-      padding: 6px 11px;
-      border-radius: 8px;
-      font-size: 0.88rem;
+    .stat-group {
       display: flex;
       align-items: center;
-      gap: 5px;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .stat-badge {
+      background: #334155;
+      padding: 5px 10px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 4px;
     }
 
     .stat-money { color: #fde047; }
     .stat-mental { color: #fda4af; }
     .stat-speech { color: #93c5fd; }
+
+    .top-btn-group {
+      display: flex;
+      gap: 6px;
+    }
+
+    .btn-mini {
+      border: 2px solid #0f172a;
+      border-radius: 7px;
+      padding: 5px 10px;
+      font-size: 0.8rem;
+      font-weight: 800;
+      cursor: pointer;
+      background: #fde047;
+      color: #1e293b;
+      transition: transform 0.1s;
+    }
+
+    .btn-mini:active { transform: translateY(1px); }
+    .btn-mini-danger { background: #fca5a5; color: #7f1d1d; }
 
     .screen {
       display: none;
@@ -82,20 +110,26 @@
     }
     .screen.active { display: flex; }
 
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
     .webtoon-title {
       font-family: 'Jua', sans-serif;
-      font-size: 2.6rem;
-      text-align: center;
+      font-size: 2.5rem;
       color: #1e293b;
       text-shadow: 2px 2px 0px #fde047;
-      margin-bottom: 6px;
     }
 
     .subtitle {
-      text-align: center;
       color: #475569;
       font-size: 1rem;
-      margin-bottom: 22px;
+      margin-bottom: 18px;
       font-weight: 600;
     }
 
@@ -107,7 +141,7 @@
       border-radius: 10px;
       text-align: center;
       font-weight: 800;
-      font-size: 1.05rem;
+      font-size: 1.02rem;
       margin-bottom: 20px;
       box-shadow: 3px 3px 0px #ef4444;
     }
@@ -239,7 +273,6 @@
       cursor: pointer;
     }
 
-    /* 김드래곤 벌금 경고 박스 */
     .dragon-alert {
       margin-top: 12px;
       background: #fef2f2;
@@ -283,7 +316,6 @@
     .btn-pink:hover { background: #fbcfe8; }
     .btn-dark { background: #1e293b; color: #fff; }
 
-    /* 히든 스킬 특수 강조 스타일 */
     @keyframes hiddenGlow {
       0%, 100% { box-shadow: 0 0 0 3px #f59e0b, 4px 4px 0px #1e293b; transform: scale(1); }
       50% { box-shadow: 0 0 14px 4px #fbbf24, 4px 4px 0px #1e293b; transform: scale(1.02); }
@@ -424,18 +456,19 @@
       animation: critFlash 0.7s ease-out;
     }
 
+    /* 랭킹 테이블 & 이니셜 뱃지 */
     .ranking-box {
       border: 2.5px solid var(--border-color);
       border-radius: 10px;
       overflow: hidden;
-      margin-top: 14px;
+      margin-top: 12px;
       background: #fff;
     }
 
     .ranking-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 0.9rem;
+      font-size: 0.92rem;
     }
 
     .ranking-table th, .ranking-table td {
@@ -449,10 +482,24 @@
       color: #fff;
     }
 
+    .initial-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #1e293b;
+      color: #fde047;
+      font-weight: 900;
+      font-size: 0.85rem;
+      margin-right: 6px;
+    }
+
     .nickname-form {
       display: flex;
       gap: 8px;
-      margin-top: 12px;
+      margin-top: 10px;
     }
 
     .nickname-form input {
@@ -463,24 +510,76 @@
       font-size: 1rem;
       font-weight: 600;
     }
+
+    /* 실시간 랭킹 모달 팝업 */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.65);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+    }
+
+    .modal-overlay.open { display: flex; }
+
+    .modal-content {
+      background: #fff;
+      border: 3px solid var(--border-color);
+      border-radius: 16px;
+      box-shadow: 8px 8px 0px var(--border-color);
+      width: 100%;
+      max-width: 560px;
+      padding: 24px;
+      max-height: 85vh;
+      overflow-y: auto;
+    }
+
+    .live-dot {
+      display: inline-block;
+      width: 9px;
+      height: 9px;
+      background: #10b981;
+      border-radius: 50%;
+      margin-right: 6px;
+      animation: pulse 1.2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(1.3); }
+    }
   </style>
 </head>
 <body>
 
 <div id="game-container">
-  <!-- 상단 상태바 -->
+  <!-- 상단 상태바 (게임 진행 중 항상 표시) -->
   <div id="status-bar">
-    <div class="stat-badge">📅 <span id="ui-day">1일차</span> (<span id="ui-turn">1/5통화</span>)</div>
-    <div class="stat-badge">👤 <span id="ui-char">김대리</span></div>
-    <div class="stat-badge stat-speech">🗣️ 언변 <span id="ui-speech">80</span></div>
-    <div class="stat-badge stat-mental">🧠 멘탈 <span id="ui-mental">60/60</span></div>
-    <div class="stat-badge stat-money">💰 <span id="ui-money">0</span> / 3,000만원</div>
+    <div class="stat-group">
+      <div class="stat-badge">📅 <span id="ui-day">1일차</span> (<span id="ui-turn">1/5</span>)</div>
+      <div class="stat-badge">👤 <span id="ui-char">김대리</span></div>
+      <div class="stat-badge stat-speech">🗣️ <span id="ui-speech">80</span></div>
+      <div class="stat-badge stat-mental">🧠 <span id="ui-mental">60/60</span></div>
+      <div class="stat-badge stat-money">💰 <span id="ui-money">0</span>/3,000만</div>
+    </div>
+    <div class="top-btn-group">
+      <button type="button" class="btn-mini" onclick="openRankingModal()">🏆 실시간 랭킹</button>
+      <button type="button" class="btn-mini btn-mini-danger" onclick="confirmRestart()">🔄 다시하기</button>
+    </div>
   </div>
 
-  <!-- 1. 캐릭터 선택 화면 -->
+  <!-- 1. 캐릭터 선택 화면 (게임 첫 화면) -->
   <div id="screen-select" class="screen active">
     <div>
-      <div class="webtoon-title">🏢 굿타임 영업백서</div>
+      <div class="header-row">
+        <div class="webtoon-title">🏢 굿타임 영업백서</div>
+        <button type="button" class="btn btn-primary" style="padding:8px 14px; font-size:0.9rem;" onclick="openRankingModal()">
+          🏆 실시간 랭킹 보기
+        </button>
+      </div>
       <div class="subtitle">단속반이 들이닥치기 전, 허허벌판 유령 백화점을 완판하라!</div>
       
       <div class="mission-banner">
@@ -556,7 +655,7 @@
         <div class="speech-bubble" id="intro-dialogue" onclick="skipTyping()"></div>
       </div>
     </div>
-    <button class="btn btn-primary" style="width:100%; font-size:1.15rem;" onclick="startOffice()">
+    <button type="button" class="btn btn-primary" style="width:100%; font-size:1.15rem;" onclick="startOffice()">
       📞 임무 수락! 사무실 자리로 이동하기
     </button>
   </div>
@@ -570,7 +669,7 @@
         <p style="font-size:0.9rem; color:#475569; margin-bottom:14px;">
           책상 위엔 낡은 전화번호부와 대포폰뿐이다. 목표 금액(3,000만원)을 채워야 살아남는다!
         </p>
-        <button class="btn btn-primary" id="btn-open-book" onclick="openPhonebook()">
+        <button type="button" class="btn btn-primary" id="btn-open-book" onclick="openPhonebook()">
           📒 전화번호부 뒤적거리기 (고객 3명 추출)
         </button>
 
@@ -595,15 +694,12 @@
           </div>
         </div>
         <div class="speech-bubble" id="call-dialogue" onclick="skipTyping()">여보세요~ 누구세요?</div>
-        <!-- 김드래곤 벌금 뜯김 알림 영역 -->
         <div id="dragon-fine-box" style="display:none;"></div>
       </div>
     </div>
 
-    <!-- 스킬 버튼 영역 (JS로 동적 생성하여 히든 스킬 특수 표시 적용) -->
     <div id="skill-buttons" class="skill-grid"></div>
 
-    <!-- 통화 결과 후 다음 버튼 -->
     <button type="button" id="btn-next-turn" class="btn btn-dark" style="display:none; width:100%;" onclick="nextTurn()">
       수화기 내려놓기 ➡️
     </button>
@@ -612,8 +708,8 @@
   <!-- 5. 야간 이벤트 화면 -->
   <div id="screen-night" class="screen">
     <div>
-      <div class="webtoon-title" style="font-size:2rem;">🌙 <span id="night-day">1</span>일차 영업 종료</div>
-      <div class="subtitle" id="night-summary">오늘도 무사히 단속을 피했다. 내일을 위해 무엇을 할까?</div>
+      <div class="webtoon-title" style="font-size:2rem; text-align:center;">🌙 <span id="night-day">1</span>일차 영업 종료</div>
+      <div class="subtitle" style="text-align:center;" id="night-summary">오늘도 무사히 단속을 피했다. 내일을 위해 무엇을 할까?</div>
 
       <div class="night-grid">
         <div class="char-card" onclick="nightAction('soup')">
@@ -646,7 +742,7 @@
     </div>
   </div>
 
-  <!-- 6. 최종 엔딩 및 랭킹 화면 -->
+  <!-- 6. 최종 엔딩 및 실시간 랭킹 화면 -->
   <div id="screen-ending" class="screen">
     <div>
       <div class="webtoon-panel" style="margin-bottom:12px;">
@@ -661,9 +757,9 @@
       </div>
 
       <div id="rank-register-box">
-        <div style="font-weight:700; font-size:0.95rem;">🏆 명예의 전당(로컬 랭킹)에 기록 남기기</div>
+        <div style="font-weight:700; font-size:0.95rem;">🏆 실시간 랭킹에 기록 남기기</div>
         <div class="nickname-form">
-          <input type="text" id="player-nickname" placeholder="닉네임 입력 (최대 8자)" maxlength="8" />
+          <input type="text" id="player-nickname" placeholder="닉네임 또는 이니셜 입력 (예: KDH)" maxlength="8" />
           <button type="button" class="btn btn-primary" onclick="submitScore()">랭킹 등록</button>
         </div>
       </div>
@@ -673,25 +769,57 @@
           <thead>
             <tr>
               <th>순위</th>
-              <th>닉네임</th>
-              <th>캐릭터</th>
-              <th>최종 수익</th>
-              <th>결말</th>
+              <th>닉네임 (이니셜)</th>
+              <th>선택 캐릭터</th>
+              <th>모은 돈</th>
             </tr>
           </thead>
-          <tbody id="ranking-tbody"></tbody>
+          <tbody id="ending-ranking-tbody">
+            <tr><td colspan="4">실시간 랭킹 불러오는 중...</td></tr>
+          </tbody>
         </table>
       </div>
     </div>
 
-    <button type="button" class="btn btn-dark" style="width:100%; margin-top:14px;" onclick="location.reload()">
-      🔄 새로운 사기 치러 가기 (다시 시작)
+    <button type="button" class="btn btn-dark" style="width:100%; margin-top:14px;" onclick="restartGame()">
+      🔄 새로운 사기 치러 가기 (처음부터 다시하기)
     </button>
   </div>
 </div>
 
+<!-- 실시간 랭킹 모달 팝업 (첫 화면 & 게임 중간에서 열림) -->
+<div id="ranking-modal" class="modal-overlay" onclick="closeRankingModal(event)">
+  <div class="modal-content" onclick="event.stopPropagation()">
+    <div class="header-row" style="margin-bottom:10px;">
+      <div style="font-family:'Jua', sans-serif; font-size:1.5rem;">
+        <span class="live-dot"></span>🏆 실시간 영업왕 랭킹 TOP 10
+      </div>
+      <button type="button" class="btn-mini btn-mini-danger" onclick="closeRankingModal()">✕ 닫기</button>
+    </div>
+    <div style="font-size:0.85rem; color:#64748b; margin-bottom:10px;" id="firebase-status-text">
+      실시간 순위표가 자동으로 업데이트됩니다.
+    </div>
+    <div class="ranking-box">
+      <table class="ranking-table">
+        <thead>
+          <tr>
+            <th>순위</th>
+            <th>닉네임 (이니셜)</th>
+            <th>선택 캐릭터</th>
+            <th>모은 돈</th>
+          </tr>
+        </thead>
+        <tbody id="modal-ranking-tbody">
+          <tr><td colspan="4">데이터를 불러오는 중...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- 게임 핵심 로직 -->
 <script>
-  const GOAL_MONEY = 3000; // 목표 금액 3,000만원
+  const GOAL_MONEY = 3000;
 
   const state = {
     charId: '',
@@ -704,14 +832,14 @@
     turn: 1,
     maxTurnsPerDay: 5,
     currentCustomer: null,
-    hiddenSkills: [], // 현재 턴에 히든 발동된 스킬 목록
+    hiddenSkills: [],
     endingTitle: ''
   };
 
   const CHARACTERS = {
-    kim: { name: '김대리', speech: 85, mental: 60 },
-    son: { name: '손대리', speech: 55, mental: 110 },
-    park: { name: '박대리', speech: 70, mental: 85 }
+    kim: { name: '김대리', icon: '😎', speech: 85, mental: 60 },
+    son: { name: '손대리', icon: '🗿', speech: 55, mental: 110 },
+    park: { name: '박대리', icon: '👩‍💼', speech: 70, mental: 85 }
   };
 
   const CUSTOMER_POOL = [
@@ -725,7 +853,6 @@
     { name: "한OO", job: "퇴직금 받은 부장", avatar: "👨‍💼", weakSkill: "exaggerate", greeting: "여보세요. 요즘 노후 자금 굴릴 데가 마땅치 않아서..." }
   ];
 
-  // 스킬 대사 데이터베이스 (일반 vs 히든 각성)
   const SKILL_DATA = {
     logic: {
       title: "📊 논리형 영업",
@@ -808,14 +935,38 @@
   function updateStatusBar() {
     document.getElementById('status-bar').style.display = 'flex';
     document.getElementById('ui-day').textContent = `${state.day}일차`;
-    document.getElementById('ui-turn').textContent = `${state.turn}/${state.maxTurnsPerDay}통화`;
+    document.getElementById('ui-turn').textContent = `${state.turn}/${state.maxTurnsPerDay}`;
     document.getElementById('ui-char').textContent = state.charName;
     document.getElementById('ui-speech').textContent = state.speech;
     document.getElementById('ui-mental').textContent = `${state.mental}/${state.maxMental}`;
     document.getElementById('ui-money').textContent = state.money.toLocaleString();
   }
 
-  // 1. 캐릭터 선택 -> 김드래곤 목표 금액 임무 하달
+  // 처음부터 다시하기 (확인 팝업 & 즉시 초기화)
+  window.confirmRestart = function() {
+    if (confirm("현재 진행 중인 영업을 포기하고 처음 화면(캐릭터 선택)으로 돌아가시겠습니까?")) {
+      restartGame();
+    }
+  };
+
+  window.restartGame = function() {
+    clearInterval(typingTimer);
+    typingTimer = null;
+    document.getElementById('status-bar').style.display = 'none';
+    showScreen('screen-select');
+  };
+
+  // 실시간 랭킹 모달 열기/닫기
+  window.openRankingModal = function() {
+    document.getElementById('ranking-modal').classList.add('open');
+    if (window.refreshRankingsUI) window.refreshRankingsUI();
+  };
+
+  window.closeRankingModal = function() {
+    document.getElementById('ranking-modal').classList.remove('open');
+  };
+
+  // 1. 캐릭터 선택
   window.selectCharacter = function(id) {
     const c = CHARACTERS[id];
     state.charId = id;
@@ -874,7 +1025,6 @@
     });
   };
 
-  // 통화 시작 & 3가지 스킬 중 히든 스킬 사전 추첨
   window.startCall = function(customer) {
     state.currentCustomer = customer;
     showScreen('screen-call');
@@ -884,7 +1034,6 @@
     document.getElementById('dragon-fine-box').style.display = 'none';
     document.getElementById('btn-next-turn').style.display = 'none';
 
-    // 3가지 스킬 중 1개는 무조건 히든 각성! (김대리는 50% 확률로 2개 각성)
     const keys = ['logic', 'exaggerate', 'seduce'].sort(() => 0.5 - Math.random());
     state.hiddenSkills = [keys[0]];
     if (state.charId === 'kim' && Math.random() < 0.5) {
@@ -895,7 +1044,6 @@
     typeText('call-dialogue', `뚜르르르... 찰칵!\n"${customer.greeting}"`);
   };
 
-  // 히든 스킬 특수 표시가 적용된 버튼 렌더링
   function renderSkillButtons() {
     const container = document.getElementById('skill-buttons');
     container.style.display = 'grid';
@@ -919,7 +1067,6 @@
     });
   }
 
-  // 스킬 사용 판정
   window.useSkill = function(skillType) {
     clearInterval(typingTimer);
     typingTimer = null;
@@ -948,7 +1095,6 @@
       baseReward = 1300;
     }
 
-    // 히든 스킬이면 성공률 보너스 +10% 추가
     const hiddenBonus = isHidden ? 10 : 0;
     const speechBonus = (state.speech - 60) * 0.4;
     const weakBonus = (cust.weakSkill === skillType) ? 25 : 0;
@@ -971,7 +1117,6 @@
       }
       state.money += earned;
     } else {
-      // 실패 처리
       triggerShake();
       let mentalLoss = (skillType === 'seduce') ? 28 : 15;
       if (state.charId === 'kim') mentalLoss = Math.round(mentalLoss * 1.4);
@@ -987,14 +1132,13 @@
         resultText += `❌ [영업 거절] "관심 없으니 다시는 전화하지 마세요. 뚝." (멘탈 -${mentalLoss})`;
       }
 
-      // 과장형 또는 유혹형 실패 시 소송 이벤트 판정
       if (skillType === 'exaggerate' || skillType === 'seduce') {
         const baseSueChance = (skillType === 'seduce') ? 45 : 38;
         const sueChance = (state.charId === 'son') ? Math.round(baseSueChance * 0.5) : baseSueChance;
 
         if (Math.random() * 100 <= sueChance) {
           const fine = (skillType === 'seduce') ? 500 : 350;
-          state.money -= fine; // 빚더미(마이너스) 가능
+          state.money -= fine;
 
           const crimeName = (skillType === 'seduce') ? "통신매체이용음란죄(변태 행위)" : "허위사실 유포 및 사기미수";
           dragonBox.style.display = 'flex';
@@ -1072,6 +1216,15 @@
     document.getElementById('status-bar').style.display = 'none';
     showScreen('screen-ending');
 
+    // 엔딩 진입 시 랭킹 입력 폼 초기화
+    document.getElementById('rank-register-box').innerHTML = `
+      <div style="font-weight:700; font-size:0.95rem;">🏆 실시간 랭킹에 기록 남기기</div>
+      <div class="nickname-form">
+        <input type="text" id="player-nickname" placeholder="닉네임 또는 이니셜 입력 (예: KDH)" maxlength="8" />
+        <button type="button" class="btn btn-primary" onclick="submitScore()">랭킹 등록</button>
+      </div>
+    `;
+
     let icon = "";
     let title = "";
     let desc = "";
@@ -1100,54 +1253,141 @@
     document.getElementById('ending-score').textContent = `최종 수익: ${state.money.toLocaleString()}만원 / 목표: 3,000만원 (${state.charName})`;
     typeText('ending-desc', desc);
 
-    renderRankings();
+    if (window.refreshRankingsUI) window.refreshRankingsUI();
   }
 
-  function renderRankings() {
-    const tbody = document.getElementById('ranking-tbody');
-    let ranks = JSON.parse(localStorage.getItem("goodtime_ranks") || "[]");
-    if (ranks.length === 0) {
-      ranks = [
-        { nickname: "김드래곤", charName: "김대리", money: 6200, endingTitle: "전설의 영업왕, 해외 도피!" },
-        { nickname: "전설의혀", charName: "박대리", money: 3800, endingTitle: "임무 완수! 한탕 성공" },
-        { nickname: "강철멘탈", charName: "손대리", money: 1900, endingTitle: "목표 미달! 야반도주" }
-      ];
+  // 랭킹 테이블 HTML 생성 공통 함수 (닉네임 이니셜 + 선택 캐릭터 + 모은 돈)
+  window.renderRankingTableHTML = function(ranks) {
+    if (!ranks || ranks.length === 0) {
+      return `<tr><td colspan="4">아직 등록된 영업왕이 없습니다!</td></tr>`;
     }
-    tbody.innerHTML = "";
-    ranks.slice(0, 5).forEach((r, idx) => {
-      tbody.innerHTML += `
+
+    const charIconMap = { '김대리': '😎 김대리', '손대리': '🗿 손대리', '박대리': '👩‍💼 박대리' };
+
+    return ranks.map((r, idx) => {
+      const nick = String(r.nickname || '익명');
+      const initial = nick.slice(0, 2).toUpperCase(); // 앞 2글자 이니셜 추출
+      const charDisplay = charIconMap[r.charName] || r.charName;
+      const moneyVal = Number(r.money || 0);
+      const moneyColor = moneyVal < 0 ? '#dc2626' : '#d97706';
+
+      let medal = `${idx + 1}위`;
+      if (idx === 0) medal = '🥇 1위';
+      else if (idx === 1) medal = '🥈 2위';
+      else if (idx === 2) medal = '🥉 3위';
+
+      return `
         <tr>
-          <td><b>${idx + 1}위</b></td>
-          <td>${r.nickname}</td>
-          <td>${r.charName}</td>
-          <td style="color:#d97706; font-weight:700;">${Number(r.money).toLocaleString()}만원</td>
-          <td>${r.endingTitle}</td>
+          <td><b>${medal}</b></td>
+          <td><span class="initial-badge">${initial}</span><b>${nick}</b></td>
+          <td>${charDisplay}</td>
+          <td style="color:${moneyColor}; font-weight:800;">${moneyVal.toLocaleString()}만원</td>
         </tr>
       `;
-    });
-  }
+    }).join('');
+  };
 
-  window.submitScore = function() {
+  window.submitScore = async function() {
     const nickInput = document.getElementById('player-nickname');
     const nickname = nickInput.value.trim();
     if (!nickname) {
-      alert("닉네임을 입력해주세요!");
+      alert("닉네임 또는 이니셜을 입력해주세요!");
       return;
     }
 
-    document.getElementById('rank-register-box').innerHTML = `<div style="color:#10b981; font-weight:700;">✅ 랭킹 등록 완료!</div>`;
+    document.getElementById('rank-register-box').innerHTML = `<div style="color:#10b981; font-weight:800; padding:8px 0;">✅ 실시간 랭킹에 등록되었습니다!</div>`;
 
-    const localRanks = JSON.parse(localStorage.getItem("goodtime_ranks") || "[]");
-    localRanks.push({
-      nickname,
-      charName: state.charName,
-      money: state.money,
-      endingTitle: state.endingTitle
-    });
-    localRanks.sort((a, b) => b.money - a.money);
-    localStorage.setItem("goodtime_ranks", JSON.stringify(localRanks.slice(0, 10)));
+    if (window.saveRankingToCloud) {
+      await window.saveRankingToCloud({
+        nickname,
+        charName: state.charName,
+        money: state.money
+      });
+    }
+  };
+</script>
 
-    renderRankings();
+<!-- Firebase Firestore 실시간 연동 모듈 -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, query, orderBy, limit, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+  // =========================================================================
+  // [Firebase 설정] 본인의 Firebase 프로젝트 설정값을 아래에 붙여넣으세요!
+  // =========================================================================
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  };
+
+  let db = null;
+  let cachedRanks = [];
+  const isFirebaseConfigured = firebaseConfig.apiKey !== "YOUR_API_KEY";
+
+  const DEFAULT_RANKS = [
+    { nickname: "KDG (김드래곤)", charName: "김대리", money: 6200 },
+    { nickname: "PDR (전설의혀)", charName: "박대리", money: 3800 },
+    { nickname: "SDR (강철심장)", charName: "손대리", money: 1900 }
+  ];
+
+  function updateAllRankingTables(ranks) {
+    cachedRanks = ranks;
+    const html = window.renderRankingTableHTML(ranks);
+    const modalTbody = document.getElementById('modal-ranking-tbody');
+    const endingTbody = document.getElementById('ending-ranking-tbody');
+    if (modalTbody) modalTbody.innerHTML = html;
+    if (endingTbody) endingTbody.innerHTML = html;
+  }
+
+  window.refreshRankingsUI = () => {
+    if (cachedRanks.length > 0) {
+      updateAllRankingTables(cachedRanks);
+    } else if (!db) {
+      const localRanks = JSON.parse(localStorage.getItem("goodtime_ranks") || "[]");
+      updateAllRankingTables(localRanks.length > 0 ? localRanks : DEFAULT_RANKS);
+    }
+  };
+
+  if (isFirebaseConfigured) {
+    try {
+      const app = initializeApp(firebaseConfig);
+      db = getFirestore(app);
+      document.getElementById('firebase-status-text').innerHTML = "🟢 <b>Firebase 실시간 서버 연결됨</b> (다른 플레이어의 점수가 실시간 반영됩니다)";
+
+      // 실시간 리스너(onSnapshot)로 상위 10명 자동 동기화
+      const q = query(collection(db, "goodtime_rankings"), orderBy("money", "desc"), limit(10));
+      onSnapshot(q, (snapshot) => {
+        const liveRanks = snapshot.docs.map(doc => doc.data());
+        updateAllRankingTables(liveRanks.length > 0 ? liveRanks : DEFAULT_RANKS);
+      });
+    } catch (e) {
+      console.warn("Firebase 초기화 실패, 로컬 모드로 전환합니다.", e);
+    }
+  } else {
+    document.getElementById('firebase-status-text').innerHTML = "🟡 <b>로컬 테스트 모드</b> (Firebase 설정값을 입력하면 전 세계 실시간 랭킹이 연동됩니다)";
+    window.refreshRankingsUI();
+  }
+
+  window.saveRankingToCloud = async (record) => {
+    if (db) {
+      await addDoc(collection(db, "goodtime_rankings"), {
+        nickname: record.nickname,
+        charName: record.charName,
+        money: Number(record.money),
+        createdAt: serverTimestamp()
+      });
+    } else {
+      const localRanks = JSON.parse(localStorage.getItem("goodtime_ranks") || "[]");
+      localRanks.push(record);
+      localRanks.sort((a, b) => b.money - a.money);
+      const top10 = localRanks.slice(0, 10);
+      localStorage.setItem("goodtime_ranks", JSON.stringify(top10));
+      updateAllRankingTables(top10);
+    }
   };
 </script>
 </body>
