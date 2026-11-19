@@ -133,6 +133,47 @@
       font-weight: 600;
     }
 
+    /* 0. 입장 사원증 발급 카드 */
+    .id-card-box {
+      border: 3px solid var(--border-color);
+      border-radius: 16px;
+      background: #f8fafc;
+      padding: 24px;
+      max-width: 480px;
+      width: 100%;
+      margin: 10px auto;
+      box-shadow: 6px 6px 0px var(--border-color);
+      text-align: center;
+    }
+
+    .id-card-header {
+      background: #1e293b;
+      color: #fde047;
+      font-family: 'Jua', sans-serif;
+      font-size: 1.2rem;
+      padding: 8px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      letter-spacing: 1px;
+    }
+
+    .id-input {
+      width: 100%;
+      padding: 14px 16px;
+      border: 3px solid var(--border-color);
+      border-radius: 10px;
+      font-size: 1.15rem;
+      font-weight: 800;
+      text-align: center;
+      margin-bottom: 14px;
+      background: #fff;
+    }
+
+    .id-input:focus {
+      outline: none;
+      background: #fefce8;
+    }
+
     .mission-banner {
       background: #fef2f2;
       border: 2.5px solid #ef4444;
@@ -456,7 +497,6 @@
       animation: critFlash 0.7s ease-out;
     }
 
-    /* 랭킹 테이블 & 이니셜 뱃지 */
     .ranking-box {
       border: 2.5px solid var(--border-color);
       border-radius: 10px;
@@ -496,22 +536,6 @@
       margin-right: 6px;
     }
 
-    .nickname-form {
-      display: flex;
-      gap: 8px;
-      margin-top: 10px;
-    }
-
-    .nickname-form input {
-      flex: 1;
-      padding: 10px 14px;
-      border: 2.5px solid var(--border-color);
-      border-radius: 8px;
-      font-size: 1rem;
-      font-weight: 600;
-    }
-
-    /* 실시간 랭킹 모달 팝업 */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -559,6 +583,7 @@
   <!-- 상단 상태바 (게임 진행 중 항상 표시) -->
   <div id="status-bar">
     <div class="stat-group">
+      <div class="stat-badge">🪪 <span id="ui-nick">사원</span></div>
       <div class="stat-badge">📅 <span id="ui-day">1일차</span> (<span id="ui-turn">1/5</span>)</div>
       <div class="stat-badge">👤 <span id="ui-char">김대리</span></div>
       <div class="stat-badge stat-speech">🗣️ <span id="ui-speech">80</span></div>
@@ -571,8 +596,8 @@
     </div>
   </div>
 
-  <!-- 1. 캐릭터 선택 화면 (게임 첫 화면) -->
-  <div id="screen-select" class="screen active">
+  <!-- 0. 입장 화면 (닉네임/이니셜 입력) -->
+  <div id="screen-nickname" class="screen active">
     <div>
       <div class="header-row">
         <div class="webtoon-title">🏢 굿타임 영업백서</div>
@@ -580,7 +605,47 @@
           🏆 실시간 랭킹 보기
         </button>
       </div>
-      <div class="subtitle">단속반이 들이닥치기 전, 허허벌판 유령 백화점을 완판하라!</div>
+      <div class="subtitle">3일 뒤 구청 단속이 들이닥친다! 유령 백화점을 분양하고 튀어라!</div>
+    </div>
+
+    <div class="id-card-box">
+      <div class="id-card-header">🪪 굿타임 분양대행사 임시 사원증 발급</div>
+      <p style="font-size:0.92rem; color:#475569; margin-bottom:14px; line-height:1.5;">
+        명예의 전당(실시간 랭킹)에 기록될<br><b>닉네임 또는 이니셜</b>을 입력하고 출근하세요!
+      </p>
+      <input
+        type="text"
+        id="entry-nickname"
+        class="id-input"
+        placeholder="예: KDH 또는 전설의영업왕 (최대 8자)"
+        maxlength="8"
+        onkeydown="if(event.key==='Enter') enterGame()"
+      />
+      <button type="button" class="btn btn-primary" style="width:100%; font-size:1.15rem;" onclick="enterGame()">
+        ✍️ 사원증 발급받고 출근하기 ➡️
+      </button>
+    </div>
+
+    <div style="text-align:center; font-size:0.85rem; color:#64748b;">
+      * 입력한 닉네임과 이니셜은 엔딩 시 실시간 랭킹에 자동 등록됩니다.
+    </div>
+  </div>
+
+  <!-- 1. 캐릭터 선택 화면 -->
+  <div id="screen-select" class="screen">
+    <div>
+      <div class="header-row">
+        <div class="webtoon-title" style="font-size:2.1rem;">👤 영업 스타일 선택</div>
+        <div style="display:flex; gap:8px;">
+          <button type="button" class="btn btn-primary" style="padding:7px 12px; font-size:0.85rem;" onclick="openRankingModal()">
+            🏆 실시간 랭킹
+          </button>
+          <button type="button" class="btn" style="padding:7px 12px; font-size:0.85rem;" onclick="backToNickname()">
+            🪪 닉네임 변경
+          </button>
+        </div>
+      </div>
+      <div class="subtitle">환영합니다, <b id="welcome-nick" style="color:#1e293b;">사원</b>님! 오늘 현장에 투입할 대리를 선택하세요.</div>
       
       <div class="mission-banner">
         🚨 [긴급 미션] 3일 안에 최소 3,000만 원을 벌어놓지 못하면 장기가 털립니다!
@@ -637,7 +702,7 @@
       </div>
     </div>
     <div style="text-align:center; font-size:0.85rem; color:#64748b;">
-      * 원하는 캐릭터 카드를 클릭하여 출근하세요!
+      * 원하는 캐릭터 카드를 클릭하여 임무를 전달받으세요!
     </div>
   </div>
 
@@ -756,12 +821,8 @@
         <div class="speech-bubble" id="ending-desc" style="min-height:70px;" onclick="skipTyping()"></div>
       </div>
 
-      <div id="rank-register-box">
-        <div style="font-weight:700; font-size:0.95rem;">🏆 실시간 랭킹에 기록 남기기</div>
-        <div class="nickname-form">
-          <input type="text" id="player-nickname" placeholder="닉네임 또는 이니셜 입력 (예: KDH)" maxlength="8" />
-          <button type="button" class="btn btn-primary" onclick="submitScore()">랭킹 등록</button>
-        </div>
+      <div id="auto-rank-status" style="background:#ecfdf5; border:2px solid #10b981; color:#065f46; padding:10px 14px; border-radius:10px; font-weight:700; font-size:0.92rem; text-align:center;">
+        ⏳ 실시간 랭킹에 기록을 등록하는 중...
       </div>
 
       <div class="ranking-box">
@@ -787,7 +848,7 @@
   </div>
 </div>
 
-<!-- 실시간 랭킹 모달 팝업 (첫 화면 & 게임 중간에서 열림) -->
+<!-- 실시간 랭킹 모달 팝업 -->
 <div id="ranking-modal" class="modal-overlay" onclick="closeRankingModal(event)">
   <div class="modal-content" onclick="event.stopPropagation()">
     <div class="header-row" style="margin-bottom:10px;">
@@ -822,6 +883,7 @@
   const GOAL_MONEY = 3000;
 
   const state = {
+    nickname: '',
     charId: '',
     charName: '',
     speech: 0,
@@ -934,6 +996,7 @@
 
   function updateStatusBar() {
     document.getElementById('status-bar').style.display = 'flex';
+    document.getElementById('ui-nick').textContent = state.nickname;
     document.getElementById('ui-day').textContent = `${state.day}일차`;
     document.getElementById('ui-turn').textContent = `${state.turn}/${state.maxTurnsPerDay}`;
     document.getElementById('ui-char').textContent = state.charName;
@@ -942,9 +1005,27 @@
     document.getElementById('ui-money').textContent = state.money.toLocaleString();
   }
 
-  // 처음부터 다시하기 (확인 팝업 & 즉시 초기화)
+  // 0. 닉네임 입력 후 입장
+  window.enterGame = function() {
+    const input = document.getElementById('entry-nickname');
+    const val = input.value.trim();
+    if (!val) {
+      alert("사원증에 새길 닉네임이나 이니셜을 입력해주세요!");
+      input.focus();
+      return;
+    }
+    state.nickname = val;
+    document.getElementById('welcome-nick').textContent = state.nickname;
+    showScreen('screen-select');
+  };
+
+  window.backToNickname = function() {
+    showScreen('screen-nickname');
+  };
+
+  // 처음부터 다시하기
   window.confirmRestart = function() {
-    if (confirm("현재 진행 중인 영업을 포기하고 처음 화면(캐릭터 선택)으로 돌아가시겠습니까?")) {
+    if (confirm("현재 진행 중인 영업을 포기하고 처음 화면(사원증 발급)으로 돌아가시겠습니까?")) {
       restartGame();
     }
   };
@@ -953,7 +1034,7 @@
     clearInterval(typingTimer);
     typingTimer = null;
     document.getElementById('status-bar').style.display = 'none';
-    showScreen('screen-select');
+    showScreen('screen-nickname');
   };
 
   // 실시간 랭킹 모달 열기/닫기
@@ -981,7 +1062,7 @@
     updateStatusBar();
     showScreen('screen-intro');
 
-    const introMsg = `어이 ${state.charName}! 정신 바짝 차려!\n우리가 지금 분양해야 할 '굿타임 백화점'은 허허벌판 쓰레기 입지야.\n\n3일 뒤면 구청에서 불법 분양 단속이 나오니까, 그전까지 전화번호부 다 뒤져서 무조건 【최소 3,000만 원】 이상 계약금 뜯어내!\n만약 3,000만 원 못 채우면 네 신장이랑 각막 팔아서 메꾼다! 알겠어?!`;
+    const introMsg = `어이 [${state.nickname}]! 이번에 배정받은 ${state.charName} 역할, 정신 바짝 차려!\n우리가 지금 분양해야 할 '굿타임 백화점'은 허허벌판 쓰레기 입지야.\n\n3일 뒤면 구청에서 불법 분양 단속이 나오니까, 그전까지 전화번호부 다 뒤져서 무조건 【최소 3,000만 원】 이상 계약금 뜯어내!\n만약 3,000만 원 못 채우면 네 신장이랑 각막 팔아서 메꾼다! 알겠어?!`;
     typeText('intro-dialogue', introMsg);
   };
 
@@ -1212,18 +1293,10 @@
     startOffice();
   };
 
-  function showEnding() {
+  // 엔딩 도달 시 자동 랭킹 등록
+  async function showEnding() {
     document.getElementById('status-bar').style.display = 'none';
     showScreen('screen-ending');
-
-    // 엔딩 진입 시 랭킹 입력 폼 초기화
-    document.getElementById('rank-register-box').innerHTML = `
-      <div style="font-weight:700; font-size:0.95rem;">🏆 실시간 랭킹에 기록 남기기</div>
-      <div class="nickname-form">
-        <input type="text" id="player-nickname" placeholder="닉네임 또는 이니셜 입력 (예: KDH)" maxlength="8" />
-        <button type="button" class="btn btn-primary" onclick="submitScore()">랭킹 등록</button>
-      </div>
-    `;
 
     let icon = "";
     let title = "";
@@ -1250,8 +1323,21 @@
     state.endingTitle = title.split(': ')[1];
     document.getElementById('ending-icon').textContent = icon;
     document.getElementById('ending-title').textContent = title;
-    document.getElementById('ending-score').textContent = `최종 수익: ${state.money.toLocaleString()}만원 / 목표: 3,000만원 (${state.charName})`;
+    document.getElementById('ending-score').textContent = `[${state.nickname}] 최종 수익: ${state.money.toLocaleString()}만원 / 목표: 3,000만원 (${state.charName})`;
     typeText('ending-desc', desc);
+
+    // 입장 시 입력한 닉네임으로 실시간 랭킹 자동 저장
+    const statusBox = document.getElementById('auto-rank-status');
+    statusBox.textContent = `⏳ [${state.nickname}]님의 기록을 실시간 랭킹에 등록하는 중...`;
+
+    if (window.saveRankingToCloud) {
+      await window.saveRankingToCloud({
+        nickname: state.nickname,
+        charName: state.charName,
+        money: state.money
+      });
+      statusBox.innerHTML = `✅ <b>[${state.nickname}]</b>님의 기록(<b>${state.money.toLocaleString()}만원</b>)이 실시간 랭킹에 등록되었습니다!`;
+    }
 
     if (window.refreshRankingsUI) window.refreshRankingsUI();
   }
@@ -1266,7 +1352,7 @@
 
     return ranks.map((r, idx) => {
       const nick = String(r.nickname || '익명');
-      const initial = nick.slice(0, 2).toUpperCase(); // 앞 2글자 이니셜 추출
+      const initial = nick.slice(0, 2).toUpperCase();
       const charDisplay = charIconMap[r.charName] || r.charName;
       const moneyVal = Number(r.money || 0);
       const moneyColor = moneyVal < 0 ? '#dc2626' : '#d97706';
@@ -1286,43 +1372,25 @@
       `;
     }).join('');
   };
-
-  window.submitScore = async function() {
-    const nickInput = document.getElementById('player-nickname');
-    const nickname = nickInput.value.trim();
-    if (!nickname) {
-      alert("닉네임 또는 이니셜을 입력해주세요!");
-      return;
-    }
-
-    document.getElementById('rank-register-box').innerHTML = `<div style="color:#10b981; font-weight:800; padding:8px 0;">✅ 실시간 랭킹에 등록되었습니다!</div>`;
-
-    if (window.saveRankingToCloud) {
-      await window.saveRankingToCloud({
-        nickname,
-        charName: state.charName,
-        money: state.money
-      });
-    }
-  };
 </script>
 
-<!-- Firebase Firestore 실시간 연동 모듈 -->
+<!-- Firebase Firestore 실시간 연동 모듈 (프로젝트명: goodtime-sales) -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getFirestore, collection, addDoc, query, orderBy, limit, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
   // =========================================================================
-  // [Firebase 설정] 본인의 Firebase 프로젝트 설정값을 아래에 붙여넣으세요!
+  // [Firebase 설정 - goodtime-sales]
+  // Firebase 콘솔 > 프로젝트 설정 > 내 앱(</>)에서 복사한 값을 아래에 덮어쓰세요!
   // =========================================================================
   const firebaseConfig = {
-  apiKey: "AIzaSyAb46SIjqEir6zRym1EWLvQYSRkj0t_oHo",
-  authDomain: "goodtime-sales.firebaseapp.com",
-  projectId: "goodtime-sales",
-  storageBucket: "goodtime-sales.firebasestorage.app",
-  messagingSenderId: "709736545199",
-  appId: "1:709736545199:web:78d36cecc380729b04cd5a"
-};
+    apiKey: "YOUR_API_KEY",
+    authDomain: "goodtime-sales.firebaseapp.com",
+    projectId: "goodtime-sales",
+    storageBucket: "goodtime-sales.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  };
 
   let db = null;
   let cachedRanks = [];
@@ -1356,9 +1424,8 @@
     try {
       const app = initializeApp(firebaseConfig);
       db = getFirestore(app);
-      document.getElementById('firebase-status-text').innerHTML = "🟢 <b>Firebase 실시간 서버 연결됨</b> (다른 플레이어의 점수가 실시간 반영됩니다)";
+      document.getElementById('firebase-status-text').innerHTML = "🟢 <b>Firebase(goodtime-sales) 실시간 연결됨</b>";
 
-      // 실시간 리스너(onSnapshot)로 상위 10명 자동 동기화
       const q = query(collection(db, "goodtime_rankings"), orderBy("money", "desc"), limit(10));
       onSnapshot(q, (snapshot) => {
         const liveRanks = snapshot.docs.map(doc => doc.data());
@@ -1368,7 +1435,7 @@
       console.warn("Firebase 초기화 실패, 로컬 모드로 전환합니다.", e);
     }
   } else {
-    document.getElementById('firebase-status-text').innerHTML = "🟡 <b>로컬 테스트 모드</b> (Firebase 설정값을 입력하면 전 세계 실시간 랭킹이 연동됩니다)";
+    document.getElementById('firebase-status-text').innerHTML = "🟡 <b>로컬 테스트 모드</b> (firebaseConfig에 apiKey를 입력하면 실시간 서버와 연동됩니다)";
     window.refreshRankingsUI();
   }
 
