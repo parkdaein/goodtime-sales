@@ -38,7 +38,7 @@
 
     #game-container {
       width: 100%;
-      max-width: 820px;
+      max-width: 840px;
       background: var(--panel-bg);
       border: 3px solid var(--border-color);
       border-radius: 16px;
@@ -55,18 +55,18 @@
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      gap: 10px;
+      gap: 8px;
       font-weight: 700;
     }
 
     .stat-badge {
       background: #334155;
-      padding: 6px 12px;
+      padding: 6px 11px;
       border-radius: 8px;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
     }
 
     .stat-money { color: #fde047; }
@@ -76,7 +76,7 @@
     .screen {
       display: none;
       padding: 28px;
-      min-height: 540px;
+      min-height: 550px;
       flex-direction: column;
       justify-content: space-between;
     }
@@ -93,10 +93,23 @@
 
     .subtitle {
       text-align: center;
-      color: #64748b;
+      color: #475569;
       font-size: 1rem;
-      margin-bottom: 24px;
+      margin-bottom: 22px;
       font-weight: 600;
+    }
+
+    .mission-banner {
+      background: #fef2f2;
+      border: 2.5px solid #ef4444;
+      color: #b91c1c;
+      padding: 12px 16px;
+      border-radius: 10px;
+      text-align: center;
+      font-weight: 800;
+      font-size: 1.05rem;
+      margin-bottom: 20px;
+      box-shadow: 3px 3px 0px #ef4444;
     }
 
     .char-grid {
@@ -219,11 +232,26 @@
       padding: 16px;
       font-size: 1.05rem;
       line-height: 1.65;
-      min-height: 110px;
+      min-height: 120px;
       position: relative;
       font-weight: 500;
       white-space: pre-line;
       cursor: pointer;
+    }
+
+    /* 김드래곤 벌금 경고 박스 */
+    .dragon-alert {
+      margin-top: 12px;
+      background: #fef2f2;
+      border: 2.5px solid #dc2626;
+      border-radius: 10px;
+      padding: 12px 14px;
+      color: #991b1b;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      animation: shake 0.4s ease-in-out;
     }
 
     .btn {
@@ -237,6 +265,7 @@
       transition: all 0.1s;
       background: #fff;
       color: #1e293b;
+      position: relative;
     }
 
     .btn:active {
@@ -253,6 +282,32 @@
     .btn-pink { background: #fce7f3; }
     .btn-pink:hover { background: #fbcfe8; }
     .btn-dark { background: #1e293b; color: #fff; }
+
+    /* 히든 스킬 특수 강조 스타일 */
+    @keyframes hiddenGlow {
+      0%, 100% { box-shadow: 0 0 0 3px #f59e0b, 4px 4px 0px #1e293b; transform: scale(1); }
+      50% { box-shadow: 0 0 14px 4px #fbbf24, 4px 4px 0px #1e293b; transform: scale(1.02); }
+    }
+
+    .skill-hidden {
+      background: linear-gradient(135deg, #fef08a 0%, #fde047 100%) !important;
+      border: 3px solid #b45309 !important;
+      animation: hiddenGlow 1.3s infinite;
+    }
+
+    .hidden-badge {
+      position: absolute;
+      top: -11px;
+      right: 10px;
+      background: #dc2626;
+      color: #fff;
+      font-size: 0.72rem;
+      font-weight: 900;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 2px solid #1e293b;
+      letter-spacing: 0.5px;
+    }
 
     .desk-area {
       display: flex;
@@ -312,6 +367,7 @@
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 12px;
+      margin-top: 6px;
     }
 
     @media (max-width: 640px) {
@@ -334,8 +390,9 @@
 
     .skill-desc {
       font-size: 0.8rem;
-      color: #475569;
-      font-weight: 500;
+      color: #334155;
+      font-weight: 600;
+      line-height: 1.4;
     }
 
     .night-grid {
@@ -360,11 +417,11 @@
 
     @keyframes critFlash {
       0% { background-color: #fef08a; }
-      100% { background-color: #ffffff; }
+      100% { background-color: #f8fafc; }
     }
 
     .crit-effect {
-      animation: critFlash 0.6s ease-out;
+      animation: critFlash 0.7s ease-out;
     }
 
     .ranking-box {
@@ -417,15 +474,19 @@
     <div class="stat-badge">👤 <span id="ui-char">김대리</span></div>
     <div class="stat-badge stat-speech">🗣️ 언변 <span id="ui-speech">80</span></div>
     <div class="stat-badge stat-mental">🧠 멘탈 <span id="ui-mental">60/60</span></div>
-    <div class="stat-badge stat-money">💰 수익 <span id="ui-money">0</span>만원</div>
+    <div class="stat-badge stat-money">💰 <span id="ui-money">0</span> / 3,000만원</div>
   </div>
 
   <!-- 1. 캐릭터 선택 화면 -->
   <div id="screen-select" class="screen active">
     <div>
       <div class="webtoon-title">🏢 굿타임 영업백서</div>
-      <div class="subtitle">단속까지 남은 시간은 단 3일! 유령 백화점을 완판하고 튀어라!</div>
+      <div class="subtitle">단속반이 들이닥치기 전, 허허벌판 유령 백화점을 완판하라!</div>
       
+      <div class="mission-banner">
+        🚨 [긴급 미션] 3일 안에 최소 3,000만 원을 벌어놓지 못하면 장기가 털립니다!
+      </div>
+
       <div class="char-grid">
         <div class="char-card" onclick="selectCharacter('kim')">
           <div>
@@ -434,12 +495,12 @@
             <span class="char-tag" style="background:#dbeafe; color:#1d4ed8;">언변형 / 하이리스크</span>
             <div class="char-stats">
               🗣️ <b>언변력:</b> 85 (매우 높음)<br>
-              🧠 <b>멘탈력:</b> 60 (다소 유리멘탈)
+              🧠 <b>멘탈력:</b> 60 (유리멘탈)
             </div>
           </div>
           <div class="char-passive">
             <b>[패시브: 청산유수]</b><br>
-            히든 스킬(수익 2배) 발동 확률이 2배 높습니다. 단, 거절당할 시 멘탈 피해가 큽니다.
+            통화 시 <b>히든 스킬(수익 2배)</b>이 2개까지 동시 발동할 확률이 높습니다. 단, 거절당하면 멘탈이 크게 깎입니다.
           </div>
         </div>
 
@@ -455,7 +516,7 @@
           </div>
           <div class="char-passive">
             <b>[패시브: 강철멘탈]</b><br>
-            욕을 먹어도 멘탈이 거의 깎이지 않으며, 과장 영업 시 고소당할 확률이 절반으로 줄어듭니다.
+            변태 취급을 당해도 멘탈이 거의 안 깎이며, 과장/유혹 실패 시 <b>고소당할 확률이 절반</b>으로 줄어듭니다.
           </div>
         </div>
 
@@ -496,7 +557,7 @@
       </div>
     </div>
     <button class="btn btn-primary" style="width:100%; font-size:1.15rem;" onclick="startOffice()">
-      📞 사무실 자리로 이동하기 (영업 시작)
+      📞 임무 수락! 사무실 자리로 이동하기
     </button>
   </div>
 
@@ -507,7 +568,7 @@
         <div style="font-size:2.5rem; margin-bottom:8px;">☎️ 📒</div>
         <h3 style="font-family:'Jua', sans-serif; font-size:1.4rem; margin-bottom:4px;">초라한 3평짜리 임시 사무실</h3>
         <p style="font-size:0.9rem; color:#475569; margin-bottom:14px;">
-          책상 위엔 낡은 전화번호부와 대포폰뿐이다. 구청 단속반이 들이닥치기 전에 한 탕 당기자!
+          책상 위엔 낡은 전화번호부와 대포폰뿐이다. 목표 금액(3,000만원)을 채워야 살아남는다!
         </p>
         <button class="btn btn-primary" id="btn-open-book" onclick="openPhonebook()">
           📒 전화번호부 뒤적거리기 (고객 3명 추출)
@@ -518,7 +579,7 @@
     </div>
 
     <div id="office-log" style="font-size:0.9rem; color:#334155; background:#f1f5f9; padding:12px; border-radius:8px; border:1.5px solid #cbd5e1;">
-      💡 <b>영업 팁:</b> 고객의 직업이나 성향에 맞는 스킬을 쓰면 성사율이 대폭 올라갑니다!
+      💡 <b>영업 팁:</b> 통화 중 <b>🔥히든 각성</b>이 뜬 스킬은 특수 멘트와 함께 <b>수익금이 2배</b>로 터집니다!
     </div>
   </div>
 
@@ -534,24 +595,13 @@
           </div>
         </div>
         <div class="speech-bubble" id="call-dialogue" onclick="skipTyping()">여보세요~ 누구세요?</div>
+        <!-- 김드래곤 벌금 뜯김 알림 영역 -->
+        <div id="dragon-fine-box" style="display:none;"></div>
       </div>
     </div>
 
-    <!-- 스킬 버튼 영역 -->
-    <div id="skill-buttons" class="skill-grid">
-      <button type="button" class="btn btn-blue skill-btn" onclick="useSkill('logic')">
-        <span class="skill-title">📊 논리형 영업</span>
-        <span class="skill-desc">"연 수익률 15% 확정입니다."<br>성사율: 높음 | 수익: 낮음 | 안전함</span>
-      </button>
-      <button type="button" class="btn btn-orange skill-btn" onclick="useSkill('exaggerate')">
-        <span class="skill-title">📢 과장형 영업</span>
-        <span class="skill-desc">"내일모레 바로 앞 GTX 착공!"<br>성사율: 중간 | 수익: 중간 | ⚠️고소 위험</span>
-      </button>
-      <button type="button" class="btn btn-pink skill-btn" onclick="useSkill('seduce')">
-        <span class="skill-title">💋 유혹형 영업</span>
-        <span class="skill-desc">"계약하시면 저녁에 따로 모실게요~" <br>성사율: 낮음 | 수익: 초대박 | 멘탈 주의</span>
-      </button>
-    </div>
+    <!-- 스킬 버튼 영역 (JS로 동적 생성하여 히든 스킬 특수 표시 적용) -->
+    <div id="skill-buttons" class="skill-grid"></div>
 
     <!-- 통화 결과 후 다음 버튼 -->
     <button type="button" id="btn-next-turn" class="btn btn-dark" style="display:none; width:100%;" onclick="nextTurn()">
@@ -596,7 +646,7 @@
     </div>
   </div>
 
-  <!-- 6. 최종 엔딩 및 실시간 랭킹 화면 -->
+  <!-- 6. 최종 엔딩 및 랭킹 화면 -->
   <div id="screen-ending" class="screen">
     <div>
       <div class="webtoon-panel" style="margin-bottom:12px;">
@@ -611,7 +661,7 @@
       </div>
 
       <div id="rank-register-box">
-        <div style="font-weight:700; font-size:0.95rem;">🏆 명예의 전당(실시간 랭킹)에 기록 남기기</div>
+        <div style="font-weight:700; font-size:0.95rem;">🏆 명예의 전당(로컬 랭킹)에 기록 남기기</div>
         <div class="nickname-form">
           <input type="text" id="player-nickname" placeholder="닉네임 입력 (최대 8자)" maxlength="8" />
           <button type="button" class="btn btn-primary" onclick="submitScore()">랭킹 등록</button>
@@ -629,9 +679,7 @@
               <th>결말</th>
             </tr>
           </thead>
-          <tbody id="ranking-tbody">
-            <tr><td colspan="5">랭킹 데이터를 불러오는 중...</td></tr>
-          </tbody>
+          <tbody id="ranking-tbody"></tbody>
         </table>
       </div>
     </div>
@@ -642,8 +690,9 @@
   </div>
 </div>
 
-<!-- 게임 핵심 로직 -->
 <script>
+  const GOAL_MONEY = 3000; // 목표 금액 3,000만원
+
   const state = {
     charId: '',
     charName: '',
@@ -655,6 +704,7 @@
     turn: 1,
     maxTurnsPerDay: 5,
     currentCustomer: null,
+    hiddenSkills: [], // 현재 턴에 히든 발동된 스킬 목록
     endingTitle: ''
   };
 
@@ -675,7 +725,37 @@
     { name: "한OO", job: "퇴직금 받은 부장", avatar: "👨‍💼", weakSkill: "exaggerate", greeting: "여보세요. 요즘 노후 자금 굴릴 데가 마땅치 않아서..." }
   ];
 
-  // 안정화된 타자기 효과
+  // 스킬 대사 데이터베이스 (일반 vs 히든 각성)
+  const SKILL_DATA = {
+    logic: {
+      title: "📊 논리형 영업",
+      btnClass: "btn-blue",
+      normalDesc: "성사율: 높음 | 수익: 300만 | 안전함",
+      hiddenTitle: "🔥 [히든] 천재 회계사 빙의",
+      hiddenDesc: "합법 탈세+수익률 300% 브리핑! (수익 2배)",
+      normalPitch: `"사장님, 공실률 0%에 연 수익률 15% 확정입니다. 은행 이자보다 4배 높습니다!"`,
+      hiddenPitch: `"사장님! 세무조사 완벽 회피 루트에 연 수익률 45% 확정입니다! 오늘 안 잡으시면 국세청에 뜯깁니다!"`
+    },
+    exaggerate: {
+      title: "📢 과장형 영업",
+      btnClass: "btn-orange",
+      normalDesc: "성사율: 중간 | 수익: 650만 | ⚠️고소 위험",
+      hiddenTitle: "🔥 [히든] 신들린 뻥카",
+      hiddenDesc: "대통령 극비 개발계획 썰 풀기! (수익 2배)",
+      normalPitch: `"지금 안 잡으시면 평생 후회합니다! 내일모레 백화점 정문 앞에 GTX 환승역 착공합니다!"`,
+      hiddenPitch: `"청와대 극비 문건 입수했습니다! 내일모레 여기 바로 옆에 디즈니랜드랑 GTX-A·B·C 트리플 역세권 동시 착공합니다!"`
+    },
+    seduce: {
+      title: "💋 유혹형 영업",
+      btnClass: "btn-pink",
+      normalDesc: "성사율: 낮음 | 수익: 1,300만 | ⚠️변태취급+고소",
+      hiddenTitle: "🔥 [히든] 치명적 유혹",
+      hiddenDesc: "영혼을 빼놓는 19금 플러팅! (수익 2배)",
+      normalPitch: `"하악... 사장님 목소리가 너무 섹시해서 흥분돼요... 오늘 계약하시면 밤에 따로 모실게요~ 흐응♡"`,
+      hiddenPitch: `"사장님... 오늘 밤 제 자취방에서 와인 한잔하시면서 계약서 도장 찍으실래요? 아무것도 안 걸치고 기다릴게요~ 앙♡"`
+    }
+  };
+
   let typingTimer = null;
   let currentTargetEl = null;
   let currentFullText = "";
@@ -704,7 +784,7 @@
           cb();
         }
       }
-    }, 20);
+    }, 18);
   }
 
   window.skipTyping = function() {
@@ -735,6 +815,7 @@
     document.getElementById('ui-money').textContent = state.money.toLocaleString();
   }
 
+  // 1. 캐릭터 선택 -> 김드래곤 목표 금액 임무 하달
   window.selectCharacter = function(id) {
     const c = CHARACTERS[id];
     state.charId = id;
@@ -749,7 +830,7 @@
     updateStatusBar();
     showScreen('screen-intro');
 
-    const introMsg = `어이 ${state.charName}! 정신 바짝 차려! 우리가 지금 분양해야 할 '굿타임 백화점'은 허허벌판 쓰레기 입지야. 3일 뒤면 구청에서 불법 분양 단속이 나오니까, 그전까지 전화번호부 다 뒤져서 무조건 계약금 뜯어내고 튄다! 알겠어?!`;
+    const introMsg = `어이 ${state.charName}! 정신 바짝 차려!\n우리가 지금 분양해야 할 '굿타임 백화점'은 허허벌판 쓰레기 입지야.\n\n3일 뒤면 구청에서 불법 분양 단속이 나오니까, 그전까지 전화번호부 다 뒤져서 무조건 【최소 3,000만 원】 이상 계약금 뜯어내!\n만약 3,000만 원 못 채우면 네 신장이랑 각막 팔아서 메꾼다! 알겠어?!`;
     typeText('intro-dialogue', introMsg);
   };
 
@@ -793,94 +874,145 @@
     });
   };
 
+  // 통화 시작 & 3가지 스킬 중 히든 스킬 사전 추첨
   window.startCall = function(customer) {
     state.currentCustomer = customer;
     showScreen('screen-call');
     document.getElementById('customer-avatar').textContent = customer.avatar;
     document.getElementById('customer-name').textContent = `${customer.name} (${customer.job})`;
     document.getElementById('customer-info').textContent = `발신번호: ${customer.phone}`;
-    document.getElementById('skill-buttons').style.display = 'grid';
+    document.getElementById('dragon-fine-box').style.display = 'none';
     document.getElementById('btn-next-turn').style.display = 'none';
 
+    // 3가지 스킬 중 1개는 무조건 히든 각성! (김대리는 50% 확률로 2개 각성)
+    const keys = ['logic', 'exaggerate', 'seduce'].sort(() => 0.5 - Math.random());
+    state.hiddenSkills = [keys[0]];
+    if (state.charId === 'kim' && Math.random() < 0.5) {
+      state.hiddenSkills.push(keys[1]);
+    }
+
+    renderSkillButtons();
     typeText('call-dialogue', `뚜르르르... 찰칵!\n"${customer.greeting}"`);
   };
 
+  // 히든 스킬 특수 표시가 적용된 버튼 렌더링
+  function renderSkillButtons() {
+    const container = document.getElementById('skill-buttons');
+    container.style.display = 'grid';
+    container.innerHTML = '';
+
+    ['logic', 'exaggerate', 'seduce'].forEach(type => {
+      const info = SKILL_DATA[type];
+      const isHidden = state.hiddenSkills.includes(type);
+
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = `btn ${info.btnClass} skill-btn ${isHidden ? 'skill-hidden' : ''}`;
+      btn.onclick = () => useSkill(type);
+
+      btn.innerHTML = `
+        ${isHidden ? '<span class="hidden-badge">🔥 히든 각성! 수익 2배</span>' : ''}
+        <span class="skill-title">${isHidden ? info.hiddenTitle : info.title}</span>
+        <span class="skill-desc">${isHidden ? info.hiddenDesc : info.normalDesc}</span>
+      `;
+      container.appendChild(btn);
+    });
+  }
+
+  // 스킬 사용 판정
   window.useSkill = function(skillType) {
-    // 진행 중이던 인사말 타이핑 즉시 종료
     clearInterval(typingTimer);
     typingTimer = null;
 
     const skillBox = document.getElementById('skill-buttons');
     const nextBtn = document.getElementById('btn-next-turn');
+    const dragonBox = document.getElementById('dragon-fine-box');
     skillBox.style.display = 'none';
 
     const cust = state.currentCustomer || CUSTOMER_POOL[0];
     const panel = document.getElementById('call-panel');
+    const info = SKILL_DATA[skillType];
+    const isHidden = state.hiddenSkills.includes(skillType);
 
     let baseChance = 0;
     let baseReward = 0;
-    let pitchLine = "";
 
     if (skillType === 'logic') {
       baseChance = 55;
       baseReward = 300;
-      pitchLine = `"사장님, 공실률 0%에 연 수익률 15% 확정입니다. 은행 이자보다 4배 높습니다!"`;
     } else if (skillType === 'exaggerate') {
-      baseChance = 40;
+      baseChance = 42;
       baseReward = 650;
-      pitchLine = `"지금 안 잡으시면 평생 후회합니다! 내일모레 백화점 정문 앞에 GTX 환승역 착공합니다!"`;
     } else if (skillType === 'seduce') {
-      baseChance = 25;
+      baseChance = 28;
       baseReward = 1300;
-      pitchLine = `"사장님 목소리가 너무 섹시하세요... 오늘 계약하시면 제가 밤에 따로 특별히 모실게요~"`;
     }
 
+    // 히든 스킬이면 성공률 보너스 +10% 추가
+    const hiddenBonus = isHidden ? 10 : 0;
     const speechBonus = (state.speech - 60) * 0.4;
     const weakBonus = (cust.weakSkill === skillType) ? 25 : 0;
-    const finalChance = Math.min(92, Math.max(10, baseChance + speechBonus + weakBonus));
+    const finalChance = Math.min(95, Math.max(12, baseChance + speechBonus + weakBonus + hiddenBonus));
 
-    const roll = Math.random() * 100;
-    const isSuccess = roll <= finalChance;
+    const isSuccess = (Math.random() * 100) <= finalChance;
+    const pitchLine = isHidden ? info.hiddenPitch : info.normalPitch;
 
-    const critChance = (state.charId === 'kim') ? 30 : 15;
-    const isCrit = isSuccess && (Math.random() * 100 <= critChance);
-
-    let resultText = "";
+    let resultText = `${pitchLine}\n\n`;
 
     if (isSuccess) {
-      let earned = baseReward;
-      resultText = `${pitchLine}\n\n`;
+      let earned = isHidden ? baseReward * 2 : baseReward;
 
-      if (isCrit) {
-        earned *= 2;
+      if (isHidden) {
         panel.classList.add('crit-effect');
-        setTimeout(() => panel.classList.remove('crit-effect'), 600);
-        resultText += `✨ [히든 스킬 발동! 대박 계약] ✨\n"어머! 당장 2구좌 계약할게요! 계좌번호 불러주세요!"\n💰 계약금 +${earned.toLocaleString()}만원 획득!`;
+        setTimeout(() => panel.classList.remove('crit-effect'), 700);
+        resultText += `✨ [히든 스킬 대성공! 초대박 계약] ✨\n"와... 말빨이 장난 아니시네요! 당장 2구좌 계약할게요! 계좌번호 불러주세요!"\n💰 계약금 +${earned.toLocaleString()}만원 획득!`;
       } else {
         resultText += `✅ [분양 계약 성사!]\n"말씀을 듣고 보니 구미가 당기네요. 1구좌 계약하겠습니다."\n💰 계약금 +${earned.toLocaleString()}만원 획득!`;
       }
       state.money += earned;
     } else {
+      // 실패 처리
       triggerShake();
-      let mentalLoss = (skillType === 'seduce') ? 25 : 15;
+      let mentalLoss = (skillType === 'seduce') ? 28 : 15;
       if (state.charId === 'kim') mentalLoss = Math.round(mentalLoss * 1.4);
       if (state.charId === 'son') mentalLoss = Math.round(mentalLoss * 0.5);
 
       state.mental = Math.max(0, state.mental - mentalLoss);
-      resultText = `${pitchLine}\n\n❌ [영업 실패] "어디서 약을 팔아! 끊어!" (멘탈 -${mentalLoss})`;
 
-      if (skillType === 'exaggerate') {
-        const sueChance = (state.charId === 'son') ? 17 : 35;
+      if (skillType === 'seduce') {
+        resultText += `🤬 [변태 취급 당함!] "야 이 미친 변태 새끼야!! 어디서 음란 전화를 걸어?! 변태 놈아 신고할 거야!! 뚝!" (멘탈 -${mentalLoss})`;
+      } else if (skillType === 'exaggerate') {
+        resultText += `❌ [허풍 들통!] "디즈니랜드는 개뿔! 사기꾼 새끼가 어디서 약을 팔아! 끊어!" (멘탈 -${mentalLoss})`;
+      } else {
+        resultText += `❌ [영업 거절] "관심 없으니 다시는 전화하지 마세요. 뚝." (멘탈 -${mentalLoss})`;
+      }
+
+      // 과장형 또는 유혹형 실패 시 소송 이벤트 판정
+      if (skillType === 'exaggerate' || skillType === 'seduce') {
+        const baseSueChance = (skillType === 'seduce') ? 45 : 38;
+        const sueChance = (state.charId === 'son') ? Math.round(baseSueChance * 0.5) : baseSueChance;
+
         if (Math.random() * 100 <= sueChance) {
-          const fine = Math.min(state.money, 400);
-          state.money -= fine;
-          resultText += `\n\n🚨 [긴급 속보: 내용증명 도착!]\n김드래곤 실장: "야!! 너 때문에 허위사실 유포로 고소장 날아왔잖아! 합의금 ${fine}만원 내놔!!"`;
+          const fine = (skillType === 'seduce') ? 500 : 350;
+          state.money -= fine; // 빚더미(마이너스) 가능
+
+          const crimeName = (skillType === 'seduce') ? "통신매체이용음란죄(변태 행위)" : "허위사실 유포 및 사기미수";
+          dragonBox.style.display = 'flex';
+          dragonBox.className = 'dragon-alert';
+          dragonBox.innerHTML = `
+            <div style="font-size:2.4rem;">🐉💢</div>
+            <div>
+              <div style="font-size:0.95rem; margin-bottom:2px;">🚨 [긴급 소송 발생! 김드래곤 실장 난입]</div>
+              <div style="font-size:0.85rem; font-weight:500;">
+                "야 이 미친놈아!! 방금 상대방이 <b>${crimeName}</b>로 고소장 접수했대잖아! 변호사 선임비랑 합의금 내놔! (<b>-${fine}만원 강탈</b>)"
+              </div>
+            </div>
+          `;
         }
       }
     }
 
     updateStatusBar();
-    // 결과 출력과 동시에 다음 턴 버튼을 즉시 활성화 (타이핑을 안 기다려도 누를 수 있게 개선)
     nextBtn.style.display = 'block';
     typeText('call-dialogue', resultText);
   };
@@ -913,7 +1045,7 @@
       showEnding();
     } else {
       document.getElementById('night-day').textContent = state.day;
-      document.getElementById('night-summary').textContent = `현재 보유 수익: ${state.money.toLocaleString()}만원 | 남은 멘탈: ${state.mental}/${state.maxMental}`;
+      document.getElementById('night-summary').textContent = `현재 수익: ${state.money.toLocaleString()}만원 (목표: 3,000만원) | 남은 멘탈: ${state.mental}/${state.maxMental}`;
       showScreen('screen-night');
     }
   }
@@ -936,7 +1068,7 @@
     startOffice();
   };
 
-  async function showEnding() {
+  function showEnding() {
     document.getElementById('status-bar').style.display = 'none';
     showScreen('screen-ending');
 
@@ -944,49 +1076,58 @@
     let title = "";
     let desc = "";
 
-    if (state.money <= 0) {
-      icon = "🚓";
-      title = "배드 엔딩: 구청 단속반 검거";
-      desc = "3일 동안 단 한 푼도 챙기지 못한 채 구청 단속반과 분노한 피해자들에게 포위당했습니다. 김드래곤 실장은 이미 혼자 도망친 뒤였습니다...";
-    } else if (state.money < 3000) {
+    if (state.money < 0) {
+      icon = "⛓️";
+      title = "최악의 엔딩: 빚더미 & 콩밥";
+      desc = `소송 합의금 때문에 오히려 ${Math.abs(state.money).toLocaleString()}만원의 빚만 졌습니다! 김드래곤 실장에게 두들겨 맞은 뒤 구청 단속반과 경찰에 넘겨졌습니다...`;
+    } else if (state.money < GOAL_MONEY) {
       icon = "🚐";
-      title = "노멀 엔딩: 야반도주 성공";
-      desc = `총 ${state.money.toLocaleString()}만원을 챙겨 낡은 봉고차를 타고 지방으로 야반도주에 성공했습니다! 당분간 라면만 먹겠지만 경찰은 피했습니다.`;
+      title = "실패 엔딩: 목표 미달! 야반도주";
+      desc = `목표 금액(3,000만원)을 채우지 못하고 ${state.money.toLocaleString()}만원만 손에 쥐었습니다. 김드래곤 실장의 눈을 피해 낡은 봉고차를 타고 지방으로 도망쳤습니다.`;
+    } else if (state.money < 6000) {
+      icon = "🥂";
+      title = "성공 엔딩: 임무 완수! 한탕 성공";
+      desc = `목표 금액을 돌파해 총 ${state.money.toLocaleString()}만원을 땡겼습니다! 김드래곤 실장에게 몫을 떼어주고 두둑한 현금 가방을 들고 유유히 잠적합니다!`;
     } else {
       icon = "✈️";
-      title = "진 엔딩: 전설의 사기꾼, 해외 도피!";
-      desc = `무려 ${state.money.toLocaleString()}만원이라는 경이로운 수익을 올렸습니다! 김드래곤 실장의 뒤통수를 치고 혼자 퍼스트클래스를 타고 남태평양 휴양지로 떠납니다!`;
+      title = "진 엔딩: 전설의 영업왕, 해외 도피!";
+      desc = `무려 ${state.money.toLocaleString()}만원이라는 경이로운 수익을 올렸습니다! 김드래곤 실장의 뒤통수까지 치고 혼자 퍼스트클래스를 타고 남태평양 휴양지로 떠납니다!`;
     }
 
     state.endingTitle = title.split(': ')[1];
     document.getElementById('ending-icon').textContent = icon;
     document.getElementById('ending-title').textContent = title;
-    document.getElementById('ending-score').textContent = `최종 수익: ${state.money.toLocaleString()}만원 (${state.charName})`;
+    document.getElementById('ending-score').textContent = `최종 수익: ${state.money.toLocaleString()}만원 / 목표: 3,000만원 (${state.charName})`;
     typeText('ending-desc', desc);
 
     renderRankings();
   }
 
-  async function renderRankings() {
+  function renderRankings() {
     const tbody = document.getElementById('ranking-tbody');
-    if (window.loadRankingsFromCloud) {
-      const ranks = await window.loadRankingsFromCloud();
-      tbody.innerHTML = "";
-      ranks.forEach((r, idx) => {
-        tbody.innerHTML += `
-          <tr>
-            <td><b>${idx + 1}위</b></td>
-            <td>${r.nickname}</td>
-            <td>${r.charName}</td>
-            <td style="color:#d97706; font-weight:700;">${Number(r.money).toLocaleString()}만원</td>
-            <td>${r.endingTitle}</td>
-          </tr>
-        `;
-      });
+    let ranks = JSON.parse(localStorage.getItem("goodtime_ranks") || "[]");
+    if (ranks.length === 0) {
+      ranks = [
+        { nickname: "김드래곤", charName: "김대리", money: 6200, endingTitle: "전설의 영업왕, 해외 도피!" },
+        { nickname: "전설의혀", charName: "박대리", money: 3800, endingTitle: "임무 완수! 한탕 성공" },
+        { nickname: "강철멘탈", charName: "손대리", money: 1900, endingTitle: "목표 미달! 야반도주" }
+      ];
     }
+    tbody.innerHTML = "";
+    ranks.slice(0, 5).forEach((r, idx) => {
+      tbody.innerHTML += `
+        <tr>
+          <td><b>${idx + 1}위</b></td>
+          <td>${r.nickname}</td>
+          <td>${r.charName}</td>
+          <td style="color:#d97706; font-weight:700;">${Number(r.money).toLocaleString()}만원</td>
+          <td>${r.endingTitle}</td>
+        </tr>
+      `;
+    });
   }
 
-  window.submitScore = async function() {
+  window.submitScore = function() {
     const nickInput = document.getElementById('player-nickname');
     const nickname = nickInput.value.trim();
     if (!nickname) {
@@ -996,78 +1137,17 @@
 
     document.getElementById('rank-register-box').innerHTML = `<div style="color:#10b981; font-weight:700;">✅ 랭킹 등록 완료!</div>`;
 
-    if (window.saveRankingToCloud) {
-      await window.saveRankingToCloud({
-        nickname,
-        charName: state.charName,
-        money: state.money,
-        endingTitle: state.endingTitle
-      });
-    }
+    const localRanks = JSON.parse(localStorage.getItem("goodtime_ranks") || "[]");
+    localRanks.push({
+      nickname,
+      charName: state.charName,
+      money: state.money,
+      endingTitle: state.endingTitle
+    });
+    localRanks.sort((a, b) => b.money - a.money);
+    localStorage.setItem("goodtime_ranks", JSON.stringify(localRanks.slice(0, 10)));
 
-    await renderRankings();
-  };
-</script>
-
-<!-- Firebase SDK (모듈 방식) -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-  // =========================================================================
-  // [중요] 본인의 Firebase 프로젝트 설정값을 아래에 붙여넣으세요!
-  // =========================================================================
-  const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT.appspot.com",
-    messagingSenderId: "YOUR_SENDER_ID",
-    appId: "YOUR_APP_ID"
-  };
-
-  let db = null;
-  const isFirebaseConfigured = firebaseConfig.apiKey !== "YOUR_API_KEY";
-
-  if (isFirebaseConfigured) {
-    try {
-      const app = initializeApp(firebaseConfig);
-      db = getFirestore(app);
-    } catch (e) {
-      console.warn("Firebase 초기화 실패, 로컬 모드로 동작합니다.", e);
-    }
-  }
-
-  window.saveRankingToCloud = async (record) => {
-    if (db) {
-      await addDoc(collection(db, "goodtime_rankings"), {
-        ...record,
-        createdAt: serverTimestamp()
-      });
-    } else {
-      const localRanks = JSON.parse(localStorage.getItem("goodtime_ranks") || "[]");
-      localRanks.push(record);
-      localRanks.sort((a, b) => b.money - a.money);
-      localStorage.setItem("goodtime_ranks", JSON.stringify(localRanks.slice(0, 10)));
-    }
-  };
-
-  window.loadRankingsFromCloud = async () => {
-    if (db) {
-      const q = query(collection(db, "goodtime_rankings"), orderBy("money", "desc"), limit(5));
-      const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => doc.data());
-    } else {
-      const localRanks = JSON.parse(localStorage.getItem("goodtime_ranks") || "[]");
-      if (localRanks.length === 0) {
-        return [
-          { nickname: "김드래곤", charName: "김대리", money: 4500, endingTitle: "해외 도피 성공" },
-          { nickname: "전설의혀", charName: "박대리", money: 2800, endingTitle: "야반도주 성공" },
-          { nickname: "강철멘탈", charName: "손대리", money: 1500, endingTitle: "야반도주 성공" }
-        ];
-      }
-      return localRanks.slice(0, 5);
-    }
+    renderRankings();
   };
 </script>
 </body>
