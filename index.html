@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>굿타임 영업백서 - 1위 치킨(~27일)</title>
+  <title>굿타임 영업백서 - 3일간의 기적</title>
   <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
   <style>
@@ -189,9 +189,28 @@
     .subtitle {
       color: #475569;
       font-size: 0.95rem;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       font-weight: 600;
       line-height: 1.45;
+    }
+
+    /* 첫 화면 치킨 프로모션 배너 */
+    .promo-banner {
+      background: linear-gradient(90deg, #fff7ed 0%, #ffedd5 50%, #fef9c3 100%);
+      border: 2.5px solid #ea580c;
+      border-radius: 12px;
+      padding: 10px 14px;
+      margin-bottom: 14px;
+      box-shadow: 3px 3px 0px #ea580c;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-align: center;
+      font-size: 0.92rem;
+      font-weight: 800;
+      color: #9a3412;
+      line-height: 1.4;
     }
 
     /* 사원증 발급 카드 */
@@ -202,7 +221,7 @@
       padding: 22px;
       max-width: 460px;
       width: 100%;
-      margin: 10px auto;
+      margin: 8px auto;
       box-shadow: 5px 5px 0px var(--border-color);
       text-align: center;
     }
@@ -337,6 +356,16 @@
       border-radius: 8px;
       color: #1e293b;
       line-height: 1.45;
+    }
+
+    .night-vibe-tag {
+      display: inline-block;
+      font-size: 0.73rem;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 999px;
+      margin-bottom: 6px;
+      border: 1.5px solid #1e293b;
     }
 
     .webtoon-panel {
@@ -875,6 +904,10 @@
         </button>
       </div>
       <div class="subtitle">3일 뒤 구청 단속이 들이닥친다! 유령 백화점을 분양하고 튀어라!</div>
+
+      <div class="promo-banner">
+        🍗 <b>[긴급 이벤트] 11월 27일 밤 10시까지 랭킹 1위에게 치킨 기프티콘 증정!</b> 🔥
+      </div>
     </div>
 
     <div class="id-card-box">
@@ -1049,7 +1082,7 @@
     </button>
   </div>
 
-  <!-- 5. 야간 이벤트 화면 -->
+  <!-- 5. 야간 이벤트 화면 (업그레이드) -->
   <div id="screen-night" class="screen">
     <div>
       <div class="webtoon-title" style="font-size:1.95rem; text-align:center;">🌙 <span id="night-day">1</span>일차 영업 종료</div>
@@ -1058,30 +1091,40 @@
       <div class="night-grid">
         <div class="char-card" data-night="soup">
           <div>
-            <div class="char-avatar">🍲</div>
-            <div class="char-name">국밥에 소주 한잔</div>
-            <div class="char-stats">비용: <b>100만원</b><br>효과: 멘탈 <b>+40</b> 회복</div>
+            <div class="char-avatar">🍲🍶</div>
+            <span class="night-vibe-tag" style="background:#fef3c7; color:#92400e;">짠내 폭발 · 힐링</span>
+            <div class="char-name">소주국밥 + 실장님 썰</div>
+            <div class="char-stats">비용: <b>100만원</b><br>효과: 멘탈 <b>+40</b> (확률 +12 추가)</div>
           </div>
-          <div class="char-passive">뜨끈한 국밥으로 상처받은 멘탈을 치유합니다.</div>
+          <div class="char-passive">뜨끈한 국물과 술잔 기울이며 멘탈을 털어냅니다. 운 좋으면 실장님 팁으로 멘탈이 더 차오릅니다!</div>
         </div>
 
         <div class="char-card" data-night="academy">
           <div>
-            <div class="char-avatar">📚</div>
-            <div class="char-name">스피치 학원 특강</div>
-            <div class="char-stats">비용: <b>300만원</b><br>효과: 언변력 <b>+12</b> 영구 상승</div>
+            <div class="char-avatar">🎤🔥</div>
+            <span class="night-vibe-tag" style="background:#dbeafe; color:#1e40af;">스킬 성장 · 도박</span>
+            <div class="char-name">역삼 도깨비 화술 과외</div>
+            <div class="char-stats">비용: <b>300만원</b><br>효과: 언변력 <b>+12</b> (대박 시 +4)</div>
           </div>
-          <div class="char-passive">사기꾼의 화술을 배워 모든 영업 성공률을 높입니다.</div>
+          <div class="char-passive">전설의 뻥카 강사에게 구라와 억양을 전수받습니다. 40% 확률로 숨겨진 비기까지 전수!</div>
         </div>
 
         <div class="char-card" data-night="sleep">
           <div>
-            <div class="char-avatar">🛏️</div>
-            <div class="char-name">그냥 푹 잔다</div>
-            <div class="char-stats">비용: <b>0원</b><br>효과: 멘탈 <b>+15</b> 소폭 회복</div>
+            <div class="char-avatar">💤📱</div>
+            <span class="night-vibe-tag" style="background:#f3e8ff; color:#6b21a8;">무지출 · 꿀잠</span>
+            <div class="char-name">대포폰 끄고 딥슬립</div>
+            <div class="char-stats">비용: <b>0원</b><br>효과: 멘탈 <b>+15</b> (숙면 시 +10)</div>
           </div>
-          <div class="char-passive">돈을 아끼고 내일 일찍 출근합니다.</div>
+          <div class="char-passive">돈 한 푼 안 쓰고 뻗어 잡니다. 단속반 꿈만 안 꾸면 개운하게 멘탈을 챙깁니다!</div>
         </div>
+      </div>
+
+      <div id="night-event-result" style="display:none; margin-top:12px;" class="webtoon-panel">
+        <div id="night-result-text" style="font-size:0.95rem; font-weight:700; line-height:1.55; margin-bottom:12px;"></div>
+        <button type="button" class="btn btn-primary" style="width:100%;" id="btn-night-next-day">
+          ☀️ 다음 날 아침 출근하기 ➡️
+        </button>
       </div>
     </div>
   </div>
@@ -1128,7 +1171,7 @@
         </div>
 
         <div id="casino-log" style="background:rgba(15, 23, 42, 0.65); border:1.5px solid rgba(251, 191, 36, 0.4); padding:10px; border-radius:10px; text-align:center; font-size:0.92rem; min-height:46px; line-height:1.45;">
-          어느 쪽에 베팅하시겠습니까? (TIE 무승부 적중 시 8배 지급!)
+          어느 쪽에 베팅하시겠습니까? (TIE 무승부 시 8배 / PLAYER·BANKER는 TIE 시 원금 환불!)
         </div>
       </div>
 
@@ -1272,6 +1315,7 @@
     overtimeRound: 0,
     currentCustomer: null,
     hiddenSkills: [],
+    nightChoiceDone: false,
     baccaratRound: 1,
     baccaratSide: 'player',
     baccaratRatio: 0.3,
@@ -1551,6 +1595,7 @@
     clearInterval(typingTimer);
     typingTimer = null;
     state.isOvertime = false;
+    state.nightChoiceDone = false;
     state.baccaratBusy = false;
     document.body.classList.remove('overtime-bg');
     document.getElementById('status-bar').style.display = 'none';
@@ -1571,6 +1616,7 @@
     state.streak = 0;
     state.isOvertime = false;
     state.overtimeRound = 0;
+    state.nightChoiceDone = false;
 
     updateStatusBar();
     showScreen('screen-intro');
@@ -1875,6 +1921,12 @@
         showEnding(false);
       }
     } else {
+      state.nightChoiceDone = false;
+      document.querySelectorAll('#screen-night .char-card').forEach(c => {
+        c.style.opacity = '1';
+        c.style.pointerEvents = 'auto';
+      });
+      document.getElementById('night-event-result').style.display = 'none';
       document.getElementById('night-day').textContent = state.day;
       document.getElementById('night-summary').textContent = `현재 수익: ${state.money.toLocaleString()}만원 (목표: 10,000만원 / 카지노 해금: 30,000만원) | 남은 멘탈: ${state.mental}/${state.maxMental}`;
       showScreen('screen-night');
@@ -1882,25 +1934,64 @@
   }
 
   function nightAction(type) {
+    if (state.nightChoiceDone) return;
+
+    let logMsg = "";
+
     if (type === 'soup') {
       if (state.money < 100) { alert("돈이 부족합니다! (100만원 필요)"); return; }
       state.money -= 100;
-      state.mental = Math.min(state.maxMental, state.mental + 40);
+      let gain = 40;
+      if (Math.random() < 0.45) {
+        gain += 12;
+        logMsg = `🍲🍶 국밥에 소주를 말아 마시다 김드래곤 실장과 우연히 마주쳤습니다!\n"허허, 오늘도 고생 많았다!" 실장님이 사준 깍두기+소주 한 병에 멘탈이 <b>+${gain}</b> 회복되었습니다! (현재 멘탈: ${Math.min(state.maxMental, state.mental + gain)}/${state.maxMental})`;
+      } else {
+        logMsg = `🍲🍶 뜨끈한 국밥으로 속을 데우고 소주 한 잔 털어 넣었습니다.\n멘탈이 <b>+${gain}</b> 회복되었습니다! (현재 멘탈: ${Math.min(state.maxMental, state.mental + gain)}/${state.maxMental})`;
+      }
+      state.mental = Math.min(state.maxMental, state.mental + gain);
     } else if (type === 'academy') {
       if (state.money < 300) { alert("돈이 부족합니다! (300만원 필요)"); return; }
       state.money -= 300;
-      state.speech += 12;
+      let speechGain = 12;
+      if (Math.random() < 0.4) {
+        speechGain += 4;
+        logMsg = `🎤🔥 역삼동 전설의 뻥카 강사가 "넌 눈빛부터 사기꾼 상이야!"라며 비기 1페이지를 전수했습니다!\n언변력이 무려 <b>+${speechGain}</b> 영구 상승했습니다! (현재 언변: ${state.speech + speechGain})`;
+      } else {
+        logMsg = `🎤🔥 스피치 특강에서 '목소리 톤 다운 & 확신에 찬 거짓말'을 마스터했습니다!\n언변력이 <b>+${speechGain}</b> 영구 상승했습니다! (현재 언변: ${state.speech + speechGain})`;
+      }
+      state.speech += speechGain;
     } else if (type === 'sleep') {
-      state.mental = Math.min(state.maxMental, state.mental + 15);
+      let sleepGain = 15;
+      if (Math.random() < 0.35) {
+        sleepGain += 10;
+        logMsg = `💤📱 대포폰을 끄고 푹 잤습니다! 구청 단속반이 헛탕 치는 꿈을 꾸며 꿀잠을 자서 멘탈이 <b>+${sleepGain}</b> 회복되었습니다! (현재 멘탈: ${Math.min(state.maxMental, state.mental + sleepGain)}/${state.maxMental})`;
+      } else {
+        logMsg = `💤📱 0원으로 알뜰하게 잠을 청했습니다. 내일 아침 6시 기상 알람이 울립니다!\n멘탈이 <b>+${sleepGain}</b> 회복되었습니다! (현재 멘탈: ${Math.min(state.maxMental, state.mental + sleepGain)}/${state.maxMental})`;
+      }
+      state.mental = Math.min(state.maxMental, state.mental + sleepGain);
     }
 
+    state.nightChoiceDone = true;
+    updateStatusBar();
+
+    document.querySelectorAll('#screen-night .char-card').forEach(c => {
+      c.style.opacity = (c.dataset.night === type) ? '1' : '0.45';
+      c.style.pointerEvents = 'none';
+    });
+
+    const resBox = document.getElementById('night-event-result');
+    document.getElementById('night-result-text').innerHTML = logMsg;
+    resBox.style.display = 'block';
+  }
+
+  function proceedNextDay() {
     state.day++;
     state.turn = 1;
     startOffice();
   }
 
   // =========================================================================
-  // 필리핀 마닐라 VIP 카지노 바카라 (3판 승부 - 버그 수정 및 카드 UI 강화)
+  // 필리핀 마닐라 VIP 카지노 바카라 (원래 타이 규칙 반영 + 카드 UI 강화)
   // =========================================================================
   function renderCardBackPair() {
     return `
@@ -1951,7 +2042,7 @@
     document.getElementById('player-box').classList.remove('winner-glow');
     document.getElementById('banker-box').classList.remove('winner-glow');
     document.getElementById('casino-result-badge').textContent = '베팅을 선택하세요!';
-    document.getElementById('casino-log').textContent = `${state.baccaratRound}번째 승부! 어느 쪽에 베팅하시겠습니까?`;
+    document.getElementById('casino-log').textContent = `${state.baccaratRound}번째 승부! (TIE 시 PLAYER/BANKER 베팅은 원금 환불됩니다)`;
     document.getElementById('baccarat-controls').style.display = 'block';
     document.getElementById('btn-casino-next').style.display = 'none';
     syncBetChoiceButtons();
@@ -2005,8 +2096,20 @@
     const sideLabelMap = { player: 'PLAYER', banker: 'BANKER', tie: 'TIE 무승부' };
     let msg = "";
 
-    if (winner === state.baccaratSide) {
-      const mult = (winner === 'tie') ? 8 : (winner === 'player' ? 2 : 1.95);
+    if (winner === 'tie') {
+      if (state.baccaratSide === 'tie') {
+        const payout = Math.round(betAmount * 8);
+        state.money += payout;
+        document.getElementById('casino-result-badge').textContent = `🎉 TIE 대박! +${payout.toLocaleString()}만원`;
+        msg = `🔥 [TIE 적중!] 양쪽 ${pScore}점 동점! 베팅금 ${betAmount.toLocaleString()}만원 × 8배 = ${payout.toLocaleString()}만원 획득!`;
+      } else {
+        // 원래 바카라 규칙: 타이 발생 시 PLAYER / BANKER 베팅 원금 환불
+        state.money += betAmount;
+        document.getElementById('casino-result-badge').textContent = `🤝 TIE 무승부 (원금 환불)`;
+        msg = `🤝 [TIE 무승부!] 양쪽 ${pScore}점 동점! 바카라 규칙에 따라 베팅한 ${betAmount.toLocaleString()}만원이 그대로 환불되었습니다.`;
+      }
+    } else if (winner === state.baccaratSide) {
+      const mult = (winner === 'player') ? 2 : 1.95;
       const payout = Math.round(betAmount * mult);
       state.money += payout;
       document.getElementById('casino-result-badge').textContent = `🎉 적중! +${payout.toLocaleString()}만원`;
@@ -2102,6 +2205,7 @@
   document.getElementById('btn-start-office').addEventListener('click', startOffice);
   document.getElementById('btn-open-book').addEventListener('click', openPhonebook);
   document.getElementById('btn-next-turn').addEventListener('click', nextTurn);
+  document.getElementById('btn-night-next-day').addEventListener('click', proceedNextDay);
   document.getElementById('btn-ending-restart').addEventListener('click', restartGame);
 
   document.getElementById('btn-top-restart').addEventListener('click', () => {
