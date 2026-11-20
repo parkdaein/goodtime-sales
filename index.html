@@ -1111,27 +1111,22 @@
   </div>
 </div>
 
-<!-- 단일 통합 모듈 스크립트 (모든 기능 및 Firebase 연동 포함) -->
+<!-- 단일 통합 모듈 스크립트 (Firebase 연동 완료) -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getFirestore, collection, addDoc, query, orderBy, limit, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-  // =========================================================================
-  // [Firebase 설정 - goodtime-sales]
-  // Firebase 콘솔 > 프로젝트 설정 > 내 앱(</>)에서 복사한 값을 아래에 덮어쓰세요!
-  // =========================================================================
   const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
+    apiKey: "AIzaSyAb46SIjqEir6zRym1EWLvQYSRkj0t_oHo",
     authDomain: "goodtime-sales.firebaseapp.com",
     projectId: "goodtime-sales",
-    storageBucket: "goodtime-sales.appspot.com",
-    messagingSenderId: "YOUR_SENDER_ID",
-    appId: "YOUR_APP_ID"
+    storageBucket: "goodtime-sales.firebasestorage.app",
+    messagingSenderId: "709736545199",
+    appId: "1:709736545199:web:78d36cecc380729b04cd5a"
   };
 
   let db = null;
   let cachedRanks = [];
-  const isFirebaseConfigured = firebaseConfig.apiKey && firebaseConfig.apiKey !== "YOUR_API_KEY";
 
   const DEFAULT_RANKS = [
     { nickname: "KDG (김드래곤)", charName: "김대리", money: 52000 },
@@ -1262,32 +1257,26 @@
     }
   }
 
-  if (isFirebaseConfigured) {
-    try {
-      const app = initializeApp(firebaseConfig);
-      db = getFirestore(app);
-      document.getElementById('firebase-status-text').innerHTML = "🟢 <b>Firebase(goodtime-sales) 실시간 연결됨</b>";
+  try {
+    const app = initializeApp(firebaseConfig);
+    db = getFirestore(app);
+    document.getElementById('firebase-status-text').innerHTML = "🟢 <b>Firebase(goodtime-sales) 실시간 연결됨</b>";
 
-      const q = query(collection(db, "goodtime_rankings"), orderBy("money", "desc"), limit(10));
-      onSnapshot(q, (snapshot) => {
-        const liveRanks = snapshot.docs.map(doc => doc.data());
-        updateAllRankingTables(liveRanks.length > 0 ? liveRanks : DEFAULT_RANKS);
-      }, (err) => {
-        console.warn("Firestore 읽기 권한/네트워크 확인 필요:", err);
-        document.getElementById('firebase-status-text').innerHTML = "🟠 <b>Firebase 규칙 확인 필요</b> (로컬 데이터 표시 중)";
-        refreshRankingsUI();
-      });
-    } catch (e) {
-      console.warn("Firebase 초기화 실패:", e);
+    const q = query(collection(db, "goodtime_rankings"), orderBy("money", "desc"), limit(10));
+    onSnapshot(q, (snapshot) => {
+      const liveRanks = snapshot.docs.map(doc => doc.data());
+      updateAllRankingTables(liveRanks.length > 0 ? liveRanks : DEFAULT_RANKS);
+    }, (err) => {
+      console.warn("Firestore 읽기 권한/네트워크 확인 필요:", err);
+      document.getElementById('firebase-status-text').innerHTML = "🟠 <b>Firebase 규칙 확인 필요</b> (로컬 데이터 표시 중)";
       refreshRankingsUI();
-    }
-  } else {
-    document.getElementById('firebase-status-text').innerHTML = "🟡 <b>로컬 모드</b> (코드 하단 firebaseConfig에 설정값을 넣으면 실시간 서버와 연동됩니다)";
+    });
+  } catch (e) {
+    console.warn("Firebase 초기화 실패:", e);
     refreshRankingsUI();
   }
 
   async function saveRankingRecord(record) {
-    // 로컬 백업 저장
     const localRanks = JSON.parse(localStorage.getItem("goodtime_ranks") || "[]");
     localRanks.push(record);
     localRanks.sort((a, b) => b.money - a.money);
@@ -1945,7 +1934,7 @@
   }
 
   // =========================================================================
-  // 모든 DOM 이벤트 바인딩 (HTML 인라인 onclick 의존성 제거)
+  // 모든 DOM 이벤트 바인딩
   // =========================================================================
   document.getElementById('btn-enter-game').addEventListener('click', enterGame);
   document.getElementById('entry-nickname').addEventListener('keydown', (e) => {
@@ -1964,7 +1953,6 @@
     }
   });
 
-  // 랭킹 모달 열기/닫기
   const openModal = () => {
     document.getElementById('ranking-modal').classList.add('open');
     refreshRankingsUI();
@@ -1979,22 +1967,18 @@
     if (e.target.id === 'ranking-modal') closeModal();
   });
 
-  // 캐릭터 선택 카드 바인딩
   document.querySelectorAll('#screen-select .char-card').forEach(card => {
     card.addEventListener('click', () => selectCharacter(card.dataset.char));
   });
 
-  // 야간 행동 카드 바인딩
   document.querySelectorAll('#screen-night .char-card').forEach(card => {
     card.addEventListener('click', () => nightAction(card.dataset.night));
   });
 
-  // 대화창 클릭 시 타이핑 스킵
   ['intro-dialogue', 'call-dialogue', 'ending-desc'].forEach(id => {
     document.getElementById(id).addEventListener('click', skipTyping);
   });
 
-  // 바카라 컨트롤 바인딩
   document.querySelectorAll('[data-side]').forEach(btn => {
     btn.addEventListener('click', () => {
       state.baccaratSide = btn.dataset.side;
