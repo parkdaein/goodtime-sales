@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>굿타임 영업백서 - 3일간의 기적</title>
+  <title>굿타임 영업백서 - 1위 치킨(~27일)</title>
   <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
   <style>
@@ -433,7 +433,12 @@
     .btn-orange { background: #ffedd5; }
     .btn-pink { background: #fce7f3; }
     .btn-dark { background: #1e293b; color: #fff; }
-    .btn-casino { background: linear-gradient(135deg, #fde047, #f59e0b); color: #1e293b; font-size: 1.1rem; }
+    .btn-casino {
+      background: linear-gradient(135deg, #fde047, #f59e0b);
+      color: #1e293b;
+      font-size: 1.1rem;
+      font-weight: 900;
+    }
 
     @keyframes hiddenGlow {
       0%, 100% { box-shadow: 0 0 0 3px #f59e0b, 4px 4px 0px #1e293b; transform: scale(1); }
@@ -592,40 +597,144 @@
       animation: critFlash 0.75s ease-out;
     }
 
-    /* 카지노 바카라 UI */
+    /* 카지노 바카라판 UI */
     .casino-table {
-      background: radial-gradient(circle, #065f46 0%, #064e3b 100%);
-      border: 4px solid #fbbf24;
-      border-radius: 16px;
-      padding: 16px;
+      background:
+        radial-gradient(ellipse at center, #0d7a58 0%, #06543c 68%, #033828 100%);
+      border: 5px solid #d97706;
+      outline: 3px solid #1e293b;
+      border-radius: 22px;
+      padding: 18px;
       color: #fff;
-      box-shadow: 5px 5px 0px #1e293b;
-      margin-bottom: 12px;
+      box-shadow: inset 0 0 28px rgba(0, 0, 0, 0.45), 5px 5px 0px #1e293b;
+      margin-bottom: 14px;
+      position: relative;
+    }
+
+    .casino-felt-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding-bottom: 10px;
+      border-bottom: 1.5px dashed rgba(253, 224, 71, 0.45);
+      font-weight: 800;
+      font-size: 0.96rem;
+    }
+
+    .casino-chip-pill {
+      background: rgba(15, 23, 42, 0.75);
+      border: 2px solid #fbbf24;
+      border-radius: 999px;
+      padding: 5px 12px;
+      color: #fde047;
     }
 
     .baccarat-cards {
       display: flex;
-      justify-content: space-around;
-      align-items: center;
+      justify-content: space-between;
+      align-items: stretch;
       margin: 14px 0;
-      gap: 10px;
+      gap: 12px;
+    }
+
+    @media (max-width: 560px) {
+      .baccarat-cards { flex-direction: column; }
     }
 
     .card-side {
-      background: rgba(0, 0, 0, 0.35);
-      border: 2px solid #34d399;
-      border-radius: 12px;
-      padding: 10px 12px;
+      background: rgba(2, 44, 34, 0.72);
+      border: 2.5px solid rgba(251, 191, 36, 0.55);
+      border-radius: 14px;
+      padding: 12px;
       text-align: center;
       flex: 1;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    }
+
+    .card-side.winner-glow {
+      border-color: #fde047;
+      box-shadow: 0 0 18px rgba(253, 224, 71, 0.65);
+      transform: translateY(-2px);
+    }
+
+    .side-label-player {
+      font-weight: 900;
+      color: #60a5fa;
+      font-size: 0.95rem;
+      letter-spacing: 0.5px;
+    }
+
+    .side-label-banker {
+      font-weight: 900;
+      color: #f87171;
+      font-size: 0.95rem;
+      letter-spacing: 0.5px;
     }
 
     .card-hand {
-      font-size: 1.5rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      margin: 10px 0;
+      min-height: 68px;
+    }
+
+    .playing-card {
+      width: 48px;
+      height: 68px;
+      border-radius: 8px;
+      background: #ffffff;
+      border: 2px solid #1e293b;
+      box-shadow: 2px 3px 0px rgba(0, 0, 0, 0.45);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
       font-weight: 900;
-      letter-spacing: 3px;
-      margin: 6px 0;
-      min-height: 36px;
+      font-size: 1.05rem;
+      color: #1e293b;
+      line-height: 1.15;
+    }
+
+    .playing-card.red-suit {
+      color: #dc2626;
+    }
+
+    .playing-card.card-back {
+      background: repeating-linear-gradient(
+        45deg,
+        #991b1b,
+        #991b1b 5px,
+        #7f1d1d 5px,
+        #7f1d1d 10px
+      );
+      border-color: #fde047;
+      color: #fde047;
+      font-size: 1.2rem;
+    }
+
+    .score-pill {
+      display: inline-block;
+      background: rgba(15, 23, 42, 0.75);
+      border: 1.5px solid rgba(255, 255, 255, 0.25);
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 0.86rem;
+      color: #f8fafc;
+    }
+
+    .casino-vs-badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Jua', sans-serif;
+      font-size: 1.35rem;
+      color: #fde047;
+      text-shadow: 2px 2px 0px #0f172a;
     }
 
     .bet-options {
@@ -644,11 +753,12 @@
       cursor: pointer;
       background: #fff;
       color: #1e293b;
+      box-shadow: 2px 2px 0px #1e293b;
     }
 
     .bet-choice-btn.selected {
       background: #fde047;
-      box-shadow: 0 0 0 3px #f59e0b;
+      box-shadow: 0 0 0 3px #f59e0b, 2px 2px 0px #1e293b;
     }
 
     /* 랭킹 테이블 */
@@ -831,15 +941,15 @@
           <div>
             <div class="char-avatar">🗿</div>
             <div class="char-name">손대리</div>
-            <span class="char-tag" style="background:#fce7f3; color:#be185d;">멘탈형 / 야근 탱커</span>
+            <span class="char-tag" style="background:#fce7f3; color:#be185d;">멘탈형 / 오기 성장</span>
             <div class="char-stats">
               🗣️ <b>언변력:</b> 60 (평범함)<br>
               🧠 <b>멘탈력:</b> 120 (강철 멘탈)
             </div>
           </div>
           <div class="char-passive">
-            <b>[패시브: 강철멘탈 & 뚝심 오기]</b><br>
-            멘탈 피해·고소 확률 절반! 실패 후 재도전 시 <b>'오기 스택'</b>이 발동해 다음 턴 <b>성사율 +15% & 수익 +30%</b>!
+            <b>[패시브: 강철멘탈 & 오기]</b><br>
+            멘탈 피해·고소 확률 절반! 영업 실패 시 <b>'오기'가 발동해 언변력이 +5씩 영구 증가</b>합니다!
           </div>
         </div>
 
@@ -982,35 +1092,43 @@
       <div class="header-row">
         <div class="webtoon-title" style="font-size:1.85rem; color:#b45309;">🎰 마닐라 VIP 바카라</div>
         <div class="stat-badge" style="background:#1e293b; color:#fde047; font-size:0.95rem;">
-          남은 라운드: <span id="baccarat-round">1 / 3</span>판
+          라운드: <span id="baccarat-round">1 / 3</span>판
         </div>
       </div>
       <div class="subtitle">
-        김드래곤의 뒤통수를 치고 필리핀으로 날아왔다! 전 재산을 걸고 3판 승부로 인생 역전하라!
+        김드래곤의 뒤통수를 치고 필리핀으로 날아왔다! 3판 승부로 인생 역전하라!
       </div>
 
       <div class="casino-table">
-        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px; font-weight:800; font-size:1rem;">
-          <span>💰 보유 칩: <span id="casino-money" style="color:#fde047;">30,000</span>만원</span>
-          <span id="casino-result-badge" style="color:#6ee7b7;">베팅을 선택하세요!</span>
+        <div class="casino-felt-header">
+          <div class="casino-chip-pill">🪙 보유 칩: <span id="casino-money">30,000</span>만원</div>
+          <div id="casino-result-badge" style="color:#fde047;">베팅을 선택하세요!</div>
         </div>
 
         <div class="baccarat-cards">
-          <div class="card-side">
-            <div style="font-weight:800; color:#93c5fd; font-size:0.9rem;">🔵 PLAYER (2배)</div>
-            <div class="card-hand" id="player-cards">🂠 🂠</div>
-            <div id="player-score" style="font-weight:700; font-size:0.9rem;">점수: ?</div>
+          <div class="card-side" id="player-box">
+            <div class="side-label-player">🔵 PLAYER (2배)</div>
+            <div class="card-hand" id="player-cards">
+              <div class="playing-card card-back">★</div>
+              <div class="playing-card card-back">★</div>
+            </div>
+            <span class="score-pill" id="player-score">점수: ?</span>
           </div>
-          <div style="font-family:'Jua', sans-serif; font-size:1.4rem; color:#fde047;">VS</div>
-          <div class="card-side" style="border-color:#fca5a5;">
-            <div style="font-weight:800; color:#fca5a5; font-size:0.9rem;">🔴 BANKER (1.95배)</div>
-            <div class="card-hand" id="banker-cards">🂠 🂠</div>
-            <div id="banker-score" style="font-weight:700; font-size:0.9rem;">점수: ?</div>
+
+          <div class="casino-vs-badge">VS</div>
+
+          <div class="card-side" id="banker-box">
+            <div class="side-label-banker">🔴 BANKER (1.95배)</div>
+            <div class="card-hand" id="banker-cards">
+              <div class="playing-card card-back">★</div>
+              <div class="playing-card card-back">★</div>
+            </div>
+            <span class="score-pill" id="banker-score">점수: ?</span>
           </div>
         </div>
 
-        <div id="casino-log" style="background:rgba(0,0,0,0.4); padding:10px; border-radius:8px; text-align:center; font-size:0.92rem; min-height:44px; line-height:1.4;">
-          어느 쪽에 베팅하시겠습니까? (타이 적중 시 8배 지급!)
+        <div id="casino-log" style="background:rgba(15, 23, 42, 0.65); border:1.5px solid rgba(251, 191, 36, 0.4); padding:10px; border-radius:10px; text-align:center; font-size:0.92rem; min-height:46px; line-height:1.45;">
+          어느 쪽에 베팅하시겠습니까? (TIE 무승부 적중 시 8배 지급!)
         </div>
       </div>
 
@@ -1152,12 +1270,12 @@
     streak: 0,
     isOvertime: false,
     overtimeRound: 0,
-    sonGrudge: false,
     currentCustomer: null,
     hiddenSkills: [],
     baccaratRound: 1,
     baccaratSide: 'player',
-    baccaratRatio: 0.3
+    baccaratRatio: 0.3,
+    baccaratBusy: false
   };
 
   const CHARACTERS = {
@@ -1433,6 +1551,7 @@
     clearInterval(typingTimer);
     typingTimer = null;
     state.isOvertime = false;
+    state.baccaratBusy = false;
     document.body.classList.remove('overtime-bg');
     document.getElementById('status-bar').style.display = 'none';
     showScreen('screen-nickname');
@@ -1452,7 +1571,6 @@
     state.streak = 0;
     state.isOvertime = false;
     state.overtimeRound = 0;
-    state.sonGrudge = false;
 
     updateStatusBar();
     showScreen('screen-intro');
@@ -1602,9 +1720,8 @@
     const hiddenBonus = isHidden ? 10 : 0;
     const speechBonus = (state.speech - 60) * 0.4;
     const weakBonus = (cust.weakSkill === skillType) ? 25 : 0;
-    const grudgeBonus = (state.charId === 'son' && state.sonGrudge) ? 15 : 0;
 
-    const finalChance = Math.min(95, Math.max(12, baseChance + speechBonus + weakBonus + hiddenBonus + grudgeBonus));
+    const finalChance = Math.min(95, Math.max(12, baseChance + speechBonus + weakBonus + hiddenBonus));
     const isSuccess = (Math.random() * 100) <= finalChance;
     const pitchLine = isHidden ? info.hiddenPitch : info.normalPitch;
 
@@ -1625,11 +1742,6 @@
       if (state.charId === 'park' && cust.weakSkill === skillType) {
         earned = Math.round(earned * 1.5);
         bonusNotes.push("박대리 약점적중 1.5배");
-      }
-      if (state.charId === 'son' && state.sonGrudge) {
-        earned = Math.round(earned * 1.3);
-        bonusNotes.push("손대리 오기보너스 1.3배");
-        state.sonGrudge = false;
       }
       if (state.isOvertime) {
         const otMult = Math.pow(2, state.overtimeRound);
@@ -1664,7 +1776,7 @@
       if (state.charId === 'kim') mentalLoss = Math.round(mentalLoss * 1.5);
       if (state.charId === 'son') {
         mentalLoss = Math.round(mentalLoss * 0.5);
-        state.sonGrudge = true;
+        state.speech += 5;
       }
 
       state.mental = Math.max(0, state.mental - mentalLoss);
@@ -1678,7 +1790,7 @@
       }
 
       if (state.charId === 'son') {
-        resultText += `\n🗿 [손대리 패시브 발동] "이 악물고 다음 놈은 무조건 잡는다!" (다음 턴 성사율 +15%, 수익 +30%)`;
+        resultText += `\n🗿 [손대리 패시브 '오기' 발동!] 실패를 발판 삼아 언변력이 +5 영구 상승했습니다! (현재 언변: ${state.speech})`;
       }
 
       if (state.isOvertime) {
@@ -1788,13 +1900,40 @@
   }
 
   // =========================================================================
-  // 필리핀 마닐라 VIP 카지노 바카라 (3판 승부)
+  // 필리핀 마닐라 VIP 카지노 바카라 (3판 승부 - 버그 수정 및 카드 UI 강화)
   // =========================================================================
+  function renderCardBackPair() {
+    return `
+      <div class="playing-card card-back">★</div>
+      <div class="playing-card card-back">★</div>
+    `;
+  }
+
+  function renderCardHTML(card) {
+    const isRed = card.suit === '♥️' || card.suit === '♦️';
+    return `
+      <div class="playing-card ${isRed ? 'red-suit' : ''}">
+        <span>${card.rank}</span>
+        <span>${card.suit}</span>
+      </div>
+    `;
+  }
+
+  function syncBetChoiceButtons() {
+    document.querySelectorAll('[data-side]').forEach(btn => {
+      btn.classList.toggle('selected', btn.dataset.side === state.baccaratSide);
+    });
+    document.querySelectorAll('[data-ratio]').forEach(btn => {
+      btn.classList.toggle('selected', parseFloat(btn.dataset.ratio) === state.baccaratRatio);
+    });
+  }
+
   function startCasinoStage() {
     document.getElementById('status-bar').style.display = 'none';
     state.baccaratRound = 1;
     state.baccaratSide = 'player';
     state.baccaratRatio = 0.3;
+    state.baccaratBusy = false;
 
     showScreen('screen-casino');
     updateCasinoUI();
@@ -1802,26 +1941,34 @@
   }
 
   function updateCasinoUI() {
+    state.baccaratBusy = false;
     document.getElementById('baccarat-round').textContent = `${state.baccaratRound} / 3`;
     document.getElementById('casino-money').textContent = state.money.toLocaleString();
-    document.getElementById('player-cards').textContent = '🂠 🂠';
-    document.getElementById('banker-cards').textContent = '🂠 🂠';
+    document.getElementById('player-cards').innerHTML = renderCardBackPair();
+    document.getElementById('banker-cards').innerHTML = renderCardBackPair();
     document.getElementById('player-score').textContent = '점수: ?';
     document.getElementById('banker-score').textContent = '점수: ?';
+    document.getElementById('player-box').classList.remove('winner-glow');
+    document.getElementById('banker-box').classList.remove('winner-glow');
     document.getElementById('casino-result-badge').textContent = '베팅을 선택하세요!';
     document.getElementById('casino-log').textContent = `${state.baccaratRound}번째 승부! 어느 쪽에 베팅하시겠습니까?`;
     document.getElementById('baccarat-controls').style.display = 'block';
     document.getElementById('btn-casino-next').style.display = 'none';
+    syncBetChoiceButtons();
   }
 
   function playBaccaratRound() {
+    if (state.baccaratBusy) return;
     if (state.money <= 0) {
       alert("칩이 모두 떨어졌습니다!");
       showEnding(true);
       return;
     }
 
-    const betAmount = Math.max(100, Math.floor(state.money * state.baccaratRatio));
+    state.baccaratBusy = true;
+
+    const rawBet = Math.floor(state.money * state.baccaratRatio);
+    const betAmount = Math.max(1, Math.min(state.money, rawBet));
     state.money -= betAmount;
 
     const drawCard = () => {
@@ -1829,7 +1976,11 @@
       const suits = ['♠️', '♥️', '♦️', '♣️'];
       const rIdx = Math.floor(Math.random() * ranks.length);
       const val = rIdx >= 9 ? 0 : rIdx + 1;
-      return { label: `${suits[Math.floor(Math.random()*4)]}${ranks[rIdx]}`, val };
+      return {
+        rank: ranks[rIdx],
+        suit: suits[Math.floor(Math.random() * suits.length)],
+        val
+      };
     };
 
     const p1 = drawCard(), p2 = drawCard();
@@ -1837,27 +1988,32 @@
     const pScore = (p1.val + p2.val) % 10;
     const bScore = (b1.val + b2.val) % 10;
 
-    document.getElementById('player-cards').textContent = `${p1.label} ${p2.label}`;
-    document.getElementById('banker-cards').textContent = `${b1.label} ${b2.label}`;
+    document.getElementById('player-cards').innerHTML = renderCardHTML(p1) + renderCardHTML(p2);
+    document.getElementById('banker-cards').innerHTML = renderCardHTML(b1) + renderCardHTML(b2);
     document.getElementById('player-score').textContent = `점수: ${pScore}점`;
     document.getElementById('banker-score').textContent = `점수: ${bScore}점`;
 
     let winner = 'tie';
-    if (pScore > bScore) winner = 'player';
-    else if (bScore > pScore) winner = 'banker';
+    if (pScore > bScore) {
+      winner = 'player';
+      document.getElementById('player-box').classList.add('winner-glow');
+    } else if (bScore > pScore) {
+      winner = 'banker';
+      document.getElementById('banker-box').classList.add('winner-glow');
+    }
 
-    let payout = 0;
+    const sideLabelMap = { player: 'PLAYER', banker: 'BANKER', tie: 'TIE 무승부' };
     let msg = "";
 
     if (winner === state.baccaratSide) {
       const mult = (winner === 'tie') ? 8 : (winner === 'player' ? 2 : 1.95);
-      payout = Math.round(betAmount * mult);
+      const payout = Math.round(betAmount * mult);
       state.money += payout;
       document.getElementById('casino-result-badge').textContent = `🎉 적중! +${payout.toLocaleString()}만원`;
-      msg = `🔥 [승리!] ${winner.toUpperCase()} 승! 베팅금 ${betAmount.toLocaleString()}만원의 ${mult}배인 ${payout.toLocaleString()}만원 획득!`;
+      msg = `🔥 [승리!] ${sideLabelMap[winner]} 승! 베팅금 ${betAmount.toLocaleString()}만원 × ${mult}배 = ${payout.toLocaleString()}만원 획득!`;
     } else {
       document.getElementById('casino-result-badge').textContent = `💀 패배 (-${betAmount.toLocaleString()}만원)`;
-      msg = `😭 [패배...] 결과는 ${winner.toUpperCase()} 승! 베팅금 ${betAmount.toLocaleString()}만원을 잃었습니다...`;
+      msg = `😭 [패배...] 결과는 ${sideLabelMap[winner]} 승! 베팅금 ${betAmount.toLocaleString()}만원을 잃었습니다...`;
     }
 
     document.getElementById('casino-money').textContent = state.money.toLocaleString();
@@ -1875,6 +2031,7 @@
   // 최종 엔딩 및 자동 랭킹 등록
   // =========================================================================
   async function showEnding(fromCasino) {
+    state.baccaratBusy = false;
     document.getElementById('status-bar').style.display = 'none';
     showScreen('screen-ending');
 
@@ -1981,15 +2138,17 @@
 
   document.querySelectorAll('[data-side]').forEach(btn => {
     btn.addEventListener('click', () => {
+      if (state.baccaratBusy) return;
       state.baccaratSide = btn.dataset.side;
-      document.querySelectorAll('[data-side]').forEach(b => b.classList.toggle('selected', b === btn));
+      syncBetChoiceButtons();
     });
   });
 
   document.querySelectorAll('[data-ratio]').forEach(btn => {
     btn.addEventListener('click', () => {
+      if (state.baccaratBusy) return;
       state.baccaratRatio = parseFloat(btn.dataset.ratio);
-      document.querySelectorAll('[data-ratio]').forEach(b => b.classList.toggle('selected', b === btn));
+      syncBetChoiceButtons();
     });
   });
 
