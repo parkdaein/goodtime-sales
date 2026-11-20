@@ -304,7 +304,7 @@
       background: #fff;
       box-shadow: var(--shadow);
       cursor: pointer;
-      transition: transform 0.12s, background 0.12s;
+      transition: transform 0.12s, background 0.12s, box-shadow 0.12s;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -313,6 +313,13 @@
     .char-card:hover, .char-card:active {
       transform: translateY(-3px);
       background: #fefce8;
+    }
+
+    .char-card.night-selected {
+      background: #fef08a;
+      border-color: #b45309;
+      box-shadow: 0 0 0 3px #f59e0b, 5px 5px 0px #1e293b;
+      transform: translateY(-3px);
     }
 
     .char-avatar {
@@ -366,6 +373,26 @@
       border-radius: 999px;
       margin-bottom: 6px;
       border: 1.5px solid #1e293b;
+    }
+
+    .night-confirm-box {
+      margin-top: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .night-selected-label {
+      font-size: 0.9rem;
+      font-weight: 800;
+      color: #1e293b;
+      background: #fef9c3;
+      border: 2px solid #1e293b;
+      border-radius: 8px;
+      padding: 7px 14px;
+      width: 100%;
+      text-align: center;
     }
 
     .webtoon-panel {
@@ -446,15 +473,20 @@
       font-weight: 700;
       cursor: pointer;
       box-shadow: 3px 3px 0px var(--border-color);
-      transition: transform 0.1s;
+      transition: transform 0.1s, opacity 0.15s;
       background: #fff;
       color: #1e293b;
       position: relative;
     }
 
-    .btn:active {
+    .btn:active:not(:disabled) {
       transform: translate(2px, 2px);
       box-shadow: 1px 1px 0px var(--border-color);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
 
     .btn-primary { background: #fde047; }
@@ -913,7 +945,7 @@
 
     <div style="text-align:center; font-size:0.84rem; color:#64748b; line-height:1.5;">
       * 3연속 계약 성공 시 <b>[무한 폭주 야근모드 (연승마다 2배 무한 증식)]</b> 돌입!<br>
-      * 3억 원 돌파 시 <b>[마닐라 VIP 하이롤러 룰렛 (최대 36배)]</b> 해금!
+      * 3억 원 돌파 시 김드래곤 실장 뒤통수 치고 <b>[마닐라 VIP 하이롤러 룰렛 (최대 36배)]</b> 직행!
     </div>
   </div>
 
@@ -934,7 +966,7 @@
       <div class="subtitle">환영합니다, <b id="welcome-nick" style="color:#1e293b;">사원</b>님! 오늘 현장에 투입할 대리를 선택하세요.</div>
       
       <div class="mission-banner">
-        🚨 [긴급 미션] 3일 안에 최소 <b>1억 원(10,000만원)</b>을 벌어라! (3억 원 돌파 시 <b>최대 36배 VIP 룰렛</b> 해금!)
+        🚨 [긴급 미션] 3일 안에 최소 <b>1억 원(10,000만원)</b>을 벌어라! (3억 원 돌파 시 김드래곤 뒤통수 치고 <b>마닐라 VIP 룰렛</b> 직행!)
       </div>
 
       <div class="char-grid">
@@ -1070,7 +1102,7 @@
   <div id="screen-night" class="screen">
     <div>
       <div class="webtoon-title" style="font-size:1.95rem; text-align:center;">🌙 <span id="night-day">1</span>일차 영업 종료 · 심야 승부수</div>
-      <div class="subtitle" style="text-align:center;" id="night-summary">오늘도 단속을 피했다! 내일 대박을 위해 어떤 도박을 걸까?</div>
+      <div class="subtitle" style="text-align:center;" id="night-summary">오늘도 단속을 피했다! 카드를 터치해 고른 뒤 아래 확정 버튼을 눌러주세요.</div>
 
       <div class="night-grid">
         <div class="char-card" data-night="speech_buff">
@@ -1104,6 +1136,15 @@
         </div>
       </div>
 
+      <div class="night-confirm-box" id="night-confirm-box">
+        <div class="night-selected-label" id="night-selected-label">
+          선택된 야간 버프: 없음 (위 카드 중 하나를 선택하세요)
+        </div>
+        <button type="button" class="btn btn-primary" style="width:100%; font-size:1.05rem;" id="btn-confirm-night" disabled>
+          ✅ 선택한 야간 버프 확정하기
+        </button>
+      </div>
+
       <div id="night-event-result" style="display:none; margin-top:12px;" class="webtoon-panel">
         <div id="night-result-text" style="font-size:0.95rem; font-weight:700; line-height:1.55; margin-bottom:12px;"></div>
         <button type="button" class="btn btn-primary" style="width:100%;" id="btn-night-next-day">
@@ -1123,7 +1164,7 @@
         </div>
       </div>
       <div class="subtitle">
-        랭킹 1위의 천문학적 자산을 단숨에 꺾을 기회! <b>최대 36배 초고배당 룰렛</b>에 인생을 걸어라!
+        김드래곤 실장 뒤통수 치고 필리핀 카지노 입성! <b>최대 36배 룰렛</b>으로 일확천금을 노려라!
       </div>
 
       <div class="casino-table">
@@ -1142,7 +1183,7 @@
         </div>
 
         <div id="casino-log" style="background:rgba(15, 23, 42, 0.75); border:1.5px solid rgba(251, 191, 36, 0.45); padding:10px; border-radius:10px; text-align:center; font-size:0.92rem; min-height:46px; line-height:1.45;">
-          배당이 높을수록 랭킹 1위 역전 확률 급상승! (36배 올인 적중 시 한 방에 100억 돌파!)
+          김드래곤 몰래 싹쓸이한 돈으로 필리핀 카지노 판을 뒤집어라! 36배 올인 적중 시 인생 역전!
         </div>
       </div>
 
@@ -1159,7 +1200,7 @@
             🟢 0 / 00 더블제로 · <b>12배</b><br><span style="font-size:0.74rem; color:#475569;">적중률 15% · 수십억 대박</span>
           </button>
           <button type="button" class="bet-choice-btn jackpot-opt" data-bet="lucky7">
-            💎 행운의 7 직격 · <b>36배</b><br><span style="font-size:0.74rem; color:#9a3412;">적중률 6% · 랭킹 1위 킬러!</span>
+            💎 행운의 7 직격 · <b>36배</b><br><span style="font-size:0.74rem; color:#9a3412;">적중률 6% · 일확천금 잭팟!</span>
           </button>
         </div>
 
@@ -1295,11 +1336,18 @@
     overtimeRound: 0,
     currentCustomer: null,
     hiddenSkills: [],
+    selectedNightBuff: null,
     nightChoiceDone: false,
     rouletteRound: 1,
     rouletteBet: 'even',
     rouletteRatio: 0.3,
     rouletteBusy: false
+  };
+
+  const NIGHT_BUFF_LABELS = {
+    speech_buff: "🎤🔥 역삼동 도깨비 구라 특강 (언변 +5~20)",
+    streak_buff: "🕯️⚡ 용한 점집 대박 부적 (5~20연승 & 야근 배수)",
+    doge_buff: "🐕🚀 새벽 3시 도지코인 풀매수 (5~20배 대박/반토막)"
   };
 
   const CHARACTERS = {
@@ -1802,6 +1850,7 @@
     state.isOvertime = false;
     state.overtimeRound = 0;
     state.streak = 0;
+    state.selectedNightBuff = null;
     state.nightChoiceDone = false;
     state.rouletteBusy = false;
     document.body.classList.remove('overtime-bg');
@@ -1823,12 +1872,13 @@
     state.streak = 0;
     state.isOvertime = false;
     state.overtimeRound = 0;
+    state.selectedNightBuff = null;
     state.nightChoiceDone = false;
 
     updateStatusBar();
     showScreen('screen-intro');
 
-    const introMsg = `어이 [${state.nickname}]! 이번에 배정받은 ${state.charName} 역할, 정신 바짝 차려!\n우리가 분양할 '굿타임 백화점'은 허허벌판 쓰레기 입지야.\n\n3일 뒤면 구청 단속반이 들이닥치니까, 그전까지 전화번호부 다 뒤져서 무조건 【최소 1억 원(10,000만원)】 이상 계약금 뜯어내!\n만약 3억 원 이상 땡기면... 마닐라 VIP 하이롤러 룰렛(최대 36배)에서 랭킹 1위도 꺾을 수 있겠지. 당장 시작해!!`;
+    const introMsg = `어이 [${state.nickname}]! 이번에 배정받은 ${state.charName} 역할, 정신 바짝 차려!\n우리가 분양할 '굿타임 백화점'은 허허벌판 쓰레기 입지야.\n\n3일 뒤면 구청 단속반이 들이닥치니까, 그전까지 전화번호부 다 뒤져서 무조건 【최소 1억 원(10,000만원)】 이상 계약금 뜯어내!\n만약 3억 원 이상 땡기면... 내 뒤통수 치고 필리핀 카지노(최대 36배 룰렛)로 튀어서 일확천금 노려보는 것도 나쁘지 않겠지. 당장 시작해!!`;
     typeText('intro-dialogue', introMsg);
   }
 
@@ -2134,14 +2184,19 @@
         showEnding(false);
       }
     } else {
+      state.selectedNightBuff = null;
       state.nightChoiceDone = false;
       state.mental = Math.min(state.maxMental, state.mental + 15);
       updateStatusBar();
 
       document.querySelectorAll('#screen-night .char-card').forEach(c => {
+        c.classList.remove('night-selected');
         c.style.opacity = '1';
         c.style.pointerEvents = 'auto';
       });
+      document.getElementById('night-selected-label').textContent = "선택된 야간 버프: 없음 (위 카드 중 하나를 선택하세요)";
+      document.getElementById('btn-confirm-night').disabled = true;
+      document.getElementById('night-confirm-box').style.display = 'flex';
       document.getElementById('night-event-result').style.display = 'none';
       document.getElementById('night-day').textContent = state.day;
       document.getElementById('night-summary').textContent = `기본 숙면으로 멘탈 +15 회복! (현재 수익: ${formatNum(state.money)}만원 / 멘탈: ${state.mental}/${state.maxMental})`;
@@ -2149,8 +2204,21 @@
     }
   }
 
-  function nightAction(type) {
+  function previewNightBuff(type) {
     if (state.nightChoiceDone) return;
+    state.selectedNightBuff = type;
+
+    document.querySelectorAll('#screen-night .char-card').forEach(card => {
+      card.classList.toggle('night-selected', card.dataset.night === type);
+    });
+
+    document.getElementById('night-selected-label').textContent = `선택된 야간 버프: ${NIGHT_BUFF_LABELS[type]}`;
+    document.getElementById('btn-confirm-night').disabled = false;
+  }
+
+  function confirmNightBuff() {
+    if (state.nightChoiceDone || !state.selectedNightBuff) return;
+    const type = state.selectedNightBuff;
 
     let logMsg = "";
 
@@ -2197,6 +2265,7 @@
       c.style.pointerEvents = 'none';
     });
 
+    document.getElementById('night-confirm-box').style.display = 'none';
     const resBox = document.getElementById('night-event-result');
     document.getElementById('night-result-text').innerHTML = logMsg;
     resBox.style.display = 'block';
@@ -2229,7 +2298,7 @@
 
     showScreen('screen-casino');
     updateRouletteUI();
-    alert(`🎉 축하합니다! 3억 원(${formatNum(state.money)}만원)을 돌파했습니다!\n랭킹 1위의 기록을 단숨에 갈아치우기 위해 필리핀 마닐라 VIP 하이롤러 룰렛(최대 36배)으로 향합니다!`);
+    alert(`💰 3억 원(${formatNum(state.money)}만원) 돌파! 김드래곤 실장 뒤통수를 제대로 치고 필리핀 카지노로 튑니다!\n마닐라 VIP 하이롤러 룰렛(최대 36배)에서 일확천금을 노려보세요!`);
   }
 
   function updateRouletteUI() {
@@ -2239,8 +2308,8 @@
     document.getElementById('roulette-wheel').classList.remove('spinning');
     document.getElementById('roulette-result-num').textContent = '🎰';
     document.getElementById('roulette-result-tag').textContent = `SPIN ${state.rouletteRound}`;
-    document.getElementById('casino-result-badge').textContent = '배당 구역과 판돈을 선택하세요!';
-    document.getElementById('casino-log').textContent = `${state.rouletteRound}번째 스핀! 높은 배당 구역에 적중할수록 랭킹 1위 탈환이 가까워집니다!`;
+    document.getElementById('casino-result-badge').textContent = '베팅 구역과 판돈을 선택하세요!';
+    document.getElementById('casino-log').textContent = `필리핀 카지노 ${state.rouletteRound}번째 스핀! 김드래곤 뒤통수 친 돈으로 일확천금을 노려라!`;
     document.getElementById('roulette-controls').style.display = 'block';
     document.getElementById('btn-casino-next').style.display = 'none';
     syncRouletteButtons();
@@ -2289,9 +2358,9 @@
         state.money += payout;
         const isMega = opt.mult >= 12;
         spawnMoneyParticles(isMega);
-        document.getElementById('casino-result-badge').textContent = `🎉 대박 적중! +${formatNum(payout)}만원`;
+        document.getElementById('casino-result-badge').textContent = `🎉 일확천금 적중! +${formatNum(payout)}만원`;
         msg = isMega
-          ? `🚨💎 [초대박 잭팟!!] 구슬이 [${landedNum}]번에 꽂혔습니다!! 베팅금 ${formatNum(betAmount)}만원 × ${opt.mult}배 = 【${formatNum(payout)}만원】 획득!!`
+          ? `🚨💎 [일확천금 잭팟!!] 구슬이 [${landedNum}]번에 꽂혔습니다!! 베팅금 ${formatNum(betAmount)}만원 × ${opt.mult}배 = 【${formatNum(payout)}만원】 획득!!`
           : `🔥 [룰렛 적중!] 구슬이 [${landedNum}]번에 안착! 베팅금 ${formatNum(betAmount)}만원 × ${opt.mult}배 = ${formatNum(payout)}만원 획득!`;
       } else {
         triggerShake();
@@ -2326,19 +2395,19 @@
       if (state.money <= 0) {
         icon = "🥥";
         title = "카지노 파산 엔딩: 마닐라 노숙자";
-        desc = "3억 원을 들고 필리핀까지 날아갔지만 하이롤러 룰렛 3번 만에 전 재산을 탕진했습니다! 여권마저 뺏기고 마닐라 길거리에서 코코넛을 팔며 연명합니다...";
+        desc = "김드래곤 실장 뒤통수 치고 3억 원을 들고 필리핀까지 날아갔지만 룰렛 3번 만에 전 재산을 탕진했습니다! 여권마저 뺏기고 마닐라 길거리에서 코코넛을 팔며 연명합니다...";
       } else if (state.money < CASINO_UNLOCK) {
         icon = "🚤";
         title = "카지노 본전치기 엔딩: 동남아 밀항";
-        desc = `룰렛에서 칩을 꽤 잃었지만 남은 ${formatNum(state.money)}만원을 챙겨 고기잡이배를 타고 인근 섬으로 몸을 숨겼습니다.`;
+        desc = `필리핀 카지노에서 칩을 꽤 잃었지만 남은 ${formatNum(state.money)}만원을 챙겨 고기잡이배를 타고 인근 섬으로 몸을 숨겼습니다.`;
       } else if (state.money >= 100000) {
         icon = "👑";
-        title = "신화 창조 엔딩: 마닐라 룰렛의 전설, 랭킹 파괴자!";
-        desc = `유령 백화점 사기부터 마닐라 초고배당 룰렛까지 씹어먹고 총 ${formatNum(state.money)}만원을 거머쥐었습니다! 카지노 통째로 인수하고 전용기로 전 세계를 누빕니다!`;
+        title = "일확천금 신화 엔딩: 마닐라 카지노 접수!";
+        desc = `김드래곤 실장 뒤통수를 완벽히 치고 필리핀 카지노 룰렛까지 쓸어 담아 총 ${formatNum(state.money)}만원을 거머쥐었습니다! 카지노 통째로 인수하고 전용기로 전 세계를 누빕니다!`;
       } else {
         icon = "💎";
-        title = "초월 진 엔딩: 마닐라 VIP 제왕!";
-        desc = `유령 백화점 사기부터 필리핀 하이롤러 룰렛까지 완벽하게 정복하고 총 ${formatNum(state.money)}만원을 거머쥐었습니다! 평생 호화롭게 살아갑니다!`;
+        title = "일확천금 성공 엔딩: 마닐라 VIP 제왕!";
+        desc = `김드래곤 실장 몰래 튄 돈으로 필리핀 카지노에서 일확천금을 터뜨려 총 ${formatNum(state.money)}만원을 거머쥐었습니다! 평생 호화롭게 살아갑니다!`;
       }
     } else {
       if (state.money < 0) {
@@ -2352,7 +2421,7 @@
       } else {
         icon = "🥂";
         title = "성공 엔딩: 목표(1억) 달성! 한탕 성공";
-        desc = `목표 금액 1억 원을 돌파해 총 ${formatNum(state.money)}만원을 땡겼습니다! 김드래곤 실장에게 몫을 떼어주고 두둑한 현금 가방을 들고 유유히 잠적합니다! (3억 원 이상 모으면 최대 36배 VIP 룰렛이 열립니다!)`;
+        desc = `목표 금액 1억 원을 돌파해 총 ${formatNum(state.money)}만원을 땡겼습니다! 김드래곤 실장에게 몫을 떼어주고 두둑한 현금 가방을 들고 유유히 잠적합니다! (3억 원 이상 모으면 김드래곤 뒤통수 치고 마닐라 카지노 룰렛으로 직행합니다!)`;
       }
     }
 
@@ -2417,8 +2486,10 @@
   });
 
   document.querySelectorAll('#screen-night .char-card').forEach(card => {
-    card.addEventListener('click', () => nightAction(card.dataset.night));
+    card.addEventListener('click', () => previewNightBuff(card.dataset.night));
   });
+
+  document.getElementById('btn-confirm-night').addEventListener('click', confirmNightBuff);
 
   ['intro-dialogue', 'call-dialogue', 'ending-desc'].forEach(id => {
     document.getElementById(id).addEventListener('click', skipTyping);
