@@ -902,7 +902,7 @@
       <div class="stat-badge stat-speech">🗣️ <span id="ui-speech">80</span></div>
       <div class="stat-badge stat-mental">🧠 <span id="ui-mental">60/60</span></div>
       <div class="stat-badge stat-streak">🔥 <span id="ui-streak">0연속</span></div>
-      <div class="stat-badge stat-money">💰 <span id="ui-money">0</span> / 1억</div>
+      <div class="stat-badge stat-money">💰 <span id="ui-money">0원</span> / 1억</div>
     </div>
     <div class="top-btn-group">
       <button type="button" class="btn-mini" id="btn-top-rank">🏆 랭킹</button>
@@ -966,7 +966,7 @@
       <div class="subtitle">환영합니다, <b id="welcome-nick" style="color:#1e293b;">사원</b>님! 오늘 현장에 투입할 대리를 선택하세요.</div>
       
       <div class="mission-banner">
-        🚨 [긴급 미션] 3일 안에 최소 <b>1억 원(10,000만원)</b>을 벌어라! (3억 원 돌파 시 김드래곤 뒤통수 치고 <b>마닐라 VIP 룰렛</b> 직행!)
+        🚨 [긴급 미션] 3일 안에 최소 <b>1억 원</b>을 벌어라! (3억 원 돌파 시 김드래곤 뒤통수 치고 <b>마닐라 VIP 룰렛</b> 직행!)
       </div>
 
       <div class="char-grid">
@@ -1169,7 +1169,7 @@
 
       <div class="casino-table">
         <div class="casino-felt-header">
-          <div class="casino-chip-pill">🪙 보유 칩: <span id="casino-money">30,000</span>만원</div>
+          <div class="casino-chip-pill">🪙 보유 칩: <span id="casino-money">3억</span></div>
           <div id="casino-result-badge" style="color:#fde047;">베팅 구역과 판돈을 선택하세요!</div>
         </div>
 
@@ -1230,7 +1230,7 @@
           <div class="portrait-icon" id="ending-icon">🚓</div>
           <div>
             <div class="speaker-name" id="ending-title">엔딩 제목</div>
-            <div class="speaker-role" id="ending-score">최종 수익: 0만원</div>
+            <div class="speaker-role" id="ending-score">최종 수익: 0원</div>
           </div>
         </div>
         <div class="speech-bubble" id="ending-desc" style="min-height:70px;"></div>
@@ -1316,7 +1316,7 @@
     { nickname: "SDR (야근장인)", charName: "손대리", money: 14500 }
   ];
 
-  // 게임 상수 및 상태
+  // 게임 상수 및 상태 (money 단위는 '만원')
   const GOAL_MONEY = 10000;
   const CASINO_UNLOCK = 30000;
 
@@ -1605,6 +1605,40 @@
     return Math.round(num).toLocaleString('ko-KR');
   }
 
+  /**
+   * 만원 단위 숫자를 해(10^16 만원) -> 경(10^12 만원) -> 조(10^8 만원) -> 억(10^4 만원) -> 만원 단위로 자동 변환
+   */
+  function formatMoney(manWon) {
+    if (!Number.isFinite(manWon)) return "무한대";
+    const rounded = Math.round(manWon);
+    if (rounded === 0) return "0원";
+
+    const sign = rounded < 0 ? "-" : "";
+    let rem = Math.abs(rounded);
+
+    const UNITS = [
+      { value: 1e16, label: "해" },
+      { value: 1e12, label: "경" },
+      { value: 1e8,  label: "조" },
+      { value: 1e4,  label: "억" }
+    ];
+
+    const parts = [];
+    for (const u of UNITS) {
+      if (rem >= u.value) {
+        const q = Math.floor(rem / u.value);
+        rem %= u.value;
+        parts.push(`${q.toLocaleString('ko-KR')}${u.label}`);
+      }
+    }
+
+    if (rem > 0) {
+      parts.push(`${rem.toLocaleString('ko-KR')}만원`);
+    }
+
+    return `${sign}${parts.join(' ')}`;
+  }
+
   // 연승 시 2배씩 제한 없이 무한 상승
   function getOvertimeMultiplier() {
     if (!state.isOvertime || state.overtimeRound <= 0) return 1;
@@ -1637,7 +1671,7 @@
           <td><b>${medal}</b></td>
           <td><span class="initial-badge">${initial}</span><b>${nick}</b></td>
           <td>${charDisplay}</td>
-          <td style="color:${moneyColor}; font-weight:800;">${formatNum(moneyVal)}만원</td>
+          <td style="color:${moneyColor}; font-weight:800;">${formatMoney(moneyVal)}</td>
         </tr>
       `;
     }).join('');
@@ -1786,7 +1820,7 @@
     document.getElementById('ui-speech').textContent = state.speech;
     document.getElementById('ui-mental').textContent = `${state.mental}/${state.maxMental}`;
     document.getElementById('ui-streak').textContent = `${state.streak}연속`;
-    document.getElementById('ui-money').textContent = `${formatNum(state.money)}만`;
+    document.getElementById('ui-money').textContent = formatMoney(state.money);
   }
 
   function spawnMoneyParticles(isBigHit) {
@@ -1878,7 +1912,7 @@
     updateStatusBar();
     showScreen('screen-intro');
 
-    const introMsg = `어이 [${state.nickname}]! 이번에 배정받은 ${state.charName} 역할, 정신 바짝 차려!\n우리가 분양할 '굿타임 백화점'은 허허벌판 쓰레기 입지야.\n\n3일 뒤면 구청 단속반이 들이닥치니까, 그전까지 전화번호부 다 뒤져서 무조건 【최소 1억 원(10,000만원)】 이상 계약금 뜯어내!\n만약 3억 원 이상 땡기면... 내 뒤통수 치고 필리핀 카지노(최대 36배 룰렛)로 튀어서 일확천금 노려보는 것도 나쁘지 않겠지. 당장 시작해!!`;
+    const introMsg = `어이 [${state.nickname}]! 이번에 배정받은 ${state.charName} 역할, 정신 바짝 차려!\n우리가 분양할 '굿타임 백화점'은 허허벌판 쓰레기 입지야.\n\n3일 뒤면 구청 단속반이 들이닥치니까, 그전까지 전화번호부 다 뒤져서 무조건 【최소 1억 원】 이상 계약금 뜯어내!\n만약 3억 원 이상 땡기면... 내 뒤통수 치고 필리핀 카지노(최대 36배 룰렛)로 튀어서 일확천금 노려보는 것도 나쁘지 않겠지. 당장 시작해!!`;
     typeText('intro-dialogue', introMsg);
   }
 
@@ -2060,7 +2094,7 @@
 
       const noteStr = bonusNotes.length > 0 ? ` [${bonusNotes.join(' × ')}]` : '';
       const successQuote = cust.successReply || "말씀을 듣고 보니 당장 계약해야겠네요! 계좌번호 불러주세요!";
-      resultText += `✅ [분양 계약 성사!]${noteStr}\n"${successQuote}"\n💰 계약금 +${formatNum(earned)}만원 획득!`;
+      resultText += `✅ [분양 계약 성사!]${noteStr}\n"${successQuote}"\n💰 계약금 +${formatMoney(earned)} 획득!`;
 
       if (!state.isOvertime && state.streak >= 3) {
         state.isOvertime = true;
@@ -2122,7 +2156,7 @@
             <div>
               <div style="font-size:0.92rem; margin-bottom:2px;">🚨 [긴급 소송 발생! 김드래곤 실장 난입]</div>
               <div style="font-size:0.84rem; font-weight:500;">
-                "야 이 미친놈아!! 방금 상대방이 <b>${crimeName}</b>로 고소장 접수했대잖아! 변호사 선임비랑 합의금 내놔! (<b>-${formatNum(fine)}만원 강탈</b>)"
+                "야 이 미친놈아!! 방금 상대방이 <b>${crimeName}</b>로 고소장 접수했대잖아! 변호사 선임비랑 합의금 내놔! (<b>-${formatMoney(fine)} 강탈</b>)"
               </div>
             </div>
           `;
@@ -2199,7 +2233,7 @@
       document.getElementById('night-confirm-box').style.display = 'flex';
       document.getElementById('night-event-result').style.display = 'none';
       document.getElementById('night-day').textContent = state.day;
-      document.getElementById('night-summary').textContent = `기본 숙면으로 멘탈 +15 회복! (현재 수익: ${formatNum(state.money)}만원 / 멘탈: ${state.mental}/${state.maxMental})`;
+      document.getElementById('night-summary').textContent = `기본 숙면으로 멘탈 +15 회복! (현재 수익: ${formatMoney(state.money)} / 멘탈: ${state.mental}/${state.maxMental})`;
       showScreen('screen-night');
     }
   }
@@ -2247,13 +2281,13 @@
         const mult = randInt(5, 20);
         const resultMoney = baseSeed * mult;
         state.money = resultMoney;
-        logMsg = `🐕🚀 [일론 머스크 화성 밈 투하!!] 새벽 3시 도지코인이 <b>${mult}배</b> 폭등했습니다!!\n보유 자금이 단숨에 <b>${formatNum(resultMoney)}만원</b>으로 불어났습니다!!`;
+        logMsg = `🐕🚀 [일론 머스크 화성 밈 투하!!] 새벽 3시 도지코인이 <b>${mult}배</b> 폭등했습니다!!\n보유 자금이 단숨에 <b>${formatMoney(resultMoney)}</b>으로 불어났습니다!!`;
       } else {
         const crashRatio = [0.2, 0.3, 0.5][randInt(0, 2)];
         const afterMoney = Math.floor(baseSeed * crashRatio);
         state.money = afterMoney;
         state.mental = Math.max(5, state.mental - 15);
-        logMsg = `🐕💥 [새벽 빔 맞고 강제 청산...] 차트가 지하실로 뚫고 내려갔습니다!\n보유 자금이 <b>${Math.round(crashRatio * 100)}%</b> 토막 나 <b>${formatNum(afterMoney)}만원</b>이 되었습니다... (멘탈 -15)`;
+        logMsg = `🐕💥 [새벽 빔 맞고 강제 청산...] 차트가 지하실로 뚫고 내려갔습니다!\n보유 자금이 <b>${Math.round(crashRatio * 100)}%</b> 토막 나 <b>${formatMoney(afterMoney)}</b>이 되었습니다... (멘탈 -15)`;
       }
     }
 
@@ -2298,13 +2332,13 @@
 
     showScreen('screen-casino');
     updateRouletteUI();
-    alert(`💰 3억 원(${formatNum(state.money)}만원) 돌파! 김드래곤 실장 뒤통수를 제대로 치고 필리핀 카지노로 튑니다!\n마닐라 VIP 하이롤러 룰렛(최대 36배)에서 일확천금을 노려보세요!`);
+    alert(`💰 3억 원(${formatMoney(state.money)}) 돌파! 김드래곤 실장 뒤통수를 제대로 치고 필리핀 카지노로 튑니다!\n마닐라 VIP 하이롤러 룰렛(최대 36배)에서 일확천금을 노려보세요!`);
   }
 
   function updateRouletteUI() {
     state.rouletteBusy = false;
     document.getElementById('roulette-round').textContent = `${state.rouletteRound} / 3`;
-    document.getElementById('casino-money').textContent = formatNum(state.money);
+    document.getElementById('casino-money').textContent = formatMoney(state.money);
     document.getElementById('roulette-wheel').classList.remove('spinning');
     document.getElementById('roulette-result-num').textContent = '🎰';
     document.getElementById('roulette-result-tag').textContent = `SPIN ${state.rouletteRound}`;
@@ -2328,7 +2362,7 @@
     const rawBet = Math.floor(state.money * state.rouletteRatio);
     const betAmount = Math.max(1, Math.min(state.money, rawBet));
     state.money -= betAmount;
-    document.getElementById('casino-money').textContent = formatNum(state.money);
+    document.getElementById('casino-money').textContent = formatMoney(state.money);
 
     const opt = ROULETTE_OPTIONS[state.rouletteBet];
     const wheel = document.getElementById('roulette-wheel');
@@ -2358,17 +2392,17 @@
         state.money += payout;
         const isMega = opt.mult >= 12;
         spawnMoneyParticles(isMega);
-        document.getElementById('casino-result-badge').textContent = `🎉 일확천금 적중! +${formatNum(payout)}만원`;
+        document.getElementById('casino-result-badge').textContent = `🎉 일확천금 적중! +${formatMoney(payout)}`;
         msg = isMega
-          ? `🚨💎 [일확천금 잭팟!!] 구슬이 [${landedNum}]번에 꽂혔습니다!! 베팅금 ${formatNum(betAmount)}만원 × ${opt.mult}배 = 【${formatNum(payout)}만원】 획득!!`
-          : `🔥 [룰렛 적중!] 구슬이 [${landedNum}]번에 안착! 베팅금 ${formatNum(betAmount)}만원 × ${opt.mult}배 = ${formatNum(payout)}만원 획득!`;
+          ? `🚨💎 [일확천금 잭팟!!] 구슬이 [${landedNum}]번에 꽂혔습니다!! 베팅금 ${formatMoney(betAmount)} × ${opt.mult}배 = 【${formatMoney(payout)}】 획득!!`
+          : `🔥 [룰렛 적중!] 구슬이 [${landedNum}]번에 안착! 베팅금 ${formatMoney(betAmount)} × ${opt.mult}배 = ${formatMoney(payout)} 획득!`;
       } else {
         triggerShake();
-        document.getElementById('casino-result-badge').textContent = `💀 빗나감 (-${formatNum(betAmount)}만원)`;
-        msg = `😭 [아쉬운 빗나감...] 구슬이 [${landedNum}]번에 멈췄습니다. 베팅금 ${formatNum(betAmount)}만원을 잃었습니다...`;
+        document.getElementById('casino-result-badge').textContent = `💀 빗나감 (-${formatMoney(betAmount)})`;
+        msg = `😭 [아쉬운 빗나감...] 구슬이 [${landedNum}]번에 멈췄습니다. 베팅금 ${formatMoney(betAmount)}을 잃었습니다...`;
       }
 
-      document.getElementById('casino-money').textContent = formatNum(state.money);
+      document.getElementById('casino-money').textContent = formatMoney(state.money);
       document.getElementById('casino-log').textContent = msg;
 
       const nextBtn = document.getElementById('btn-casino-next');
@@ -2399,35 +2433,35 @@
       } else if (state.money < CASINO_UNLOCK) {
         icon = "🚤";
         title = "카지노 본전치기 엔딩: 동남아 밀항";
-        desc = `필리핀 카지노에서 칩을 꽤 잃었지만 남은 ${formatNum(state.money)}만원을 챙겨 고기잡이배를 타고 인근 섬으로 몸을 숨겼습니다.`;
+        desc = `필리핀 카지노에서 칩을 꽤 잃었지만 남은 ${formatMoney(state.money)}을 챙겨 고기잡이배를 타고 인근 섬으로 몸을 숨겼습니다.`;
       } else if (state.money >= 100000) {
         icon = "👑";
         title = "일확천금 신화 엔딩: 마닐라 카지노 접수!";
-        desc = `김드래곤 실장 뒤통수를 완벽히 치고 필리핀 카지노 룰렛까지 쓸어 담아 총 ${formatNum(state.money)}만원을 거머쥐었습니다! 카지노 통째로 인수하고 전용기로 전 세계를 누빕니다!`;
+        desc = `김드래곤 실장 뒤통수를 완벽히 치고 필리핀 카지노 룰렛까지 쓸어 담아 총 ${formatMoney(state.money)}을 거머쥐었습니다! 카지노 통째로 인수하고 전용기로 전 세계를 누빕니다!`;
       } else {
         icon = "💎";
         title = "일확천금 성공 엔딩: 마닐라 VIP 제왕!";
-        desc = `김드래곤 실장 몰래 튄 돈으로 필리핀 카지노에서 일확천금을 터뜨려 총 ${formatNum(state.money)}만원을 거머쥐었습니다! 평생 호화롭게 살아갑니다!`;
+        desc = `김드래곤 실장 몰래 튄 돈으로 필리핀 카지노에서 일확천금을 터뜨려 총 ${formatMoney(state.money)}을 거머쥐었습니다! 평생 호화롭게 살아갑니다!`;
       }
     } else {
       if (state.money < 0) {
         icon = "⛓️";
         title = "최악의 엔딩: 빚더미 & 콩밥";
-        desc = `소송 합의금 때문에 오히려 ${formatNum(Math.abs(state.money))}만원의 빚만 졌습니다! 김드래곤 실장에게 두들겨 맞은 뒤 경찰에 넘겨졌습니다...`;
+        desc = `소송 합의금 때문에 오히려 ${formatMoney(Math.abs(state.money))}의 빚만 졌습니다! 김드래곤 실장에게 두들겨 맞은 뒤 경찰에 넘겨졌습니다...`;
       } else if (state.money < GOAL_MONEY) {
         icon = "🚐";
         title = "실패 엔딩: 목표(1억) 미달! 야반도주";
-        desc = `목표 금액(1억 원)을 채우지 못하고 ${formatNum(state.money)}만원만 손에 쥐었습니다. 김드래곤 실장의 눈을 피해 낡은 봉고차를 타고 지방으로 도망쳤습니다.`;
+        desc = `목표 금액(1억 원)을 채우지 못하고 ${formatMoney(state.money)}만 손에 쥐었습니다. 김드래곤 실장의 눈을 피해 낡은 봉고차를 타고 지방으로 도망쳤습니다.`;
       } else {
         icon = "🥂";
         title = "성공 엔딩: 목표(1억) 달성! 한탕 성공";
-        desc = `목표 금액 1억 원을 돌파해 총 ${formatNum(state.money)}만원을 땡겼습니다! 김드래곤 실장에게 몫을 떼어주고 두둑한 현금 가방을 들고 유유히 잠적합니다! (3억 원 이상 모으면 김드래곤 뒤통수 치고 마닐라 카지노 룰렛으로 직행합니다!)`;
+        desc = `목표 금액 1억 원을 돌파해 총 ${formatMoney(state.money)}을 땡겼습니다! 김드래곤 실장에게 몫을 떼어주고 두둑한 현금 가방을 들고 유유히 잠적합니다! (3억 원 이상 모으면 김드래곤 뒤통수 치고 마닐라 카지노 룰렛으로 직행합니다!)`;
       }
     }
 
     document.getElementById('ending-icon').textContent = icon;
     document.getElementById('ending-title').textContent = title;
-    document.getElementById('ending-score').textContent = `[${state.nickname}] 최종 수익: ${formatNum(state.money)}만원 (${state.charName})`;
+    document.getElementById('ending-score').textContent = `[${state.nickname}] 최종 수익: ${formatMoney(state.money)} (${state.charName})`;
     typeText('ending-desc', desc);
 
     const statusBox = document.getElementById('auto-rank-status');
@@ -2440,8 +2474,8 @@
     });
 
     statusBox.innerHTML = savedToCloud
-      ? `✅ <b>[${state.nickname}]</b>님의 기록(<b>${formatNum(state.money)}만원</b>)이 Firebase 실시간 랭킹에 등록되었습니다!`
-      : `✅ <b>[${state.nickname}]</b>님의 기록(<b>${formatNum(state.money)}만원</b>)이 랭킹에 등록되었습니다!`;
+      ? `✅ <b>[${state.nickname}]</b>님의 기록(<b>${formatMoney(state.money)}</b>)이 Firebase 실시간 랭킹에 등록되었습니다!`
+      : `✅ <b>[${state.nickname}]</b>님의 기록(<b>${formatMoney(state.money)}</b>)이 랭킹에 등록되었습니다!`;
 
     refreshRankingsUI();
   }
