@@ -912,7 +912,7 @@
     </div>
 
     <div style="text-align:center; font-size:0.84rem; color:#64748b; line-height:1.5;">
-      * 3연속 계약 성공 시 <b>[무한 폭주 야근모드]</b> 돌입!<br>
+      * 3연속 계약 성공 시 <b>[무한 폭주 야근모드 (연승마다 2배 무한 증식)]</b> 돌입!<br>
       * 3억 원 돌파 시 <b>[마닐라 VIP 하이롤러 룰렛 (최대 36배)]</b> 해금!
     </div>
   </div>
@@ -1033,7 +1033,7 @@
     </div>
 
     <div id="office-log" style="font-size:0.88rem; color:#334155; background:#f1f5f9; padding:12px; border-radius:8px; border:1.5px solid #cbd5e1; line-height:1.45;">
-      💡 <b>영업 팁:</b> <b>3연속 계약 성공</b> 시 횟수 제한 없는 <b>[특별 야근모드]</b>가 열리며 판마다 수익이 <b>2배씩 폭증</b>합니다!
+      💡 <b>영업 팁:</b> <b>3연속 계약 성공</b> 시 횟수 제한 없는 <b>[특별 야근모드]</b>가 열리며 판마다 수익이 <b>2배씩 무한 증식</b>합니다!
     </div>
   </div>
 
@@ -1552,9 +1552,15 @@
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
+  function formatNum(num) {
+    if (!Number.isFinite(num)) return "무한대";
+    return Math.round(num).toLocaleString('ko-KR');
+  }
+
+  // 연승 시 2배씩 제한 없이 무한 상승
   function getOvertimeMultiplier() {
     if (!state.isOvertime || state.overtimeRound <= 0) return 1;
-    return Math.pow(2, Math.min(state.overtimeRound, 10));
+    return Math.pow(2, state.overtimeRound);
   }
 
   // =========================================================================
@@ -1583,7 +1589,7 @@
           <td><b>${medal}</b></td>
           <td><span class="initial-badge">${initial}</span><b>${nick}</b></td>
           <td>${charDisplay}</td>
-          <td style="color:${moneyColor}; font-weight:800;">${moneyVal.toLocaleString()}만원</td>
+          <td style="color:${moneyColor}; font-weight:800;">${formatNum(moneyVal)}만원</td>
         </tr>
       `;
     }).join('');
@@ -1627,8 +1633,15 @@
   }
 
   async function saveRankingRecord(record) {
+    const safeMoney = Number.isFinite(Number(record.money)) ? Math.round(Number(record.money)) : Number.MAX_SAFE_INTEGER;
+    const cleanRecord = {
+      nickname: record.nickname,
+      charName: record.charName,
+      money: safeMoney
+    };
+
     const localRanks = JSON.parse(localStorage.getItem("goodtime_ranks") || "[]");
-    localRanks.push(record);
+    localRanks.push(cleanRecord);
     localRanks.sort((a, b) => b.money - a.money);
     const top10 = localRanks.slice(0, 10);
     localStorage.setItem("goodtime_ranks", JSON.stringify(top10));
@@ -1636,9 +1649,9 @@
     if (db) {
       try {
         await addDoc(collection(db, "goodtime_rankings"), {
-          nickname: record.nickname,
-          charName: record.charName,
-          money: Number(record.money),
+          nickname: cleanRecord.nickname,
+          charName: cleanRecord.charName,
+          money: cleanRecord.money,
           createdAt: serverTimestamp()
         });
         return true;
@@ -1713,7 +1726,7 @@
       bar.classList.add('overtime-bar');
       document.body.classList.add('overtime-bg');
       const mult = getOvertimeMultiplier();
-      document.getElementById('ui-day-badge').innerHTML = `🚨 <b>${state.day}일차 야근 (${mult.toLocaleString()}배)</b>`;
+      document.getElementById('ui-day-badge').innerHTML = `🚨 <b>${state.day}일차 야근 (${formatNum(mult)}배)</b>`;
     } else {
       bar.classList.remove('overtime-bar');
       document.body.classList.remove('overtime-bg');
@@ -1725,7 +1738,7 @@
     document.getElementById('ui-speech').textContent = state.speech;
     document.getElementById('ui-mental').textContent = `${state.mental}/${state.maxMental}`;
     document.getElementById('ui-streak').textContent = `${state.streak}연속`;
-    document.getElementById('ui-money').textContent = `${state.money.toLocaleString()}만`;
+    document.getElementById('ui-money').textContent = `${formatNum(state.money)}만`;
   }
 
   function spawnMoneyParticles(isBigHit) {
@@ -1829,10 +1842,10 @@
     if (state.isOvertime) {
       const mult = getOvertimeMultiplier();
       otBanner.style.display = 'block';
-      document.getElementById('ot-mult-text').textContent = `${mult.toLocaleString()}배`;
+      document.getElementById('ot-mult-text').textContent = `${formatNum(mult)}배`;
       document.getElementById('desk-emoji').textContent = '🚨 ☎️ 🔥';
-      document.getElementById('desk-title').textContent = `특별 야근모드 가동 중! (${state.streak}연속 · 수익 ${mult.toLocaleString()}배!)`;
-      document.getElementById('desk-desc').textContent = `연승 버프/폭주 배수가 적용 중입니다! 성공하면 계약금이 ${mult.toLocaleString()}배로 지급되며 배수가 계속 이어집니다!`;
+      document.getElementById('desk-title').textContent = `특별 야근모드 가동 중! (${state.streak}연속 · 수익 ${formatNum(mult)}배!)`;
+      document.getElementById('desk-desc').textContent = `연승 배수가 제한 없이 폭주 중입니다! 성공할 때마다 계약금 배율이 2배씩 계속 증가합니다!`;
     } else {
       otBanner.style.display = 'none';
       document.getElementById('desk-emoji').textContent = '☎️ 📒';
@@ -1892,7 +1905,7 @@
       const mult = getOvertimeMultiplier();
       otCallBanner.style.display = 'block';
       document.getElementById('ot-round-text').textContent = `${state.streak}연승 (단계 ${state.overtimeRound})`;
-      document.getElementById('ot-call-mult').textContent = mult.toLocaleString();
+      document.getElementById('ot-call-mult').textContent = formatNum(mult);
     } else {
       otCallBanner.style.display = 'none';
     }
@@ -1986,7 +1999,7 @@
       if (state.isOvertime) {
         const otMult = getOvertimeMultiplier();
         earned *= otMult;
-        bonusNotes.push(`🔥연승/야근 ${otMult.toLocaleString()}배`);
+        bonusNotes.push(`🔥연승/야근 ${formatNum(otMult)}배`);
       }
 
       state.money += earned;
@@ -1997,17 +2010,17 @@
 
       const noteStr = bonusNotes.length > 0 ? ` [${bonusNotes.join(' × ')}]` : '';
       const successQuote = cust.successReply || "말씀을 듣고 보니 당장 계약해야겠네요! 계좌번호 불러주세요!";
-      resultText += `✅ [분양 계약 성사!]${noteStr}\n"${successQuote}"\n💰 계약금 +${earned.toLocaleString()}만원 획득!`;
+      resultText += `✅ [분양 계약 성사!]${noteStr}\n"${successQuote}"\n💰 계약금 +${formatNum(earned)}만원 획득!`;
 
       if (!state.isOvertime && state.streak >= 3) {
         state.isOvertime = true;
         state.overtimeRound = 1;
         const nextMult = getOvertimeMultiplier();
-        resultText += `\n\n🚨🔥 [3연속 성공! 특별 야근모드 돌입!] 🔥🚨\n다음 계약부터 【${nextMult.toLocaleString()}배】 배수가 이어지며 성공 시 계속 상승합니다!`;
+        resultText += `\n\n🚨🔥 [3연속 성공! 특별 야근모드 돌입!] 🔥🚨\n다음 계약부터 【${formatNum(nextMult)}배】 배수가 적용되며 연승할 때마다 2배씩 무한 상승합니다!`;
       } else if (state.isOvertime) {
-        state.overtimeRound = Math.min(10, state.overtimeRound + 1);
+        state.overtimeRound += 1;
         const nextMult = getOvertimeMultiplier();
-        resultText += `\n\n🔥 [${state.streak}연속 성공! 배수 유지 및 상승] 다음 계약금 배율이 【${nextMult.toLocaleString()}배】로 이어집니다!`;
+        resultText += `\n\n🔥 [${state.streak}연속 성공! 2배 무한 증식] 다음 계약금 배율이 【${formatNum(nextMult)}배】로 폭등합니다!`;
       }
     } else {
       triggerShake();
@@ -2059,7 +2072,7 @@
             <div>
               <div style="font-size:0.92rem; margin-bottom:2px;">🚨 [긴급 소송 발생! 김드래곤 실장 난입]</div>
               <div style="font-size:0.84rem; font-weight:500;">
-                "야 이 미친놈아!! 방금 상대방이 <b>${crimeName}</b>로 고소장 접수했대잖아! 변호사 선임비랑 합의금 내놔! (<b>-${fine.toLocaleString()}만원 강탈</b>)"
+                "야 이 미친놈아!! 방금 상대방이 <b>${crimeName}</b>로 고소장 접수했대잖아! 변호사 선임비랑 합의금 내놔! (<b>-${formatNum(fine)}만원 강탈</b>)"
               </div>
             </div>
           `;
@@ -2131,7 +2144,7 @@
       });
       document.getElementById('night-event-result').style.display = 'none';
       document.getElementById('night-day').textContent = state.day;
-      document.getElementById('night-summary').textContent = `기본 숙면으로 멘탈 +15 회복! (현재 수익: ${state.money.toLocaleString()}만원 / 멘탈: ${state.mental}/${state.maxMental})`;
+      document.getElementById('night-summary').textContent = `기본 숙면으로 멘탈 +15 회복! (현재 수익: ${formatNum(state.money)}만원 / 멘탈: ${state.mental}/${state.maxMental})`;
       showScreen('screen-night');
     }
   }
@@ -2154,10 +2167,10 @@
       const startStreak = randInt(5, 20);
       state.streak = startStreak;
       state.isOvertime = true;
-      state.overtimeRound = Math.min(8, Math.max(2, Math.round(startStreak / 3)));
+      state.overtimeRound = Math.max(2, startStreak - 2);
       const startMult = getOvertimeMultiplier();
 
-      logMsg = `🕯️⚡ [용한 점집 대박 부적 적중!] 기세가 하늘을 찔러 내일 첫 영업부터 <b>${startStreak}연승</b>이 이어집니다!\n첫 통화부터 수익 <b>${startMult.toLocaleString()}배</b> 배수가 적용되며, 성공 시 배수가 계속 이어집니다! (실패 시 종료)`;
+      logMsg = `🕯️⚡ [용한 점집 대박 부적 적중!] 기세가 하늘을 찔러 내일 첫 영업부터 <b>${startStreak}연승</b>이 이어집니다!\n첫 통화부터 수익 <b>${formatNum(startMult)}배</b> 배수가 적용되며, 성공할 때마다 2배씩 계속 상승합니다! (실패 시 종료)`;
     } else if (type === 'doge_buff') {
       const baseSeed = state.money > 0 ? state.money : 100;
       const isWin = Math.random() < 0.55;
@@ -2166,13 +2179,13 @@
         const mult = randInt(5, 20);
         const resultMoney = baseSeed * mult;
         state.money = resultMoney;
-        logMsg = `🐕🚀 [일론 머스크 화성 밈 투하!!] 새벽 3시 도지코인이 <b>${mult}배</b> 폭등했습니다!!\n보유 자금이 단숨에 <b>${resultMoney.toLocaleString()}만원</b>으로 불어났습니다!!`;
+        logMsg = `🐕🚀 [일론 머스크 화성 밈 투하!!] 새벽 3시 도지코인이 <b>${mult}배</b> 폭등했습니다!!\n보유 자금이 단숨에 <b>${formatNum(resultMoney)}만원</b>으로 불어났습니다!!`;
       } else {
         const crashRatio = [0.2, 0.3, 0.5][randInt(0, 2)];
         const afterMoney = Math.floor(baseSeed * crashRatio);
         state.money = afterMoney;
         state.mental = Math.max(5, state.mental - 15);
-        logMsg = `🐕💥 [새벽 빔 맞고 강제 청산...] 차트가 지하실로 뚫고 내려갔습니다!\n보유 자금이 <b>${Math.round(crashRatio * 100)}%</b> 토막 나 <b>${afterMoney.toLocaleString()}만원</b>이 되었습니다... (멘탈 -15)`;
+        logMsg = `🐕💥 [새벽 빔 맞고 강제 청산...] 차트가 지하실로 뚫고 내려갔습니다!\n보유 자금이 <b>${Math.round(crashRatio * 100)}%</b> 토막 나 <b>${formatNum(afterMoney)}만원</b>이 되었습니다... (멘탈 -15)`;
       }
     }
 
@@ -2216,13 +2229,13 @@
 
     showScreen('screen-casino');
     updateRouletteUI();
-    alert(`🎉 축하합니다! 3억 원(${state.money.toLocaleString()}만원)을 돌파했습니다!\n랭킹 1위의 기록을 단숨에 갈아치우기 위해 필리핀 마닐라 VIP 하이롤러 룰렛(최대 36배)으로 향합니다!`);
+    alert(`🎉 축하합니다! 3억 원(${formatNum(state.money)}만원)을 돌파했습니다!\n랭킹 1위의 기록을 단숨에 갈아치우기 위해 필리핀 마닐라 VIP 하이롤러 룰렛(최대 36배)으로 향합니다!`);
   }
 
   function updateRouletteUI() {
     state.rouletteBusy = false;
     document.getElementById('roulette-round').textContent = `${state.rouletteRound} / 3`;
-    document.getElementById('casino-money').textContent = state.money.toLocaleString();
+    document.getElementById('casino-money').textContent = formatNum(state.money);
     document.getElementById('roulette-wheel').classList.remove('spinning');
     document.getElementById('roulette-result-num').textContent = '🎰';
     document.getElementById('roulette-result-tag').textContent = `SPIN ${state.rouletteRound}`;
@@ -2246,7 +2259,7 @@
     const rawBet = Math.floor(state.money * state.rouletteRatio);
     const betAmount = Math.max(1, Math.min(state.money, rawBet));
     state.money -= betAmount;
-    document.getElementById('casino-money').textContent = state.money.toLocaleString();
+    document.getElementById('casino-money').textContent = formatNum(state.money);
 
     const opt = ROULETTE_OPTIONS[state.rouletteBet];
     const wheel = document.getElementById('roulette-wheel');
@@ -2276,17 +2289,17 @@
         state.money += payout;
         const isMega = opt.mult >= 12;
         spawnMoneyParticles(isMega);
-        document.getElementById('casino-result-badge').textContent = `🎉 대박 적중! +${payout.toLocaleString()}만원`;
+        document.getElementById('casino-result-badge').textContent = `🎉 대박 적중! +${formatNum(payout)}만원`;
         msg = isMega
-          ? `🚨💎 [초대박 잭팟!!] 구슬이 [${landedNum}]번에 꽂혔습니다!! 베팅금 ${betAmount.toLocaleString()}만원 × ${opt.mult}배 = 【${payout.toLocaleString()}만원】 획득!!`
-          : `🔥 [룰렛 적중!] 구슬이 [${landedNum}]번에 안착! 베팅금 ${betAmount.toLocaleString()}만원 × ${opt.mult}배 = ${payout.toLocaleString()}만원 획득!`;
+          ? `🚨💎 [초대박 잭팟!!] 구슬이 [${landedNum}]번에 꽂혔습니다!! 베팅금 ${formatNum(betAmount)}만원 × ${opt.mult}배 = 【${formatNum(payout)}만원】 획득!!`
+          : `🔥 [룰렛 적중!] 구슬이 [${landedNum}]번에 안착! 베팅금 ${formatNum(betAmount)}만원 × ${opt.mult}배 = ${formatNum(payout)}만원 획득!`;
       } else {
         triggerShake();
-        document.getElementById('casino-result-badge').textContent = `💀 빗나감 (-${betAmount.toLocaleString()}만원)`;
-        msg = `😭 [아쉬운 빗나감...] 구슬이 [${landedNum}]번에 멈췄습니다. 베팅금 ${betAmount.toLocaleString()}만원을 잃었습니다...`;
+        document.getElementById('casino-result-badge').textContent = `💀 빗나감 (-${formatNum(betAmount)}만원)`;
+        msg = `😭 [아쉬운 빗나감...] 구슬이 [${landedNum}]번에 멈췄습니다. 베팅금 ${formatNum(betAmount)}만원을 잃었습니다...`;
       }
 
-      document.getElementById('casino-money').textContent = state.money.toLocaleString();
+      document.getElementById('casino-money').textContent = formatNum(state.money);
       document.getElementById('casino-log').textContent = msg;
 
       const nextBtn = document.getElementById('btn-casino-next');
@@ -2317,35 +2330,35 @@
       } else if (state.money < CASINO_UNLOCK) {
         icon = "🚤";
         title = "카지노 본전치기 엔딩: 동남아 밀항";
-        desc = `룰렛에서 칩을 꽤 잃었지만 남은 ${state.money.toLocaleString()}만원을 챙겨 고기잡이배를 타고 인근 섬으로 몸을 숨겼습니다.`;
+        desc = `룰렛에서 칩을 꽤 잃었지만 남은 ${formatNum(state.money)}만원을 챙겨 고기잡이배를 타고 인근 섬으로 몸을 숨겼습니다.`;
       } else if (state.money >= 100000) {
         icon = "👑";
         title = "신화 창조 엔딩: 마닐라 룰렛의 전설, 랭킹 파괴자!";
-        desc = `유령 백화점 사기부터 마닐라 초고배당 룰렛까지 씹어먹고 총 ${state.money.toLocaleString()}만원을 거머쥐었습니다! 카지노 통째로 인수하고 전용기로 전 세계를 누빕니다!`;
+        desc = `유령 백화점 사기부터 마닐라 초고배당 룰렛까지 씹어먹고 총 ${formatNum(state.money)}만원을 거머쥐었습니다! 카지노 통째로 인수하고 전용기로 전 세계를 누빕니다!`;
       } else {
         icon = "💎";
         title = "초월 진 엔딩: 마닐라 VIP 제왕!";
-        desc = `유령 백화점 사기부터 필리핀 하이롤러 룰렛까지 완벽하게 정복하고 총 ${state.money.toLocaleString()}만원을 거머쥐었습니다! 평생 호화롭게 살아갑니다!`;
+        desc = `유령 백화점 사기부터 필리핀 하이롤러 룰렛까지 완벽하게 정복하고 총 ${formatNum(state.money)}만원을 거머쥐었습니다! 평생 호화롭게 살아갑니다!`;
       }
     } else {
       if (state.money < 0) {
         icon = "⛓️";
         title = "최악의 엔딩: 빚더미 & 콩밥";
-        desc = `소송 합의금 때문에 오히려 ${Math.abs(state.money).toLocaleString()}만원의 빚만 졌습니다! 김드래곤 실장에게 두들겨 맞은 뒤 경찰에 넘겨졌습니다...`;
+        desc = `소송 합의금 때문에 오히려 ${formatNum(Math.abs(state.money))}만원의 빚만 졌습니다! 김드래곤 실장에게 두들겨 맞은 뒤 경찰에 넘겨졌습니다...`;
       } else if (state.money < GOAL_MONEY) {
         icon = "🚐";
         title = "실패 엔딩: 목표(1억) 미달! 야반도주";
-        desc = `목표 금액(1억 원)을 채우지 못하고 ${state.money.toLocaleString()}만원만 손에 쥐었습니다. 김드래곤 실장의 눈을 피해 낡은 봉고차를 타고 지방으로 도망쳤습니다.`;
+        desc = `목표 금액(1억 원)을 채우지 못하고 ${formatNum(state.money)}만원만 손에 쥐었습니다. 김드래곤 실장의 눈을 피해 낡은 봉고차를 타고 지방으로 도망쳤습니다.`;
       } else {
         icon = "🥂";
         title = "성공 엔딩: 목표(1억) 달성! 한탕 성공";
-        desc = `목표 금액 1억 원을 돌파해 총 ${state.money.toLocaleString()}만원을 땡겼습니다! 김드래곤 실장에게 몫을 떼어주고 두둑한 현금 가방을 들고 유유히 잠적합니다! (3억 원 이상 모으면 최대 36배 VIP 룰렛이 열립니다!)`;
+        desc = `목표 금액 1억 원을 돌파해 총 ${formatNum(state.money)}만원을 땡겼습니다! 김드래곤 실장에게 몫을 떼어주고 두둑한 현금 가방을 들고 유유히 잠적합니다! (3억 원 이상 모으면 최대 36배 VIP 룰렛이 열립니다!)`;
       }
     }
 
     document.getElementById('ending-icon').textContent = icon;
     document.getElementById('ending-title').textContent = title;
-    document.getElementById('ending-score').textContent = `[${state.nickname}] 최종 수익: ${state.money.toLocaleString()}만원 (${state.charName})`;
+    document.getElementById('ending-score').textContent = `[${state.nickname}] 최종 수익: ${formatNum(state.money)}만원 (${state.charName})`;
     typeText('ending-desc', desc);
 
     const statusBox = document.getElementById('auto-rank-status');
@@ -2358,8 +2371,8 @@
     });
 
     statusBox.innerHTML = savedToCloud
-      ? `✅ <b>[${state.nickname}]</b>님의 기록(<b>${state.money.toLocaleString()}만원</b>)이 Firebase 실시간 랭킹에 등록되었습니다!`
-      : `✅ <b>[${state.nickname}]</b>님의 기록(<b>${state.money.toLocaleString()}만원</b>)이 랭킹에 등록되었습니다!`;
+      ? `✅ <b>[${state.nickname}]</b>님의 기록(<b>${formatNum(state.money)}만원</b>)이 Firebase 실시간 랭킹에 등록되었습니다!`
+      : `✅ <b>[${state.nickname}]</b>님의 기록(<b>${formatNum(state.money)}만원</b>)이 랭킹에 등록되었습니다!`;
 
     refreshRankingsUI();
   }
