@@ -34,17 +34,75 @@
       align-items: center;
       min-height: 100vh;
       padding: 16px;
+      transition: background-color 0.4s;
+    }
+
+    /* 야근 피버 모드 배경 */
+    body.overtime-bg {
+      background-color: #31102f;
     }
 
     #game-container {
       width: 100%;
-      max-width: 860px;
+      max-width: 880px;
       background: var(--panel-bg);
       border: 3px solid var(--border-color);
       border-radius: 16px;
       box-shadow: 8px 8px 0px var(--border-color);
       overflow: hidden;
       position: relative;
+    }
+
+    /* 돈다발 파티클 컨테이너 */
+    #fx-layer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 50;
+    }
+
+    .money-particle {
+      position: absolute;
+      top: -40px;
+      font-size: 1.8rem;
+      animation: fallDown 1.4s ease-in forwards;
+    }
+
+    @keyframes fallDown {
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(620px) rotate(360deg); opacity: 0; }
+    }
+
+    /* 계약 성사 도장 스탬프 이펙트 */
+    .contract-stamp {
+      position: absolute;
+      top: 18px;
+      right: 22px;
+      border: 4px solid #dc2626;
+      color: #dc2626;
+      font-family: 'Jua', sans-serif;
+      font-size: 1.5rem;
+      padding: 6px 14px;
+      border-radius: 10px;
+      transform: rotate(-12deg) scale(2.5);
+      opacity: 0;
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: 2px 2px 0px rgba(220, 38, 38, 0.3);
+      animation: stampSlam 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+      pointer-events: none;
+      z-index: 20;
+    }
+
+    .contract-stamp.gold {
+      border-color: #d97706;
+      color: #b45309;
+      background: #fef08a;
+    }
+
+    @keyframes stampSlam {
+      0% { transform: rotate(-12deg) scale(2.8); opacity: 0; }
+      100% { transform: rotate(-12deg) scale(1); opacity: 1; }
     }
 
     /* 상단 상태바 */
@@ -60,6 +118,11 @@
       font-weight: 700;
     }
 
+    #status-bar.overtime-bar {
+      background: linear-gradient(90deg, #7f1d1d, #991b1b, #7f1d1d);
+      border-bottom: 3px solid #fde047;
+    }
+
     .stat-group {
       display: flex;
       align-items: center;
@@ -68,10 +131,10 @@
     }
 
     .stat-badge {
-      background: #334155;
+      background: rgba(15, 23, 42, 0.65);
       padding: 5px 10px;
       border-radius: 8px;
-      font-size: 0.85rem;
+      font-size: 0.84rem;
       display: flex;
       align-items: center;
       gap: 4px;
@@ -80,6 +143,7 @@
     .stat-money { color: #fde047; }
     .stat-mental { color: #fda4af; }
     .stat-speech { color: #93c5fd; }
+    .stat-streak { color: #6ee7b7; }
 
     .top-btn-group {
       display: flex;
@@ -103,8 +167,8 @@
 
     .screen {
       display: none;
-      padding: 28px;
-      min-height: 550px;
+      padding: 26px;
+      min-height: 560px;
       flex-direction: column;
       justify-content: space-between;
     }
@@ -133,7 +197,7 @@
       font-weight: 600;
     }
 
-    /* 0. 입장 사원증 발급 카드 */
+    /* 사원증 발급 카드 */
     .id-card-box {
       border: 3px solid var(--border-color);
       border-radius: 16px;
@@ -182,16 +246,35 @@
       border-radius: 10px;
       text-align: center;
       font-weight: 800;
-      font-size: 1.02rem;
-      margin-bottom: 20px;
+      font-size: 0.98rem;
+      margin-bottom: 18px;
       box-shadow: 3px 3px 0px #ef4444;
+      line-height: 1.45;
+    }
+
+    /* 야근 피버 배너 */
+    .overtime-banner {
+      background: linear-gradient(90deg, #dc2626, #991b1b);
+      color: #fde047;
+      border: 2.5px solid #1e293b;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-weight: 800;
+      text-align: center;
+      margin-bottom: 12px;
+      animation: pulseBanner 1s infinite alternate;
+    }
+
+    @keyframes pulseBanner {
+      from { transform: scale(1); }
+      to { transform: scale(1.015); }
     }
 
     .char-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-      margin-bottom: 20px;
+      gap: 14px;
+      margin-bottom: 16px;
     }
 
     @media (max-width: 680px) {
@@ -201,7 +284,7 @@
     .char-card {
       border: 3px solid var(--border-color);
       border-radius: 12px;
-      padding: 16px;
+      padding: 15px;
       background: #fff;
       box-shadow: var(--shadow);
       cursor: pointer;
@@ -217,45 +300,46 @@
     }
 
     .char-avatar {
-      font-size: 3.2rem;
+      font-size: 3rem;
       text-align: center;
       background: #f1f5f9;
       border: 2px solid var(--border-color);
       border-radius: 10px;
-      padding: 12px 0;
-      margin-bottom: 12px;
+      padding: 10px 0;
+      margin-bottom: 10px;
     }
 
     .char-name {
       font-family: 'Jua', sans-serif;
-      font-size: 1.4rem;
+      font-size: 1.35rem;
       margin-bottom: 4px;
     }
 
     .char-tag {
       display: inline-block;
-      font-size: 0.75rem;
+      font-size: 0.74rem;
       font-weight: 800;
       padding: 3px 8px;
       border-radius: 6px;
       background: #e2e8f0;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
     .char-stats {
-      font-size: 0.85rem;
-      line-height: 1.6;
-      margin-bottom: 10px;
+      font-size: 0.84rem;
+      line-height: 1.55;
+      margin-bottom: 8px;
       color: #334155;
     }
 
     .char-passive {
-      font-size: 0.8rem;
+      font-size: 0.79rem;
       background: #f8fafc;
       border: 1.5px dashed #94a3b8;
       padding: 8px;
       border-radius: 8px;
       color: #1e293b;
+      line-height: 1.45;
     }
 
     .webtoon-panel {
@@ -356,6 +440,7 @@
     .btn-pink { background: #fce7f3; }
     .btn-pink:hover { background: #fbcfe8; }
     .btn-dark { background: #1e293b; color: #fff; }
+    .btn-casino { background: linear-gradient(135deg, #fde047, #f59e0b); color: #1e293b; font-size: 1.15rem; }
 
     @keyframes hiddenGlow {
       0%, 100% { box-shadow: 0 0 0 3px #f59e0b, 4px 4px 0px #1e293b; transform: scale(1); }
@@ -427,6 +512,11 @@
       transform: translateX(4px);
     }
 
+    .contact-item.vip-card {
+      background: #fffbeb;
+      border-color: #d97706;
+    }
+
     .contact-hint {
       font-size: 0.8rem;
       background: #e0e7ff;
@@ -488,15 +578,83 @@
       border-color: var(--danger) !important;
     }
 
+    @keyframes successFlash {
+      0% { box-shadow: 0 0 0 6px #10b981, 4px 4px 0px #1e293b; background-color: #ecfdf5; }
+      100% { box-shadow: var(--shadow); background-color: #f8fafc; }
+    }
+
+    .success-effect {
+      animation: successFlash 0.65s ease-out;
+    }
+
     @keyframes critFlash {
-      0% { background-color: #fef08a; }
-      100% { background-color: #f8fafc; }
+      0% { box-shadow: 0 0 0 8px #f59e0b, 4px 4px 0px #1e293b; background-color: #fef08a; }
+      100% { box-shadow: var(--shadow); background-color: #f8fafc; }
     }
 
     .crit-effect {
-      animation: critFlash 0.7s ease-out;
+      animation: critFlash 0.75s ease-out;
     }
 
+    /* 필리핀 카지노 바카라 UI */
+    .casino-table {
+      background: radial-gradient(circle, #065f46 0%, #064e3b 100%);
+      border: 4px solid #fbbf24;
+      border-radius: 16px;
+      padding: 20px;
+      color: #fff;
+      box-shadow: 6px 6px 0px #1e293b;
+      margin-bottom: 14px;
+    }
+
+    .baccarat-cards {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      margin: 16px 0;
+      gap: 12px;
+    }
+
+    .card-side {
+      background: rgba(0, 0, 0, 0.35);
+      border: 2px solid #34d399;
+      border-radius: 12px;
+      padding: 12px 16px;
+      text-align: center;
+      flex: 1;
+    }
+
+    .card-hand {
+      font-size: 1.8rem;
+      font-weight: 900;
+      letter-spacing: 4px;
+      margin: 8px 0;
+      min-height: 40px;
+    }
+
+    .bet-options {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .bet-choice-btn {
+      padding: 10px;
+      border-radius: 10px;
+      border: 2.5px solid #1e293b;
+      font-weight: 800;
+      cursor: pointer;
+      background: #fff;
+      color: #1e293b;
+    }
+
+    .bet-choice-btn.selected {
+      background: #fde047;
+      box-shadow: 0 0 0 3px #f59e0b;
+    }
+
+    /* 랭킹 테이블 */
     .ranking-box {
       border: 2.5px solid var(--border-color);
       border-radius: 10px;
@@ -580,15 +738,19 @@
 <body>
 
 <div id="game-container">
-  <!-- 상단 상태바 (게임 진행 중 항상 표시) -->
+  <!-- 돈다발 파티클 레이어 -->
+  <div id="fx-layer"></div>
+
+  <!-- 상단 상태바 -->
   <div id="status-bar">
     <div class="stat-group">
       <div class="stat-badge">🪪 <span id="ui-nick">사원</span></div>
-      <div class="stat-badge">📅 <span id="ui-day">1일차</span> (<span id="ui-turn">1/5</span>)</div>
+      <div class="stat-badge" id="ui-day-badge">📅 <span id="ui-day">1일차</span> (<span id="ui-turn">1/5</span>)</div>
       <div class="stat-badge">👤 <span id="ui-char">김대리</span></div>
       <div class="stat-badge stat-speech">🗣️ <span id="ui-speech">80</span></div>
       <div class="stat-badge stat-mental">🧠 <span id="ui-mental">60/60</span></div>
-      <div class="stat-badge stat-money">💰 <span id="ui-money">0</span>/3,000만</div>
+      <div class="stat-badge stat-streak">🔥 <span id="ui-streak">0연속</span></div>
+      <div class="stat-badge stat-money">💰 <span id="ui-money">0</span> / 1억</div>
     </div>
     <div class="top-btn-group">
       <button type="button" class="btn-mini" onclick="openRankingModal()">🏆 실시간 랭킹</button>
@@ -611,7 +773,7 @@
     <div class="id-card-box">
       <div class="id-card-header">🪪 굿타임 분양대행사 임시 사원증 발급</div>
       <p style="font-size:0.92rem; color:#475569; margin-bottom:14px; line-height:1.5;">
-        명예의 전당(실시간 랭킹)에 기록될<br><b>닉네임 또는 이니셜</b>을 입력하고 출근하세요!
+        실시간 랭킹에 기록될 <b>닉네임 또는 이니셜</b>을 입력하고 출근하세요!
       </p>
       <input
         type="text"
@@ -627,7 +789,7 @@
     </div>
 
     <div style="text-align:center; font-size:0.85rem; color:#64748b;">
-      * 입력한 닉네임과 이니셜은 엔딩 시 실시간 랭킹에 자동 등록됩니다.
+      * 3연속 계약 성공 시 <b>[무한 폭주 야근모드]</b> 돌입! 3억 원 돌파 시 <b>[필리핀 바카라]</b> 해금!
     </div>
   </div>
 
@@ -648,7 +810,7 @@
       <div class="subtitle">환영합니다, <b id="welcome-nick" style="color:#1e293b;">사원</b>님! 오늘 현장에 투입할 대리를 선택하세요.</div>
       
       <div class="mission-banner">
-        🚨 [긴급 미션] 3일 안에 최소 3,000만 원을 벌어놓지 못하면 장기가 털립니다!
+        🚨 [긴급 미션] 3일 안에 최소 <b>1억 원(10,000만원)</b>을 벌어라! (3억 원 돌파 시 히든 스테이지 해금!)
       </div>
 
       <div class="char-grid">
@@ -656,15 +818,15 @@
           <div>
             <div class="char-avatar">😎</div>
             <div class="char-name">김대리</div>
-            <span class="char-tag" style="background:#dbeafe; color:#1d4ed8;">언변형 / 하이리스크</span>
+            <span class="char-tag" style="background:#dbeafe; color:#1d4ed8;">언변형 / 폭주 화력</span>
             <div class="char-stats">
-              🗣️ <b>언변력:</b> 85 (매우 높음)<br>
-              🧠 <b>멘탈력:</b> 60 (유리멘탈)
+              🗣️ <b>언변력:</b> 80 (높음)<br>
+              🧠 <b>멘탈력:</b> 55 (유리멘탈)
             </div>
           </div>
           <div class="char-passive">
-            <b>[패시브: 청산유수]</b><br>
-            통화 시 <b>히든 스킬(수익 2배)</b>이 2개까지 동시 발동할 확률이 높습니다. 단, 거절당하면 멘탈이 크게 깎입니다.
+            <b>[패시브: 청산유수 & 유리멘탈]</b><br>
+            히든 스킬(수익 2배)이 2개까지 동시 발동할 확률 증가! 단, 실패 시 <b>멘탈 피해 1.5배 & 고소 확률 1.5배</b>.
           </div>
         </div>
 
@@ -672,15 +834,15 @@
           <div>
             <div class="char-avatar">🗿</div>
             <div class="char-name">손대리</div>
-            <span class="char-tag" style="background:#fce7f3; color:#be185d;">멘탈형 / 강철심장</span>
+            <span class="char-tag" style="background:#fce7f3; color:#be185d;">멘탈형 / 야근 탱커</span>
             <div class="char-stats">
-              🗣️ <b>언변력:</b> 55 (다소 어눌함)<br>
-              🧠 <b>멘탈력:</b> 110 (강철 멘탈)
+              🗣️ <b>언변력:</b> 60 (평범함)<br>
+              🧠 <b>멘탈력:</b> 120 (강철 멘탈)
             </div>
           </div>
           <div class="char-passive">
-            <b>[패시브: 강철멘탈]</b><br>
-            변태 취급을 당해도 멘탈이 거의 안 깎이며, 과장/유혹 실패 시 <b>고소당할 확률이 절반</b>으로 줄어듭니다.
+            <b>[패시브: 강철멘탈 & 뚝심 오기]</b><br>
+            멘탈 피해·고소 확률 절반! 실패 후 재도전 시 <b>'오기 스택'</b>이 발동해 다음 턴 <b>성사율 +15% & 수익 +30%</b>!
           </div>
         </div>
 
@@ -688,15 +850,15 @@
           <div>
             <div class="char-avatar">👩‍💼</div>
             <div class="char-name">박대리</div>
-            <span class="char-tag" style="background:#dcfce7; color:#15803d;">밸런스형 / 눈치백단</span>
+            <span class="char-tag" style="background:#dcfce7; color:#15803d;">밸런스형 / VIP 스나이퍼</span>
             <div class="char-stats">
-              🗣️ <b>언변력:</b> 70 (준수함)<br>
+              🗣️ <b>언변력:</b> 72 (준수함)<br>
               🧠 <b>멘탈력:</b> 85 (안정적)
             </div>
           </div>
           <div class="char-passive">
-            <b>[패시브: 눈치백단]</b><br>
-            전화번호부에서 고객의 약점(추천 스킬 힌트)을 미리 꿰뚫어 볼 수 있습니다.
+            <b>[패시브: 눈치백단 & VIP 인맥]</b><br>
+            고객 약점 힌트 투시 + 약점 적중 시 <b>수익 1.5배</b>! 전화번호부에 <b>💎VIP 자산가(수익 2배)</b>가 등장합니다.
           </div>
         </div>
       </div>
@@ -728,11 +890,15 @@
   <!-- 3. 초라한 사무실 & 전화번호부 화면 -->
   <div id="screen-office" class="screen">
     <div>
+      <div id="overtime-office-banner" class="overtime-banner" style="display:none;">
+        🚨 [특별 야근모드 폭주 중!] 실패할 때까지 무한 영업! 현재 수익 배율: <span id="ot-mult-text">2배</span> 🔥
+      </div>
+
       <div class="desk-area">
-        <div style="font-size:2.5rem; margin-bottom:8px;">☎️ 📒</div>
-        <h3 style="font-family:'Jua', sans-serif; font-size:1.4rem; margin-bottom:4px;">초라한 3평짜리 임시 사무실</h3>
-        <p style="font-size:0.9rem; color:#475569; margin-bottom:14px;">
-          책상 위엔 낡은 전화번호부와 대포폰뿐이다. 목표 금액(3,000만원)을 채워야 살아남는다!
+        <div style="font-size:2.5rem; margin-bottom:8px;" id="desk-emoji">☎️ 📒</div>
+        <h3 style="font-family:'Jua', sans-serif; font-size:1.4rem; margin-bottom:4px;" id="desk-title">초라한 3평짜리 임시 사무실</h3>
+        <p style="font-size:0.9rem; color:#475569; margin-bottom:14px;" id="desk-desc">
+          책상 위엔 낡은 전화번호부와 대포폰뿐이다. 3연속 성공하면 특별 야근모드에 돌입한다!
         </p>
         <button type="button" class="btn btn-primary" id="btn-open-book" onclick="openPhonebook()">
           📒 전화번호부 뒤적거리기 (고객 3명 추출)
@@ -743,14 +909,21 @@
     </div>
 
     <div id="office-log" style="font-size:0.9rem; color:#334155; background:#f1f5f9; padding:12px; border-radius:8px; border:1.5px solid #cbd5e1;">
-      💡 <b>영업 팁:</b> 통화 중 <b>🔥히든 각성</b>이 뜬 스킬은 특수 멘트와 함께 <b>수익금이 2배</b>로 터집니다!
+      💡 <b>영업 팁:</b> <b>3연속 계약 성공</b> 시 횟수 제한 없는 <b>[특별 야근모드]</b>가 열리며 판마다 수익이 <b>2배씩 폭증</b>합니다!
     </div>
   </div>
 
   <!-- 4. 통화 및 스킬 선택 화면 -->
   <div id="screen-call" class="screen">
     <div>
+      <div id="overtime-call-banner" class="overtime-banner" style="display:none;">
+        🔥 특별 야근모드 <span id="ot-round-text">1</span>차전! 성공 시 계약금 <span id="ot-call-mult">2</span>배 지급! (실패 시 즉시 종료)
+      </div>
+
       <div class="webtoon-panel" id="call-panel">
+        <!-- 도장 이펙트 삽입 위치 -->
+        <div id="stamp-container"></div>
+
         <div class="portrait-box">
           <div class="portrait-icon" id="customer-avatar">📱</div>
           <div>
@@ -781,7 +954,7 @@
           <div>
             <div class="char-avatar">🍲</div>
             <div class="char-name">국밥에 소주 한잔</div>
-            <div class="char-stats">비용: <b>50만원</b><br>효과: 멘탈 <b>+35</b> 회복</div>
+            <div class="char-stats">비용: <b>100만원</b><br>효과: 멘탈 <b>+40</b> 회복</div>
           </div>
           <div class="char-passive">뜨끈한 국밥으로 상처받은 멘탈을 치유합니다.</div>
         </div>
@@ -790,7 +963,7 @@
           <div>
             <div class="char-avatar">📚</div>
             <div class="char-name">스피치 학원 특강</div>
-            <div class="char-stats">비용: <b>150만원</b><br>효과: 언변력 <b>+12</b> 영구 상승</div>
+            <div class="char-stats">비용: <b>300만원</b><br>효과: 언변력 <b>+12</b> 영구 상승</div>
           </div>
           <div class="char-passive">사기꾼의 화술을 배워 모든 영업 성공률을 높입니다.</div>
         </div>
@@ -799,11 +972,76 @@
           <div>
             <div class="char-avatar">🛏️</div>
             <div class="char-name">그냥 푹 잔다</div>
-            <div class="char-stats">비용: <b>0원</b><br>효과: 멘탈 <b>+10</b> 소폭 회복</div>
+            <div class="char-stats">비용: <b>0원</b><br>효과: 멘탈 <b>+15</b> 소폭 회복</div>
           </div>
           <div class="char-passive">돈을 아끼고 내일 일찍 출근합니다.</div>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- 5-2. 히든 스테이지: 필리핀 마닐라 VIP 카지노 바카라 (3억 이상 달성 시) -->
+  <div id="screen-casino" class="screen">
+    <div>
+      <div class="header-row">
+        <div class="webtoon-title" style="font-size:2rem; color:#b45309;">🎰 마닐라 VIP 카지노 - 바카라</div>
+        <div class="stat-badge" style="background:#1e293b; color:#fde047; font-size:1rem;">
+          남은 라운드: <span id="baccarat-round">1 / 3</span>판
+        </div>
+      </div>
+      <div class="subtitle" id="casino-subtitle">
+        김드래곤의 뒤통수를 치고 필리핀으로 날아왔다! 전 재산을 걸고 3판 승부로 인생 역전하라!
+      </div>
+
+      <div class="casino-table">
+        <div style="display:flex; justify-content:space-between; align-items:center; font-weight:800; font-size:1.1rem;">
+          <span>💰 현재 보유 칩: <span id="casino-money" style="color:#fde047;">30,000</span>만원</span>
+          <span id="casino-result-badge" style="color:#6ee7b7;">베팅을 선택하세요!</span>
+        </div>
+
+        <div class="baccarat-cards">
+          <div class="card-side">
+            <div style="font-weight:800; color:#93c5fd;">🔵 PLAYER (2배)</div>
+            <div class="card-hand" id="player-cards">🂠 🂠</div>
+            <div id="player-score" style="font-weight:700;">점수: ?</div>
+          </div>
+          <div style="font-family:'Jua', sans-serif; font-size:1.6rem; color:#fde047;">VS</div>
+          <div class="card-side" style="border-color:#fca5a5;">
+            <div style="font-weight:800; color:#fca5a5;">🔴 BANKER (1.95배)</div>
+            <div class="card-hand" id="banker-cards">🂠 🂠</div>
+            <div id="banker-score" style="font-weight:700;">점수: ?</div>
+          </div>
+        </div>
+
+        <div id="casino-log" style="background:rgba(0,0,0,0.4); padding:10px; border-radius:8px; text-align:center; font-size:0.95rem; min-height:44px;">
+          어느 쪽에 베팅하시겠습니까? (타이 적중 시 8배 지급!)
+        </div>
+      </div>
+
+      <!-- 베팅 컨트롤 -->
+      <div id="baccarat-controls">
+        <div style="font-weight:800; font-size:0.9rem; margin-bottom:4px;">1️⃣ 승부 예측 선택:</div>
+        <div class="bet-options">
+          <button type="button" class="bet-choice-btn selected" id="pick-player" onclick="selectBaccaratSide('player')">🔵 PLAYER (2배)</button>
+          <button type="button" class="bet-choice-btn" id="pick-banker" onclick="selectBaccaratSide('banker')">🔴 BANKER (1.95배)</button>
+          <button type="button" class="bet-choice-btn" id="pick-tie" onclick="selectBaccaratSide('tie')">🟢 TIE 무승부 (8배)</button>
+        </div>
+
+        <div style="font-weight:800; font-size:0.9rem; margin:10px 0 4px;">2️⃣ 베팅 금액 비율:</div>
+        <div class="bet-options">
+          <button type="button" class="bet-choice-btn selected" id="amt-30" onclick="selectBaccaratRatio(0.3)">보유금의 30%</button>
+          <button type="button" class="bet-choice-btn" id="amt-50" onclick="selectBaccaratRatio(0.5)">보유금의 50%</button>
+          <button type="button" class="bet-choice-btn" id="amt-100" onclick="selectBaccaratRatio(1.0)">🔥 전 재산 올인!</button>
+        </div>
+
+        <button type="button" class="btn btn-casino" style="width:100%; margin-top:14px;" onclick="playBaccaratRound()">
+          🃏 카드 오픈! 승부 걸기
+        </button>
+      </div>
+
+      <button type="button" id="btn-casino-next" class="btn btn-dark" style="display:none; width:100%; margin-top:12px;" onclick="nextBaccaratStep()">
+        다음 라운드 진행 ➡️
+      </button>
     </div>
   </div>
 
@@ -880,7 +1118,8 @@
 
 <!-- 게임 핵심 로직 -->
 <script>
-  const GOAL_MONEY = 3000;
+  const GOAL_MONEY = 10000;   // 기본 목표: 1억 원 (10,000만원)
+  const CASINO_UNLOCK = 30000; // 히든 카지노 해금: 3억 원 (30,000만원)
 
   const state = {
     nickname: '',
@@ -893,15 +1132,23 @@
     day: 1,
     turn: 1,
     maxTurnsPerDay: 5,
+    streak: 0,           // 연속 성공 카운트
+    isOvertime: false,   // 특별 야근모드 활성화 여부
+    overtimeRound: 0,    // 야근모드 진행 라운드 (1라운드=2배, 2라운드=4배...)
+    sonGrudge: false,    // 손대리 패시브(실패 후 오기 스택)
     currentCustomer: null,
     hiddenSkills: [],
-    endingTitle: ''
+    endingTitle: '',
+    // 바카라 상태
+    baccaratRound: 1,
+    baccaratSide: 'player',
+    baccaratRatio: 0.3
   };
 
   const CHARACTERS = {
-    kim: { name: '김대리', icon: '😎', speech: 85, mental: 60 },
-    son: { name: '손대리', icon: '🗿', speech: 55, mental: 110 },
-    park: { name: '박대리', icon: '👩‍💼', speech: 70, mental: 85 }
+    kim: { name: '김대리', icon: '😎', speech: 80, mental: 55 },
+    son: { name: '손대리', icon: '🗿', speech: 60, mental: 120 },
+    park: { name: '박대리', icon: '👩‍💼', speech: 72, mental: 85 }
   };
 
   const CUSTOMER_POOL = [
@@ -919,7 +1166,7 @@
     logic: {
       title: "📊 논리형 영업",
       btnClass: "btn-blue",
-      normalDesc: "성사율: 높음 | 수익: 300만 | 안전함",
+      normalDesc: "성사율: 높음 | 기본수익: 500만 | 안전함",
       hiddenTitle: "🔥 [히든] 천재 회계사 빙의",
       hiddenDesc: "합법 탈세+수익률 300% 브리핑! (수익 2배)",
       normalPitch: `"사장님, 공실률 0%에 연 수익률 15% 확정입니다. 은행 이자보다 4배 높습니다!"`,
@@ -928,7 +1175,7 @@
     exaggerate: {
       title: "📢 과장형 영업",
       btnClass: "btn-orange",
-      normalDesc: "성사율: 중간 | 수익: 650만 | ⚠️고소 위험",
+      normalDesc: "성사율: 중간 | 기본수익: 1,100만 | ⚠️고소 위험",
       hiddenTitle: "🔥 [히든] 신들린 뻥카",
       hiddenDesc: "대통령 극비 개발계획 썰 풀기! (수익 2배)",
       normalPitch: `"지금 안 잡으시면 평생 후회합니다! 내일모레 백화점 정문 앞에 GTX 환승역 착공합니다!"`,
@@ -937,7 +1184,7 @@
     seduce: {
       title: "💋 유혹형 영업",
       btnClass: "btn-pink",
-      normalDesc: "성사율: 낮음 | 수익: 1,300만 | ⚠️변태취급+고소",
+      normalDesc: "성사율: 낮음 | 기본수익: 2,200만 | ⚠️변태취급+고소",
       hiddenTitle: "🔥 [히든] 치명적 유혹",
       hiddenDesc: "영혼을 빼놓는 19금 플러팅! (수익 2배)",
       normalPitch: `"하악... 사장님 목소리가 너무 섹시해서 흥분돼요... 오늘 계약하시면 밤에 따로 모실게요~ 흐응♡"`,
@@ -973,7 +1220,7 @@
           cb();
         }
       }
-    }, 18);
+    }, 16);
   }
 
   window.skipTyping = function() {
@@ -995,14 +1242,63 @@
   }
 
   function updateStatusBar() {
-    document.getElementById('status-bar').style.display = 'flex';
+    const bar = document.getElementById('status-bar');
+    bar.style.display = 'flex';
+
+    if (state.isOvertime) {
+      bar.classList.add('overtime-bar');
+      document.body.classList.add('overtime-bg');
+      const mult = Math.pow(2, state.overtimeRound);
+      document.getElementById('ui-day-badge').innerHTML = `🚨 <b>특별 야근 (${mult}배)</b>`;
+    } else {
+      bar.classList.remove('overtime-bar');
+      document.body.classList.remove('overtime-bg');
+      document.getElementById('ui-day-badge').innerHTML = `📅 <span>${state.day}일차</span> (<span>${state.turn}/${state.maxTurnsPerDay}</span>)`;
+    }
+
     document.getElementById('ui-nick').textContent = state.nickname;
-    document.getElementById('ui-day').textContent = `${state.day}일차`;
-    document.getElementById('ui-turn').textContent = `${state.turn}/${state.maxTurnsPerDay}`;
     document.getElementById('ui-char').textContent = state.charName;
     document.getElementById('ui-speech').textContent = state.speech;
     document.getElementById('ui-mental').textContent = `${state.mental}/${state.maxMental}`;
-    document.getElementById('ui-money').textContent = state.money.toLocaleString();
+    document.getElementById('ui-streak').textContent = `${state.streak}연속`;
+    document.getElementById('ui-money').textContent = `${state.money.toLocaleString()}만`;
+  }
+
+  // 계약 성공 시 돈다발 파티클 + 도장 스탬프 이펙트
+  function triggerSuccessEffect(isBigHit) {
+    const panel = document.getElementById('call-panel');
+    const stampContainer = document.getElementById('stamp-container');
+    const fxLayer = document.getElementById('fx-layer');
+
+    panel.classList.remove('success-effect', 'crit-effect');
+    void panel.offsetWidth; // 리플로우 트리거
+    panel.classList.add(isBigHit ? 'crit-effect' : 'success-effect');
+
+    stampContainer.innerHTML = `
+      <div class="contract-stamp ${isBigHit ? 'gold' : ''}">
+        ${isBigHit ? '💥 초대박 계약! 쾅!' : '💮 계약 성사! 쾅!'}
+      </div>
+    `;
+
+    // 돈다발 비 내리기
+    const icons = isBigHit ? ['💰', '💵', '💎', '🤑', '✨'] : ['💵', '💰', '💸'];
+    const count = isBigHit ? 24 : 12;
+    for (let i = 0; i < count; i++) {
+      const p = document.createElement('div');
+      p.className = 'money-particle';
+      p.textContent = icons[Math.floor(Math.random() * icons.length)];
+      p.style.left = `${Math.random() * 92 + 2}%`;
+      p.style.animationDelay = `${Math.random() * 0.4}s`;
+      fxLayer.appendChild(p);
+      setTimeout(() => p.remove(), 1800);
+    }
+  }
+
+  function triggerShake() {
+    const container = document.getElementById('game-container');
+    container.classList.remove('shake-effect');
+    void container.offsetWidth;
+    container.classList.add('shake-effect');
   }
 
   // 0. 닉네임 입력 후 입장
@@ -1023,7 +1319,6 @@
     showScreen('screen-nickname');
   };
 
-  // 처음부터 다시하기
   window.confirmRestart = function() {
     if (confirm("현재 진행 중인 영업을 포기하고 처음 화면(사원증 발급)으로 돌아가시겠습니까?")) {
       restartGame();
@@ -1033,11 +1328,12 @@
   window.restartGame = function() {
     clearInterval(typingTimer);
     typingTimer = null;
+    state.isOvertime = false;
+    document.body.classList.remove('overtime-bg');
     document.getElementById('status-bar').style.display = 'none';
     showScreen('screen-nickname');
   };
 
-  // 실시간 랭킹 모달 열기/닫기
   window.openRankingModal = function() {
     document.getElementById('ranking-modal').classList.add('open');
     if (window.refreshRankingsUI) window.refreshRankingsUI();
@@ -1058,11 +1354,15 @@
     state.money = 0;
     state.day = 1;
     state.turn = 1;
+    state.streak = 0;
+    state.isOvertime = false;
+    state.overtimeRound = 0;
+    state.sonGrudge = false;
 
     updateStatusBar();
     showScreen('screen-intro');
 
-    const introMsg = `어이 [${state.nickname}]! 이번에 배정받은 ${state.charName} 역할, 정신 바짝 차려!\n우리가 지금 분양해야 할 '굿타임 백화점'은 허허벌판 쓰레기 입지야.\n\n3일 뒤면 구청에서 불법 분양 단속이 나오니까, 그전까지 전화번호부 다 뒤져서 무조건 【최소 3,000만 원】 이상 계약금 뜯어내!\n만약 3,000만 원 못 채우면 네 신장이랑 각막 팔아서 메꾼다! 알겠어?!`;
+    const introMsg = `어이 [${state.nickname}]! 이번에 배정받은 ${state.charName} 역할, 정신 바짝 차려!\n우리가 분양할 '굿타임 백화점'은 허허벌판 쓰레기 입지야.\n\n3일 뒤면 구청 단속반이 들이닥치니까, 그전까지 전화번호부 다 뒤져서 무조건 【최소 1억 원(10,000만원)】 이상 계약금 뜯어내!\n만약 3억 원 이상 땡기면... 뭐, 네 인생이 바뀔 수도 있겠지. 당장 시작해!!`;
     typeText('intro-dialogue', introMsg);
   };
 
@@ -1071,9 +1371,26 @@
     showScreen('screen-office');
     document.getElementById('btn-open-book').style.display = 'inline-block';
     document.getElementById('phonebook-list').style.display = 'none';
+
+    const otBanner = document.getElementById('overtime-office-banner');
+    if (state.isOvertime) {
+      const mult = Math.pow(2, state.overtimeRound);
+      otBanner.style.display = 'block';
+      document.getElementById('ot-mult-text').textContent = `${mult}배`;
+      document.getElementById('desk-emoji').textContent = '🚨 ☎️ 🔥';
+      document.getElementById('desk-title').textContent = `특별 야근모드 ${state.overtimeRound}차전 (수익 ${mult}배!)`;
+      document.getElementById('desk-desc').textContent = `실패할 때까지 멈추지 않는 무한 영업! 지금 성공하면 계약금이 ${mult}배로 들어옵니다!`;
+    } else {
+      otBanner.style.display = 'none';
+      document.getElementById('desk-emoji').textContent = '☎️ 📒';
+      document.getElementById('desk-title').textContent = '초라한 3평짜리 임시 사무실';
+      document.getElementById('desk-desc').textContent = '책상 위엔 낡은 전화번호부와 대포폰뿐이다. 3연속 성공하면 특별 야근모드에 돌입한다!';
+    }
+
     updateStatusBar();
   };
 
+  // 전화번호부 열기 (010-XXXX-XXXX 형식 고정)
   window.openPhonebook = function() {
     document.getElementById('btn-open-book').style.display = 'none';
     const listEl = document.getElementById('phonebook-list');
@@ -1084,20 +1401,26 @@
 
     shuffled.forEach(cust => {
       const customerCopy = { ...cust };
-      const randNum = `010-${Math.floor(1000 + Math.random()*9000)}-${Math.floor(1000 + Math.random()*9000)}`;
-      customerCopy.phone = randNum;
+      customerCopy.phone = "010-XXXX-XXXX"; // 요청하신 블라인드 포맷
+
+      // 박대리 패시브: 35% 확률로 VIP 자산가(수익 2배) 등장
+      customerCopy.isVip = (state.charId === 'park' && Math.random() < 0.35);
 
       let hintText = `직업: ${customerCopy.job}`;
       if (state.charId === 'park') {
-        const skillMap = { logic: '📊논리형 약점', exaggerate: '📢과장형 약점', seduce: '💋유혹형 약점' };
+        const skillMap = { logic: '📊논리 약점', exaggerate: '📢과장 약점', seduce: '💋유혹 약점' };
         hintText += ` (${skillMap[customerCopy.weakSkill]})`;
       }
 
       const item = document.createElement('div');
-      item.className = 'contact-item';
+      item.className = `contact-item ${customerCopy.isVip ? 'vip-card' : ''}`;
       item.innerHTML = `
         <div style="text-align:left;">
-          <div style="font-weight:800; font-size:1.05rem;">${customerCopy.avatar} ${customerCopy.name} <span style="color:#64748b; font-size:0.9rem;">(${randNum})</span></div>
+          <div style="font-weight:800; font-size:1.05rem;">
+            ${customerCopy.avatar} ${customerCopy.name}
+            <span style="color:#64748b; font-size:0.9rem; font-family:monospace;">(${customerCopy.phone})</span>
+            ${customerCopy.isVip ? '<span style="background:#f59e0b; color:#fff; font-size:0.72rem; padding:2px 6px; border-radius:6px; margin-left:4px;">💎VIP 수익2배</span>' : ''}
+          </div>
         </div>
         <div class="contact-hint">${hintText}</div>
       `;
@@ -1109,15 +1432,27 @@
   window.startCall = function(customer) {
     state.currentCustomer = customer;
     showScreen('screen-call');
+    document.getElementById('stamp-container').innerHTML = '';
     document.getElementById('customer-avatar').textContent = customer.avatar;
-    document.getElementById('customer-name').textContent = `${customer.name} (${customer.job})`;
+    document.getElementById('customer-name').textContent = `${customer.name} (${customer.job}) ${customer.isVip ? '💎VIP' : ''}`;
     document.getElementById('customer-info').textContent = `발신번호: ${customer.phone}`;
     document.getElementById('dragon-fine-box').style.display = 'none';
     document.getElementById('btn-next-turn').style.display = 'none';
 
+    const otCallBanner = document.getElementById('overtime-call-banner');
+    if (state.isOvertime) {
+      const mult = Math.pow(2, state.overtimeRound);
+      otCallBanner.style.display = 'block';
+      document.getElementById('ot-round-text').textContent = state.overtimeRound;
+      document.getElementById('ot-call-mult').textContent = mult;
+    } else {
+      otCallBanner.style.display = 'none';
+    }
+
+    // 히든 스킬 추첨 (김대리는 60% 확률로 2개 발동)
     const keys = ['logic', 'exaggerate', 'seduce'].sort(() => 0.5 - Math.random());
     state.hiddenSkills = [keys[0]];
-    if (state.charId === 'kim' && Math.random() < 0.5) {
+    if (state.charId === 'kim' && Math.random() < 0.6) {
       state.hiddenSkills.push(keys[1]);
     }
 
@@ -1158,7 +1493,6 @@
     skillBox.style.display = 'none';
 
     const cust = state.currentCustomer || CUSTOMER_POOL[0];
-    const panel = document.getElementById('call-panel');
     const info = SKILL_DATA[skillType];
     const isHidden = state.hiddenSkills.includes(skillType);
 
@@ -1166,59 +1500,114 @@
     let baseReward = 0;
 
     if (skillType === 'logic') {
-      baseChance = 55;
-      baseReward = 300;
+      baseChance = 56;
+      baseReward = 500;
     } else if (skillType === 'exaggerate') {
       baseChance = 42;
-      baseReward = 650;
+      baseReward = 1100;
     } else if (skillType === 'seduce') {
       baseChance = 28;
-      baseReward = 1300;
+      baseReward = 2200;
     }
 
     const hiddenBonus = isHidden ? 10 : 0;
     const speechBonus = (state.speech - 60) * 0.4;
     const weakBonus = (cust.weakSkill === skillType) ? 25 : 0;
-    const finalChance = Math.min(95, Math.max(12, baseChance + speechBonus + weakBonus + hiddenBonus));
+    // 손대리 오기 스택 보너스 (+15% 성사율)
+    const grudgeBonus = (state.charId === 'son' && state.sonGrudge) ? 15 : 0;
 
+    const finalChance = Math.min(95, Math.max(12, baseChance + speechBonus + weakBonus + hiddenBonus + grudgeBonus));
     const isSuccess = (Math.random() * 100) <= finalChance;
     const pitchLine = isHidden ? info.hiddenPitch : info.normalPitch;
 
     let resultText = `${pitchLine}\n\n`;
 
     if (isSuccess) {
-      let earned = isHidden ? baseReward * 2 : baseReward;
+      let earned = baseReward;
+      let bonusNotes = [];
 
       if (isHidden) {
-        panel.classList.add('crit-effect');
-        setTimeout(() => panel.classList.remove('crit-effect'), 700);
-        resultText += `✨ [히든 스킬 대성공! 초대박 계약] ✨\n"와... 말빨이 장난 아니시네요! 당장 2구좌 계약할게요! 계좌번호 불러주세요!"\n💰 계약금 +${earned.toLocaleString()}만원 획득!`;
-      } else {
-        resultText += `✅ [분양 계약 성사!]\n"말씀을 듣고 보니 구미가 당기네요. 1구좌 계약하겠습니다."\n💰 계약금 +${earned.toLocaleString()}만원 획득!`;
+        earned *= 2;
+        bonusNotes.push("히든각성 2배");
       }
+      if (cust.isVip) {
+        earned *= 2;
+        bonusNotes.push("VIP고객 2배");
+      }
+      if (state.charId === 'park' && cust.weakSkill === skillType) {
+        earned = Math.round(earned * 1.5);
+        bonusNotes.push("박대리 약점적중 1.5배");
+      }
+      if (state.charId === 'son' && state.sonGrudge) {
+        earned = Math.round(earned * 1.3);
+        bonusNotes.push("손대리 오기보너스 1.3배");
+        state.sonGrudge = false; // 소모
+      }
+      if (state.isOvertime) {
+        const otMult = Math.pow(2, state.overtimeRound);
+        earned *= otMult;
+        bonusNotes.push(`🔥야근피버 ${otMult}배`);
+      }
+
       state.money += earned;
+      state.streak++;
+
+      const isBigHit = isHidden || state.isOvertime || cust.isVip;
+      triggerSuccessEffect(isBigHit);
+
+      const noteStr = bonusNotes.length > 0 ? ` [${bonusNotes.join(' × ')}]` : '';
+      resultText += `✅ [분양 계약 성사!]${noteStr}\n"말씀을 듣고 보니 당장 계약해야겠네요! 계좌번호 불러주세요!"\n💰 계약금 +${earned.toLocaleString()}만원 획득!`;
+
+      // 특별 야근모드 진입/진행 체크
+      if (!state.isOvertime && state.streak >= 3) {
+        state.isOvertime = true;
+        state.overtimeRound = 1;
+        resultText += `\n\n🚨🔥 [3연속 성공! 특별 야근모드 돌입!] 🔥🚨\n지금부터 실패할 때까지 무한 영업! 다음 판부터 계약금 2배·4배·8배 폭증!!`;
+      } else if (state.isOvertime) {
+        state.overtimeRound++;
+        const nextMult = Math.pow(2, state.overtimeRound);
+        resultText += `\n\n🔥 [야근 연속 성공!] 다음 판 계약금 배율이 【${nextMult}배】로 상승합니다!`;
+      }
+
     } else {
+      // 실패 처리
       triggerShake();
-      let mentalLoss = (skillType === 'seduce') ? 28 : 15;
-      if (state.charId === 'kim') mentalLoss = Math.round(mentalLoss * 1.4);
-      if (state.charId === 'son') mentalLoss = Math.round(mentalLoss * 0.5);
+      state.streak = 0;
+
+      let mentalLoss = (skillType === 'seduce') ? 26 : 15;
+      if (state.isOvertime) mentalLoss *= 2; // 야근 중 실패 시 피로도 2배 피해
+      if (state.charId === 'kim') mentalLoss = Math.round(mentalLoss * 1.5);
+      if (state.charId === 'son') {
+        mentalLoss = Math.round(mentalLoss * 0.5);
+        state.sonGrudge = true; // 다음 턴 오기 스택 발동
+      }
 
       state.mental = Math.max(0, state.mental - mentalLoss);
 
       if (skillType === 'seduce') {
-        resultText += `🤬 [변태 취급 당함!] "야 이 미친 변태 새끼야!! 어디서 음란 전화를 걸어?! 변태 놈아 신고할 거야!! 뚝!" (멘탈 -${mentalLoss})`;
+        resultText += `🤬 [변태 취급 당함!] "야 이 미친 변태 새끼야!! 어디서 음란 전화를 걸어?! 신고할 거야!! 뚝!" (멘탈 -${mentalLoss})`;
       } else if (skillType === 'exaggerate') {
         resultText += `❌ [허풍 들통!] "디즈니랜드는 개뿔! 사기꾼 새끼가 어디서 약을 팔아! 끊어!" (멘탈 -${mentalLoss})`;
       } else {
         resultText += `❌ [영업 거절] "관심 없으니 다시는 전화하지 마세요. 뚝." (멘탈 -${mentalLoss})`;
       }
 
+      if (state.charId === 'son') {
+        resultText += `\n🗿 [손대리 패시브 발동] "이 악물고 다음 놈은 무조건 잡는다!" (다음 턴 성사율 +15%, 수익 +30%)`;
+      }
+
+      if (state.isOvertime) {
+        resultText += `\n\n💤 [특별 야근모드 종료] 영업 실패로 피버 타임이 종료되었습니다!`;
+      }
+
+      // 과장형 또는 유혹형 실패 시 소송 이벤트 판정
       if (skillType === 'exaggerate' || skillType === 'seduce') {
-        const baseSueChance = (skillType === 'seduce') ? 45 : 38;
-        const sueChance = (state.charId === 'son') ? Math.round(baseSueChance * 0.5) : baseSueChance;
+        let sueChance = (skillType === 'seduce') ? 42 : 35;
+        if (state.charId === 'kim') sueChance = Math.round(sueChance * 1.5);
+        if (state.charId === 'son') sueChance = Math.round(sueChance * 0.5);
 
         if (Math.random() * 100 <= sueChance) {
-          const fine = (skillType === 'seduce') ? 500 : 350;
+          const fine = (skillType === 'seduce') ? 1200 : 800;
           state.money -= fine;
 
           const crimeName = (skillType === 'seduce') ? "통신매체이용음란죄(변태 행위)" : "허위사실 유포 및 사기미수";
@@ -1229,7 +1618,7 @@
             <div>
               <div style="font-size:0.95rem; margin-bottom:2px;">🚨 [긴급 소송 발생! 김드래곤 실장 난입]</div>
               <div style="font-size:0.85rem; font-weight:500;">
-                "야 이 미친놈아!! 방금 상대방이 <b>${crimeName}</b>로 고소장 접수했대잖아! 변호사 선임비랑 합의금 내놔! (<b>-${fine}만원 강탈</b>)"
+                "야 이 미친놈아!! 방금 상대방이 <b>${crimeName}</b>로 고소장 접수했대잖아! 변호사 선임비랑 합의금 내놔! (<b>-${fine.toLocaleString()}만원 강탈</b>)"
               </div>
             </div>
           `;
@@ -1242,18 +1631,34 @@
     typeText('call-dialogue', resultText);
   };
 
-  function triggerShake() {
-    const container = document.getElementById('game-container');
-    container.classList.add('shake-effect');
-    setTimeout(() => container.classList.remove('shake-effect'), 450);
-  }
-
   window.nextTurn = function() {
     skipTyping();
+
+    // 야근 모드 중 실패했다면 야근 종료 후 다음 날로 이동
+    if (state.isOvertime && state.streak === 0) {
+      state.isOvertime = false;
+      state.overtimeRound = 0;
+      if (state.mental <= 0) {
+        alert("🤯 야근 중 멘탈이 붕괴되어 응급실에 실려갔습니다!");
+        state.mental = 25;
+      }
+      endOfDay();
+      return;
+    }
+
+    // 일반 진행 중 멘탈 0 체크
     if (state.mental <= 0) {
       alert("🤯 멘탈이 완전히 붕괴되어 책상에 쓰러졌습니다! 오늘 남은 영업을 포기하고 숙소로 실려갑니다.");
-      state.mental = 20;
+      state.mental = 25;
+      state.streak = 0;
+      state.isOvertime = false;
       endOfDay();
+      return;
+    }
+
+    // 야근 모드 중이라면 턴 차감 없이 계속 진행
+    if (state.isOvertime) {
+      startOffice();
       return;
     }
 
@@ -1266,26 +1671,35 @@
   };
 
   function endOfDay() {
+    state.isOvertime = false;
+    state.overtimeRound = 0;
+    document.body.classList.remove('overtime-bg');
+
     if (state.day >= 3) {
-      showEnding();
+      // 3일차 종료 시 3억 원(30,000만원) 이상이면 히든 필리핀 바카라 스테이지 진입!
+      if (state.money >= CASINO_UNLOCK) {
+        startCasinoStage();
+      } else {
+        showEnding(false);
+      }
     } else {
       document.getElementById('night-day').textContent = state.day;
-      document.getElementById('night-summary').textContent = `현재 수익: ${state.money.toLocaleString()}만원 (목표: 3,000만원) | 남은 멘탈: ${state.mental}/${state.maxMental}`;
+      document.getElementById('night-summary').textContent = `현재 수익: ${state.money.toLocaleString()}만원 (목표: 10,000만원 / 카지노 해금: 30,000만원) | 남은 멘탈: ${state.mental}/${state.maxMental}`;
       showScreen('screen-night');
     }
   }
 
   window.nightAction = function(type) {
     if (type === 'soup') {
-      if (state.money < 50) { alert("돈이 부족합니다! (50만원 필요)"); return; }
-      state.money -= 50;
-      state.mental = Math.min(state.maxMental, state.mental + 35);
+      if (state.money < 100) { alert("돈이 부족합니다! (100만원 필요)"); return; }
+      state.money -= 100;
+      state.mental = Math.min(state.maxMental, state.mental + 40);
     } else if (type === 'academy') {
-      if (state.money < 150) { alert("돈이 부족합니다! (150만원 필요)"); return; }
-      state.money -= 150;
+      if (state.money < 300) { alert("돈이 부족합니다! (300만원 필요)"); return; }
+      state.money -= 300;
       state.speech += 12;
     } else if (type === 'sleep') {
-      state.mental = Math.min(state.maxMental, state.mental + 10);
+      state.mental = Math.min(state.maxMental, state.mental + 15);
     }
 
     state.day++;
@@ -1293,8 +1707,118 @@
     startOffice();
   };
 
-  // 엔딩 도달 시 자동 랭킹 등록
-  async function showEnding() {
+  // =========================================================================
+  // 히든 스테이지: 필리핀 마닐라 VIP 카지노 바카라 (3판 승부)
+  // =========================================================================
+  function startCasinoStage() {
+    document.getElementById('status-bar').style.display = 'none';
+    state.baccaratRound = 1;
+    state.baccaratSide = 'player';
+    state.baccaratRatio = 0.3;
+
+    showScreen('screen-casino');
+    updateCasinoUI();
+    alert(`🎉 축하합니다! 3억 원(${state.money.toLocaleString()}만원)을 돌파했습니다!\n김드래곤 실장의 뒤통수를 치고 필리핀 마닐라 VIP 카지노로 도주합니다!`);
+  }
+
+  function updateCasinoUI() {
+    document.getElementById('baccarat-round').textContent = `${state.baccaratRound} / 3`;
+    document.getElementById('casino-money').textContent = state.money.toLocaleString();
+    document.getElementById('player-cards').textContent = '🂠 🂠';
+    document.getElementById('banker-cards').textContent = '🂠 🂠';
+    document.getElementById('player-score').textContent = '점수: ?';
+    document.getElementById('banker-score').textContent = '점수: ?';
+    document.getElementById('casino-result-badge').textContent = '베팅을 선택하세요!';
+    document.getElementById('casino-log').textContent = `${state.baccaratRound}번째 승부! 어느 쪽에 베팅하시겠습니까?`;
+    document.getElementById('baccarat-controls').style.display = 'block';
+    document.getElementById('btn-casino-next').style.display = 'none';
+  }
+
+  window.selectBaccaratSide = function(side) {
+    state.baccaratSide = side;
+    ['player', 'banker', 'tie'].forEach(s => {
+      document.getElementById(`pick-${s}`).classList.toggle('selected', s === side);
+    });
+  };
+
+  window.selectBaccaratRatio = function(ratio) {
+    state.baccaratRatio = ratio;
+    document.getElementById('amt-30').classList.toggle('selected', ratio === 0.3);
+    document.getElementById('amt-50').classList.toggle('selected', ratio === 0.5);
+    document.getElementById('amt-100').classList.toggle('selected', ratio === 1.0);
+  };
+
+  window.playBaccaratRound = function() {
+    if (state.money <= 0) {
+      alert("칩이 모두 떨어졌습니다!");
+      showEnding(true);
+      return;
+    }
+
+    const betAmount = Math.max(100, Math.floor(state.money * state.baccaratRatio));
+    state.money -= betAmount;
+
+    // 바카라 2장 카드 추첨 (1~9, 10/J/Q/K는 0점 처리)
+    const drawCard = () => {
+      const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+      const suits = ['♠️', '♥️', '♦️', '♣️'];
+      const rIdx = Math.floor(Math.random() * ranks.length);
+      const val = rIdx >= 9 ? 0 : rIdx + 1;
+      return { label: `${suits[Math.floor(Math.random()*4)]}${ranks[rIdx]}`, val };
+    };
+
+    const p1 = drawCard(), p2 = drawCard();
+    const b1 = drawCard(), b2 = drawCard();
+    const pScore = (p1.val + p2.val) % 10;
+    const bScore = (b1.val + b2.val) % 10;
+
+    document.getElementById('player-cards').textContent = `${p1.label}  ${p2.label}`;
+    document.getElementById('banker-cards').textContent = `${b1.label}  ${b2.label}`;
+    document.getElementById('player-score').textContent = `점수: ${pScore}점`;
+    document.getElementById('banker-score').textContent = `점수: ${bScore}점`;
+
+    let winner = 'tie';
+    if (pScore > bScore) winner = 'player';
+    else if (bScore > pScore) winner = 'banker';
+
+    let payout = 0;
+    let msg = "";
+
+    if (winner === state.baccaratSide) {
+      const mult = (winner === 'tie') ? 8 : (winner === 'player' ? 2 : 1.95);
+      payout = Math.round(betAmount * mult);
+      state.money += payout;
+      document.getElementById('casino-result-badge').textContent = `🎉 적중! +${payout.toLocaleString()}만원`;
+      msg = `🔥 [승리!] ${winner.toUpperCase()} 승! 베팅금 ${betAmount.toLocaleString()}만원의 ${mult}배인 ${payout.toLocaleString()}만원 획득!`;
+    } else {
+      document.getElementById('casino-result-badge').textContent = `💀 패배 (-${betAmount.toLocaleString()}만원)`;
+      msg = `😭 [패배...] 결과는 ${winner.toUpperCase()} 승! 베팅금 ${betAmount.toLocaleString()}만원을 잃었습니다...`;
+    }
+
+    document.getElementById('casino-money').textContent = state.money.toLocaleString();
+    document.getElementById('casino-log').textContent = msg;
+    document.getElementById('baccarat-controls').style.display = 'none';
+
+    const nextBtn = document.getElementById('btn-casino-next');
+    nextBtn.style.display = 'block';
+    nextBtn.textContent = (state.baccaratRound >= 3 || state.money <= 0)
+      ? "최종 결과 및 실시간 랭킹 확인 ➡️"
+      : `${state.baccaratRound + 1}번째 승부 진행 ➡️`;
+  };
+
+  window.nextBaccaratStep = function() {
+    if (state.baccaratRound >= 3 || state.money <= 0) {
+      showEnding(true);
+    } else {
+      state.baccaratRound++;
+      updateCasinoUI();
+    }
+  };
+
+  // =========================================================================
+  // 최종 엔딩 및 실시간 랭킹 자동 등록
+  // =========================================================================
+  async function showEnding(fromCasino) {
     document.getElementById('status-bar').style.display = 'none';
     showScreen('screen-ending');
 
@@ -1302,31 +1826,42 @@
     let title = "";
     let desc = "";
 
-    if (state.money < 0) {
-      icon = "⛓️";
-      title = "최악의 엔딩: 빚더미 & 콩밥";
-      desc = `소송 합의금 때문에 오히려 ${Math.abs(state.money).toLocaleString()}만원의 빚만 졌습니다! 김드래곤 실장에게 두들겨 맞은 뒤 구청 단속반과 경찰에 넘겨졌습니다...`;
-    } else if (state.money < GOAL_MONEY) {
-      icon = "🚐";
-      title = "실패 엔딩: 목표 미달! 야반도주";
-      desc = `목표 금액(3,000만원)을 채우지 못하고 ${state.money.toLocaleString()}만원만 손에 쥐었습니다. 김드래곤 실장의 눈을 피해 낡은 봉고차를 타고 지방으로 도망쳤습니다.`;
-    } else if (state.money < 6000) {
-      icon = "🥂";
-      title = "성공 엔딩: 임무 완수! 한탕 성공";
-      desc = `목표 금액을 돌파해 총 ${state.money.toLocaleString()}만원을 땡겼습니다! 김드래곤 실장에게 몫을 떼어주고 두둑한 현금 가방을 들고 유유히 잠적합니다!`;
+    if (fromCasino) {
+      if (state.money <= 0) {
+        icon = "🥥";
+        title = "카지노 파산 엔딩: 마닐라 노숙자";
+        desc = "3억 원을 들고 필리핀까지 날아갔지만 바카라 3판 만에 전 재산을 탕진했습니다! 여권마저 뺏기고 마닐라 길거리에서 코코넛을 팔며 연명합니다...";
+      } else if (state.money < CASINO_UNLOCK) {
+        icon = "🚤";
+        title = "카지노 본전치기 엔딩: 동남아 밀항";
+        desc = `카지노에서 칩을 꽤 잃었지만 남은 ${state.money.toLocaleString()}만원을 챙겨 고기잡이배를 타고 인근 섬으로 몸을 숨겼습니다.`;
+      } else {
+        icon = "👑";
+        title = "초월 진 엔딩: 마닐라의 전설, 카지노 제왕!";
+        desc = `유령 백화점 사기부터 필리핀 바카라까지 완벽하게 씹어먹고 총 ${state.money.toLocaleString()}만원을 거머쥐었습니다! 전용기를 타고 평생 호화롭게 살아갑니다!`;
+      }
     } else {
-      icon = "✈️";
-      title = "진 엔딩: 전설의 영업왕, 해외 도피!";
-      desc = `무려 ${state.money.toLocaleString()}만원이라는 경이로운 수익을 올렸습니다! 김드래곤 실장의 뒤통수까지 치고 혼자 퍼스트클래스를 타고 남태평양 휴양지로 떠납니다!`;
+      if (state.money < 0) {
+        icon = "⛓️";
+        title = "최악의 엔딩: 빚더미 & 콩밥";
+        desc = `소송 합의금 때문에 오히려 ${Math.abs(state.money).toLocaleString()}만원의 빚만 졌습니다! 김드래곤 실장에게 두들겨 맞은 뒤 경찰에 넘겨졌습니다...`;
+      } else if (state.money < GOAL_MONEY) {
+        icon = "🚐";
+        title = "실패 엔딩: 목표(1억) 미달! 야반도주";
+        desc = `목표 금액(1억 원)을 채우지 못하고 ${state.money.toLocaleString()}만원만 손에 쥐었습니다. 김드래곤 실장의 눈을 피해 낡은 봉고차를 타고 지방으로 도망쳤습니다.`;
+      } else {
+        icon = "🥂";
+        title = "성공 엔딩: 목표(1억) 달성! 한탕 성공";
+        desc = `목표 금액 1억 원을 돌파해 총 ${state.money.toLocaleString()}만원을 땡겼습니다! 김드래곤 실장에게 몫을 떼어주고 두둑한 현금 가방을 들고 유유히 잠적합니다! (3억 원 이상 모으면 히든 카지노가 열립니다!)`;
+      }
     }
 
     state.endingTitle = title.split(': ')[1];
     document.getElementById('ending-icon').textContent = icon;
     document.getElementById('ending-title').textContent = title;
-    document.getElementById('ending-score').textContent = `[${state.nickname}] 최종 수익: ${state.money.toLocaleString()}만원 / 목표: 3,000만원 (${state.charName})`;
+    document.getElementById('ending-score').textContent = `[${state.nickname}] 최종 수익: ${state.money.toLocaleString()}만원 (${state.charName})`;
     typeText('ending-desc', desc);
 
-    // 입장 시 입력한 닉네임으로 실시간 랭킹 자동 저장
     const statusBox = document.getElementById('auto-rank-status');
     statusBox.textContent = `⏳ [${state.nickname}]님의 기록을 실시간 랭킹에 등록하는 중...`;
 
@@ -1342,7 +1877,6 @@
     if (window.refreshRankingsUI) window.refreshRankingsUI();
   }
 
-  // 랭킹 테이블 HTML 생성 공통 함수 (닉네임 이니셜 + 선택 캐릭터 + 모은 돈)
   window.renderRankingTableHTML = function(ranks) {
     if (!ranks || ranks.length === 0) {
       return `<tr><td colspan="4">아직 등록된 영업왕이 없습니다!</td></tr>`;
@@ -1385,22 +1919,21 @@
   // =========================================================================
   const firebaseConfig = {
     apiKey: "YOUR_API_KEY",
-    apiKey: "AIzaSyAb46SIjqEir6zRym1EWLvQYSRkj0t_oHo",
-  authDomain: "goodtime-sales.firebaseapp.com",
-  projectId: "goodtime-sales",
-  storageBucket: "goodtime-sales.firebasestorage.app",
-  messagingSenderId: "709736545199",
-  appId: "1:709736545199:web:78d36cecc380729b04cd5a"
-};
+    authDomain: "goodtime-sales.firebaseapp.com",
+    projectId: "goodtime-sales",
+    storageBucket: "goodtime-sales.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  };
 
   let db = null;
   let cachedRanks = [];
   const isFirebaseConfigured = firebaseConfig.apiKey !== "YOUR_API_KEY";
 
   const DEFAULT_RANKS = [
-    { nickname: "KDG (김드래곤)", charName: "김대리", money: 6200 },
-    { nickname: "PDR (전설의혀)", charName: "박대리", money: 3800 },
-    { nickname: "SDR (강철심장)", charName: "손대리", money: 1900 }
+    { nickname: "KDG (김드래곤)", charName: "김대리", money: 52000 },
+    { nickname: "PDR (VIP헌터)", charName: "박대리", money: 34000 },
+    { nickname: "SDR (야근장인)", charName: "손대리", money: 14500 }
   ];
 
   function updateAllRankingTables(ranks) {
