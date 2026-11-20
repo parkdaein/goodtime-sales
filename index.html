@@ -1104,9 +1104,9 @@
             <div class="char-avatar">🕯️⚡</div>
             <span class="night-vibe-tag" style="background:#fce7f3; color:#9d174d;">연승 버프 · 5~20연승</span>
             <div class="char-name">용한 점집 대박 부적</div>
-            <div class="char-stats">비용: <b>0원</b> (기운 충전)<br>효과: 내일 <b>5 ~ 20연승 상태</b>로 시작</div>
+            <div class="char-stats">비용: <b>0원</b> (기운 충전)<br>효과: 내일 <b>5 ~ 20연승 & 야근 배수</b> 시작</div>
           </div>
-          <div class="char-passive">기세가 하늘을 찔러 출근하자마자 <b>특별 야근 피버</b> 상태로 첫 전화를 겁니다!</div>
+          <div class="char-passive">기세가 하늘을 찔러 다음 날 첫 영업부터 <b>특별 야근 배수</b>가 이어진 상태로 시작합니다!</div>
         </div>
 
         <div class="char-card" data-night="doge_buff">
@@ -1373,6 +1373,11 @@
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
+  function getOvertimeMultiplier() {
+    if (!state.isOvertime || state.overtimeRound <= 0) return 1;
+    return Math.pow(2, Math.min(state.overtimeRound, 10));
+  }
+
   // =========================================================================
   // Firebase 초기화 및 실시간 랭킹 관리
   // =========================================================================
@@ -1528,8 +1533,8 @@
     if (state.isOvertime) {
       bar.classList.add('overtime-bar');
       document.body.classList.add('overtime-bg');
-      const mult = Math.pow(2, state.overtimeRound);
-      document.getElementById('ui-day-badge').innerHTML = `🚨 <b>특별 야근 (${mult.toLocaleString()}배)</b>`;
+      const mult = getOvertimeMultiplier();
+      document.getElementById('ui-day-badge').innerHTML = `🚨 <b>${state.day}일차 야근 (${mult.toLocaleString()}배)</b>`;
     } else {
       bar.classList.remove('overtime-bar');
       document.body.classList.remove('overtime-bg');
@@ -1599,6 +1604,8 @@
     clearInterval(typingTimer);
     typingTimer = null;
     state.isOvertime = false;
+    state.overtimeRound = 0;
+    state.streak = 0;
     state.nightChoiceDone = false;
     state.baccaratBusy = false;
     document.body.classList.remove('overtime-bg');
@@ -1637,12 +1644,12 @@
 
     const otBanner = document.getElementById('overtime-office-banner');
     if (state.isOvertime) {
-      const mult = Math.pow(2, state.overtimeRound);
+      const mult = getOvertimeMultiplier();
       otBanner.style.display = 'block';
       document.getElementById('ot-mult-text').textContent = `${mult.toLocaleString()}배`;
       document.getElementById('desk-emoji').textContent = '🚨 ☎️ 🔥';
-      document.getElementById('desk-title').textContent = `특별 야근모드 ${state.overtimeRound}차전 (수익 ${mult.toLocaleString()}배!)`;
-      document.getElementById('desk-desc').textContent = `실패할 때까지 멈추지 않는 무한 영업! 지금 성공하면 계약금이 ${mult.toLocaleString()}배로 들어옵니다!`;
+      document.getElementById('desk-title').textContent = `특별 야근모드 가동 중! (${state.streak}연속 · 수익 ${mult.toLocaleString()}배!)`;
+      document.getElementById('desk-desc').textContent = `연승 버프/폭주 배수가 적용 중입니다! 성공하면 계약금이 ${mult.toLocaleString()}배로 지급되며 배수가 계속 이어집니다!`;
     } else {
       otBanner.style.display = 'none';
       document.getElementById('desk-emoji').textContent = '☎️ 📒';
@@ -1699,9 +1706,9 @@
 
     const otCallBanner = document.getElementById('overtime-call-banner');
     if (state.isOvertime) {
-      const mult = Math.pow(2, state.overtimeRound);
+      const mult = getOvertimeMultiplier();
       otCallBanner.style.display = 'block';
-      document.getElementById('ot-round-text').textContent = state.overtimeRound;
+      document.getElementById('ot-round-text').textContent = `${state.streak}연승 (단계 ${state.overtimeRound})`;
       document.getElementById('ot-call-mult').textContent = mult.toLocaleString();
     } else {
       otCallBanner.style.display = 'none';
@@ -1779,7 +1786,7 @@
 
     if (isSuccess) {
       let earned = baseReward;
-      let bonusNotes = [];
+      const bonusNotes = [];
 
       if (isHidden) {
         earned *= 2;
@@ -1794,9 +1801,9 @@
         bonusNotes.push("박대리 약점적중 1.5배");
       }
       if (state.isOvertime) {
-        const otMult = Math.pow(2, state.overtimeRound);
+        const otMult = getOvertimeMultiplier();
         earned *= otMult;
-        bonusNotes.push(`🔥야근피버 ${otMult.toLocaleString()}배`);
+        bonusNotes.push(`🔥연승/야근 ${otMult.toLocaleString()}배`);
       }
 
       state.money += earned;
@@ -1811,11 +1818,12 @@
       if (!state.isOvertime && state.streak >= 3) {
         state.isOvertime = true;
         state.overtimeRound = 1;
-        resultText += `\n\n🚨🔥 [3연속 성공! 특별 야근모드 돌입!] 🔥🚨\n지금부터 실패할 때까지 무한 영업! 다음 판부터 계약금 2배·4배·8배 폭증!!`;
+        const nextMult = getOvertimeMultiplier();
+        resultText += `\n\n🚨🔥 [3연속 성공! 특별 야근모드 돌입!] 🔥🚨\n다음 계약부터 【${nextMult.toLocaleString()}배】 배수가 이어지며 성공 시 계속 상승합니다!`;
       } else if (state.isOvertime) {
-        state.overtimeRound++;
-        const nextMult = Math.pow(2, state.overtimeRound);
-        resultText += `\n\n🔥 [야근 연속 성공!] 다음 판 계약금 배율이 【${nextMult.toLocaleString()}배】로 상승합니다!`;
+        state.overtimeRound = Math.min(10, state.overtimeRound + 1);
+        const nextMult = getOvertimeMultiplier();
+        resultText += `\n\n🔥 [${state.streak}연속 성공! 배수 유지 및 상승] 다음 계약금 배율이 【${nextMult.toLocaleString()}배】로 이어집니다!`;
       }
     } else {
       triggerShake();
@@ -1844,7 +1852,7 @@
       }
 
       if (state.isOvertime) {
-        resultText += `\n\n💤 [특별 야근모드 종료] 영업 실패로 피버 타임이 종료되었습니다!`;
+        resultText += `\n\n💤 [연승/야근 배수 종료] 영업 실패로 연승 버프와 야근 배수가 초기화되었습니다!`;
       }
 
       if (skillType === 'exaggerate' || skillType === 'seduce') {
@@ -1896,6 +1904,7 @@
       state.mental = 25;
       state.streak = 0;
       state.isOvertime = false;
+      state.overtimeRound = 0;
       endOfDay();
       return;
     }
@@ -1914,11 +1923,11 @@
   }
 
   function endOfDay() {
-    state.isOvertime = false;
-    state.overtimeRound = 0;
     document.body.classList.remove('overtime-bg');
 
     if (state.day >= 3) {
+      state.isOvertime = false;
+      state.overtimeRound = 0;
       if (state.money >= CASINO_UNLOCK) {
         startCasinoStage();
       } else {
@@ -1958,11 +1967,11 @@
       const startStreak = randInt(5, 20);
       state.streak = startStreak;
       state.isOvertime = true;
-      // 연승 수에 따라 1~4단계 야근 배율(2배~16배)로 시작하도록 밸런스 조정
-      state.overtimeRound = Math.min(4, Math.max(1, Math.floor(startStreak / 5)));
-      const startMult = Math.pow(2, state.overtimeRound);
+      // 5~20연승 부적 효과: 다음 날 첫 영업부터 2~8단계(4배~256배) 배수로 즉시 이어짐
+      state.overtimeRound = Math.min(8, Math.max(2, Math.round(startStreak / 3)));
+      const startMult = getOvertimeMultiplier();
 
-      logMsg = `🕯️⚡ [용한 점집 대박 부적 적중!] 기세가 하늘을 찔러 내일 출근하자마자 <b>${startStreak}연승</b> 상태로 시작합니다!\n첫 통화부터 <b>특별 야근모드(${startMult}배)</b>가 즉시 가동됩니다! (단, 1회 실패 시 야근 종료)`;
+      logMsg = `🕯️⚡ [용한 점집 대박 부적 적중!] 기세가 하늘을 찔러 내일 첫 영업부터 <b>${startStreak}연승</b>이 이어집니다!\n첫 통화부터 수익 <b>${startMult.toLocaleString()}배</b> 배수가 적용되며, 성공 시 배수가 계속 이어집니다! (실패 시 종료)`;
     } else if (type === 'doge_buff') {
       const baseSeed = state.money > 0 ? state.money : 100;
       const isWin = Math.random() < 0.55;
@@ -1997,6 +2006,7 @@
   function proceedNextDay() {
     state.day++;
     state.turn = 1;
+    // 연승 버프(state.isOvertime, state.streak, state.overtimeRound)를 유지한 채 다음 날 첫 영업 시작
     startOffice();
   }
 
