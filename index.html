@@ -1329,14 +1329,182 @@
   };
 
   const CUSTOMER_POOL = [
-    { name: "박OO", job: "은퇴한 교장선생님", avatar: "👴", weakSkill: "logic", greeting: "여보세요. 누구신데 이 시간에 전화를 하셨소?" },
-    { name: "최OO", job: "코인 투자 실패자", avatar: "🧑", weakSkill: "exaggerate", greeting: "아 예... 여보세요. 돈 되는 얘기 아니면 끊습니다." },
-    { name: "정OO", job: "외로운 졸부 사장", avatar: "🧔", weakSkill: "seduce", greeting: "여보세요~ 어허, 목소리가 참 듣기 좋구먼?" },
-    { name: "강OO", job: "깐깐한 세무사", avatar: "👩‍🏫", weakSkill: "logic", greeting: "네, 말씀하세요. 지금 바쁘니 용건만 간단히 하시죠." },
-    { name: "이OO", job: "일확천금 몽상가", avatar: "👱", weakSkill: "exaggerate", greeting: "여보세요?! 혹시 대박 정보 때문에 전화 주신 건가요?" },
-    { name: "송OO", job: "유흥업소 회장님", avatar: "🕺", weakSkill: "seduce", greeting: "어~ 나야. 어디 부동산이야? 재밌는 얘기 좀 해봐~" },
-    { name: "조OO", job: "의심 많은 건물주", avatar: "👵", weakSkill: "logic", greeting: "여보세요. 또 기획부동산이면 바로 경찰에 신고할 거요!" },
-    { name: "한OO", job: "퇴직금 받은 부장", avatar: "👨‍💼", weakSkill: "exaggerate", greeting: "여보세요. 요즘 노후 자금 굴릴 데가 마땅치 않아서..." }
+    {
+      name: "박OO",
+      job: "은퇴한 교장선생님",
+      avatar: "👴",
+      weakSkill: "logic",
+      greeting: "여보세요. 교무실 직통인 줄 알았소만, 혹시 학생들 벌점 조회하자는 건 아니겠지?",
+      successReply: "오호, 데이터와 수익 구조가 아주 일목요연하구먼! 내일 아침 조회 끝나고 바로 송금하겠소!",
+      failLogic: "교장 시절 수백 번 들은 변명보다 더 엉성하구먼! 낙제점이요, 낙제점!",
+      failExaggerate: "허허, 교직 30년 동안 그런 허풍은 1학년 애들도 안 믿소! 뚝!",
+      failSeduce: "이보시오!! 지금 교감 선생님 앞에서 무슨 소리를 지껄이는 거요?!"
+    },
+    {
+      name: "최OO",
+      job: "코인 떡락 생존자",
+      avatar: "🧑",
+      weakSkill: "exaggerate",
+      greeting: "여보세요... 손가락이 떨려서 통화 버튼 누르기도 힘드네요. 혹시 또 김치코인 상장 찌라시인가요?",
+      successReply: "대형 호재라고요?! 제 영혼까지 끌어모아서라도 이번엔 꼭 탑승하겠습니다!!",
+      failLogic: "엑셀표랑 수익률 계산서는 지갑이 지하 3층 가기 전에 지겹도록 봤어요...",
+      failExaggerate: "아~ 예예, 떡상한다더니 어제 새벽에도 음전 떴잖아요! 사기꾼 아저씨 꺼지세요!",
+      failSeduce: "형님... 저 지금 마음의 여유가 없어요. 플러팅은 비트코인 1억 가면 해주세요..."
+    },
+    {
+      name: "정OO",
+      job: "외로운 졸부 사장",
+      avatar: "🧔",
+      weakSkill: "seduce",
+      greeting: "여보세요~ 통장에 잔고는 넘치는데 같이 소고기 구워 먹을 사람이 없구먼 허허허.",
+      successReply: "크하하하!! 말 한마디 참 기가 막히네! 계약서 가져와, 내가 한우 1++ 통째로 쏜다!",
+      failLogic: "아이고 머리 아파! 숫자 얘기 꺼내면 내 통장 잔고도 같이 식어버린다니까~",
+      failExaggerate: "어허, 나도 산전수전 다 겪은 사람이야. 그 정도 구라로는 내 지갑 못 열지!",
+      failSeduce: "아이쿠야!! 나도 나잇값은 할 줄 아는데 이러면 곤란하지~ 뚝!"
+    },
+    {
+      name: "강OO",
+      job: "깐깐한 세무사",
+      avatar: "👩‍🏫",
+      weakSkill: "logic",
+      greeting: "여보세요. 세무 상담은 예약제입니다. 증빙 서류도 없이 전화하신 건 아니겠죠?",
+      successReply: "흠, 절세 포인트랑 현금흐름 구조가 꽤 그럴듯하네요. 계약 조건서 메일로 보내주세요.",
+      failLogic: "근거 없는 수익률 표를 가져오시다니, 납세자 보호 차원에서 정중히 사양하겠습니다.",
+      failExaggerate: "국가 정책과 개발 호재를 그렇게 마음대로 지어내시면 큰일 납니다! 끊어요!",
+      failSeduce: "지금 세무사 사무실에 의뢰인들 다 앉아 계신 거 안 보이세요?! 뚝!"
+    },
+    {
+      name: "이OO",
+      job: "일확천금 몽상가",
+      avatar: "👱",
+      weakSkill: "exaggerate",
+      greeting: "여보세요?! 혹시 방금 제 머릿속으로 텔레파시 보내신 분인가요? 대박 냄새가 나는데!",
+      successReply: "역시 내 촉이 틀리지 않았어!! 이거 완전 인생 역전 황금알이잖아!! 당장 계약해!!",
+      failLogic: "에이~ 현실적인 얘기만 하면 꿈이 깨지잖아요. 재미없어!",
+      failExaggerate: "음... 스케일이 크긴 한데, 왠지 어제 꾼 로또 꿈보다 살짝 약한 느낌인데?",
+      failSeduce: "어? 나 지금 여자친구(상상 속)랑 데이트 중이라 다른 사람한테는 눈길 안 줘요!"
+    },
+    {
+      name: "송OO",
+      job: "유흥업소 회장님",
+      avatar: "🕺",
+      weakSkill: "seduce",
+      greeting: "어~ 여보세요? 룸 번호가 몇 번이더라... 아, 영업 전화야? 폼 나게 한 번 말해봐~",
+      successReply: "와~ 이 친구 선수네 선수! 화끈한 맛이 아주 죽여주는데? 계약금 바로 꽂아줄게!",
+      failLogic: "야, 술집에서 무슨 강의 들으러 왔냐? 분위기 깨지 말고 끊어!",
+      failExaggerate: "하하하! 내가 뻥카로는 업계 1등인데 네 구라는 아직 한참 멀었어!",
+      failSeduce: "어허~ 이 양반 봐라? 내가 이 바닥에서 산 사람인데 그 정도에 넘어갈 줄 알았어? 뚝!"
+    },
+    {
+      name: "조OO",
+      job: "의심 많은 건물주",
+      avatar: "👵",
+      weakSkill: "logic",
+      greeting: "여보세요. 우리 건물 1층 카페 월세 밀린 세입자 아니지? 아니면 또 기획부동산이야?",
+      successReply: "그래, 수치로 딱딱 떨어지니까 믿음이 가네. 내일 은행 가서 바로 이체해 줄게!",
+      failLogic: "말이 앞뒤가 안 맞잖아! 우리 집 보일러 배관보다 구멍이 숭숭 뚫렸구먼!",
+      failExaggerate: "역세권이고 뭐고 내 눈으로 직접 보기 전엔 절대 안 믿어! 경찰 부르기 전에 끊어!",
+      failSeduce: "아이고 맙소사! 할머니한테 무슨 추파를 던지는 거야?! 쇠파이프 든다!"
+    },
+    {
+      name: "한OO",
+      job: "퇴직금 받은 부장",
+      avatar: "👨‍💼",
+      weakSkill: "exaggerate",
+      greeting: "여보세요... 어제 명예퇴직 기념으로 치킨 뜯었는데, 퇴직금 통장 보니까 눈물이 앞을 가리네요.",
+      successReply: "오... 노후가 이렇게 든든해질 수 있다니! 부장 시절 결재 도장 찍던 손맛으로 바로 계약합니다!",
+      failLogic: "김 과장, 보고서 양식이 이게 뭐야! 아, 습관이 나와서... 끊습니다.",
+      failExaggerate: "퇴직금 날려 먹으려고 작정했나?! 나 아직 판단력 멀쩡해! 끊어!",
+      failSeduce: "이봐요, 나 지금 집사람이 옆에서 등짝 스매싱 준비 중이거든요?! 뚝!"
+    },
+    {
+      name: "서OO",
+      job: "탕후루 접은 전직 사장",
+      avatar: "🍡",
+      weakSkill: "logic",
+      greeting: "여보세요... 꼬치 꽂다가 손에 물집 잡히고, 설탕 코팅하다가 마음까지 쩍쩍 갈라졌어요...",
+      successReply: "설탕 시럽보다 달콤한 수익 구조네요! 이번엔 폐업 안 할 상권 맞죠? 당장 계약할게요!",
+      failLogic: "단가 계산은 탕후루 팔 때도 수백 번 해봤어요... 원가가 안 남는다고요!",
+      failExaggerate: "줄 서서 먹는다고 했다가 파리만 날렸던 기억이 새록새록 나네요... 안 속아요!",
+      failSeduce: "지금 제 마음은 꽁꽁 얼어붙은 탕후루 같아요... 녹일 수가 없어요..."
+    },
+    {
+      name: "문OO",
+      job: "로또 3등 당첨자",
+      avatar: "🎟️",
+      weakSkill: "exaggerate",
+      greeting: "여보세요! 아, 죄송한데 지금 1등 놓친 번호 복기하느라 정신이 하나도 없어요. 120만원만 더 나왔어도...",
+      successReply: "대박!! 로또 1등보다 더 확실한 황금 티켓이라고요?! 그 자리 바로 제가 찜합니다!!",
+      failLogic: "확률 얘기하지 마세요. 1등 확률은 이미 제 인생에서 도망갔거든요.",
+      failExaggerate: "어제 꿈에 돼지가 열 마리 나왔어도 안 된 판인데, 그 말은 좀 과하네요!",
+      failSeduce: "아~ 지금 당첨금 세금 떼고 나서 기분이 묘해서 그런 멘트 안 먹혀요!"
+    },
+    {
+      name: "윤OO",
+      job: "챗GPT 맹신자",
+      avatar: "🤖",
+      weakSkill: "logic",
+      greeting: "여보세요. 방금 AI한테 이 분양 건 할루시네이션(환각)인지 물어봤는데, 당신 목소리는 왜 AI 같죠?",
+      successReply: "오, 논리적 추론 완벽합니다! 프롬프트 입력할 필요도 없이 바로 계약 진행하죠!",
+      failLogic: "데이터 근거가 부족하네요. '근거를 대라'고 다시 프롬프트 입력해 드릴까요?",
+      failExaggerate: "이거 완전 100% 할루시네이션이잖아요! AI도 비웃을 소리 하지 마세요!",
+      failSeduce: "감정 모듈 오류 발생! 인간적인 플러팅은 제 알고리즘에 정의되어 있지 않습니다!"
+    },
+    {
+      name: "배OO",
+      job: "점집 운영 보살님",
+      avatar: "🔮",
+      weakSkill: "seduce",
+      greeting: "어허~ 방울 소리가 안 울렸는데 전화가 왔네? 네 관상에 오늘 돈 냄새가 진동하는구나~",
+      successReply: "아이고~ 신령님이 점지해 주신 계약이 맞구먼! 부적 한 장 붙이고 바로 도장 찍자!",
+      failLogic: "동자님이 숫자 따지는 건 질색이라고 하시네~ 땡!",
+      failExaggerate: "허허, 내 신점보다 더 큰 작두를 타려 드는구나! 헛소리 마라!",
+      failSeduce: "어머머~ 보살 상대로 무슨 굿판 벌이려는 거야?! 팥 뿌린다! 뚝!"
+    },
+    {
+      name: "오OO",
+      job: "파이어족 꿈꾸는 백수",
+      avatar: "🛋️",
+      weakSkill: "exaggerate",
+      greeting: "여보세요... 오늘 기상 시간 오후 2시 반, 아침 겸 점심은 편의점 삼각김밥입니다. 일하기 싫어요.",
+      successReply: "일 안 하고도 배당금이나 임대료가 쏟아진다고요?! 누운 채로 계약서 사인할게요!!",
+      failLogic: "계획표 보니까 벌써 출근해야 할 것 같은 기분이라 머리 아프네요...",
+      failExaggerate: "조기 은퇴 시켜준다고 해놓고 평생 야근 시킬 상인데? 패스할게요!",
+      failSeduce: "이불 밖은 위험해요... 말로만 꼬시지 마시고 쿨매로 던져주세요..."
+    },
+    {
+      name: "신OO",
+      job: "헬스장 관장님",
+      avatar: "💪",
+      weakSkill: "seduce",
+      greeting: "여보세요! 스쿼트 5세트 남았는데 숨이 턱까지 차오르네요. 3대 500 치고 전화하신 건가요?",
+      successReply: "크으~ 단백질 보충제보다 더 쫀득한 조건이네! 득근하듯이 계약 한 방 가자!!",
+      failLogic: "근성장 원리도 아니고 수익률이 왜 이렇게 펌핑이 안 돼?! 다시!",
+      failExaggerate: "어깨뽕만 잔뜩 들어간 헛소리 하지 마세요! 하체부터 단단히 다지고 오세요!",
+      failSeduce: "지금 벤치프레스 깔리기 직전인데 무슨 딴소리야?! 스팟 좀 봐줘!! 뚝!"
+    },
+    {
+      name: "권OO",
+      job: "성격 급한 택시기사",
+      avatar: "🚕",
+      weakSkill: "logic",
+      greeting: "여보세요! 손님 태우고 강남역 가는 길인데 신호가 왜 다 빨간불이야! 용건만 짧게 말해봐요!",
+      successReply: "오~ 내비게이션 최단거리보다 더 빠른 수익 루트네! 미터기 꺾고 바로 계약 가자!",
+      failLogic: "삥 둘러가는 소리 하지 마세요! 기본요금만 날아가잖아요!",
+      failExaggerate: "앞에 사고 났다고 뻥치고 우회전 시키려는 수작이지?! 난 다 알아!",
+      failSeduce: "아저씨 운전 중엔 딴짓하는 거 아니에요! 손님 멀미 나잖아요! 뚝!"
+    },
+    {
+      name: "임OO",
+      job: "야식 킬러 야간러",
+      avatar: "🍕",
+      weakSkill: "seduce",
+      greeting: "여보세요... 새벽에 마라탕에 꿔바로우 시키려다 참았는데, 혹시 야식 쿠폰 주시려는 건 아니죠?",
+      successReply: "고추기름 팍팍 들어간 마라탕처럼 화끈한 수익이네요! 야식값 아껴서 바로 계약합니다!",
+      failLogic: "칼로리 계산보다도 복잡한 수익률 얘기는 야밤에 사양할게요...",
+      failExaggerate: "치즈 폭탄 피자라고 해놓고 치즈 두 조각 온 거 같은 느낌인데? 안 속아!",
+      failSeduce: "야밤에 훅 들어오면 심쿵해서 위장이 꼬이잖아요!! 뚝!"
+    }
   ];
 
   const SKILL_DATA = {
@@ -1813,7 +1981,8 @@
       triggerSuccessEffect(isBigHit);
 
       const noteStr = bonusNotes.length > 0 ? ` [${bonusNotes.join(' × ')}]` : '';
-      resultText += `✅ [분양 계약 성사!]${noteStr}\n"말씀을 듣고 보니 당장 계약해야겠네요! 계좌번호 불러주세요!"\n💰 계약금 +${earned.toLocaleString()}만원 획득!`;
+      const successQuote = cust.successReply || "말씀을 듣고 보니 당장 계약해야겠네요! 계좌번호 불러주세요!";
+      resultText += `✅ [분양 계약 성사!]${noteStr}\n"${successQuote}"\n💰 계약금 +${earned.toLocaleString()}만원 획득!`;
 
       if (!state.isOvertime && state.streak >= 3) {
         state.isOvertime = true;
@@ -1840,11 +2009,14 @@
       state.mental = Math.max(0, state.mental - mentalLoss);
 
       if (skillType === 'seduce') {
-        resultText += `🤬 [변태 취급 당함!] "야 이 미친 변태 새끼야!! 어디서 음란 전화를 걸어?! 신고할 거야!! 뚝!" (멘탈 -${mentalLoss})`;
+        const quote = cust.failSeduce || "야 이 미친 변태 새끼야!! 어디서 음란 전화를 걸어?! 신고할 거야!! 뚝!";
+        resultText += `🤬 [변태 취급 당함!] "${quote}" (멘탈 -${mentalLoss})`;
       } else if (skillType === 'exaggerate') {
-        resultText += `❌ [허풍 들통!] "디즈니랜드는 개뿔! 사기꾼 새끼가 어디서 약을 팔아! 끊어!" (멘탈 -${mentalLoss})`;
+        const quote = cust.failExaggerate || "디즈니랜드는 개뿔! 사기꾼 새끼가 어디서 약을 팔아! 끊어!";
+        resultText += `❌ [허풍 들통!] "${quote}" (멘탈 -${mentalLoss})`;
       } else {
-        resultText += `❌ [영업 거절] "관심 없으니 다시는 전화하지 마세요. 뚝." (멘탈 -${mentalLoss})`;
+        const quote = cust.failLogic || "관심 없으니 다시는 전화하지 마세요. 뚝.";
+        resultText += `❌ [영업 거절] "${quote}" (멘탈 -${mentalLoss})`;
       }
 
       if (state.charId === 'son') {
@@ -1967,7 +2139,6 @@
       const startStreak = randInt(5, 20);
       state.streak = startStreak;
       state.isOvertime = true;
-      // 5~20연승 부적 효과: 다음 날 첫 영업부터 2~8단계(4배~256배) 배수로 즉시 이어짐
       state.overtimeRound = Math.min(8, Math.max(2, Math.round(startStreak / 3)));
       const startMult = getOvertimeMultiplier();
 
@@ -2006,7 +2177,6 @@
   function proceedNextDay() {
     state.day++;
     state.turn = 1;
-    // 연승 버프(state.isOvertime, state.streak, state.overtimeRound)를 유지한 채 다음 날 첫 영업 시작
     startOffice();
   }
 
