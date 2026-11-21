@@ -975,7 +975,7 @@
 
     <div style="text-align:center; font-size:0.84rem; color:#64748b; line-height:1.5;">
       * 3연속 계약 성공 시 <b>[무한 폭주 야근모드 (연승마다 2배 무한 증식)]</b> 돌입!<br>
-      * 3억 원 돌파 시 김드래곤 실장 뒤통수 치고 <b>[마닐라 VIP 하이롤러 룰렛 (100배 ~ 1,500배)]</b> 직행!
+      * 3억 원 돌파 시 <b>[마닐라 VIP 하이롤러 룰렛 (100배 ~ 1,500배)]</b> 직행!
     </div>
   </div>
 
@@ -996,7 +996,7 @@
       <div class="subtitle">환영합니다, <b id="welcome-nick" style="color:#1e293b;">사원</b>님! 오늘 현장에 투입할 대리를 선택하세요.</div>
       
       <div class="mission-banner">
-        🚨 [긴급 미션] 3일 안에 최소 <b>1억 원</b>을 벌어라! (3억 원 돌파 시 김드래곤 뒤통수 치고 <b>마닐라 VIP 룰렛</b> 직행!)
+        🚨 [긴급 미션] 3일 안에 최소 <b>1억 원</b>을 벌어라! (3억 원 돌파 시 <b>마닐라 VIP 룰렛</b> 직행!)
       </div>
 
       <div class="char-grid">
@@ -1028,7 +1028,7 @@
           </div>
           <div class="char-passive">
             <b>[패시브: 강철멘탈 & 오기]</b><br>
-            멘탈 피해·고소 확률 절반! 영업 실패 시 <b>'오기'가 발동해 언변력이 +5씩 영구 증가</b>합니다!
+            멘탈 피해·고소 확률 절반! 영업 실패 시 <b>'오기'가 발동해 언변력이 +7씩 영구 증가</b>합니다!
           </div>
         </div>
 
@@ -1194,7 +1194,7 @@
         </div>
       </div>
       <div class="subtitle">
-        김드래곤 실장 뒤통수 치고 필리핀 카지노 입성! <b>1부터 36까지의 숫자가 완전히 랜덤</b>으로 나옵니다!
+        인생 역전의 기회! <b>1부터 36까지의 숫자가 완전히 랜덤</b>으로 나옵니다!
       </div>
 
       <div class="casino-table">
@@ -1975,7 +1975,7 @@
     updateStatusBar();
     showScreen('screen-intro');
 
-    const introMsg = `어이 [${state.nickname}]! 이번에 배정받은 ${state.charName} 역할, 정신 바짝 차려!\n우리가 분양할 '굿타임 백화점'은 허허벌판 쓰레기 입지야.\n\n3일 뒤면 구청 단속반이 들이닥치니까, 그전까지 전화번호부 다 뒤져서 무조건 【최소 1억 원】 이상 계약금 뜯어내!\n만약 3억 원 이상 땡기면... 내 뒤통수 치고 필리핀 카지노(1~36 룰렛 · 최대 1,500배)로 튀어서 일확천금 노려보는 것도 나쁘지 않겠지. 당장 시작해!!`;
+    const introMsg = `어이 [${state.nickname}]! 이번에 배정받은 ${state.charName} 역할, 정신 바짝 차려!\n우리가 분양할 '굿타임 백화점'은 허허벌판 쓰레기 입지야.\n\n3일 뒤면 구청 단속반이 들이닥치니까, 그전까지 전화번호부 다 뒤져서 무조건 【최소 1억 원】 이상 계약금 뜯어내!\n만약 3억 원이 넘으면... 뭔가 네 인생을 바꾸는 기회가 올 수도 있겠지. 당장 시작해!!`;
     typeText('intro-dialogue', introMsg);
   }
 
@@ -2178,7 +2178,7 @@
       if (state.charId === 'kim') mentalLoss = Math.round(mentalLoss * 1.5);
       if (state.charId === 'son') {
         mentalLoss = Math.round(mentalLoss * 0.5);
-        state.speech += 5;
+        state.speech += 7;
       }
 
       state.mental = Math.max(0, state.mental - mentalLoss);
@@ -2195,7 +2195,7 @@
       }
 
       if (state.charId === 'son') {
-        resultText += `\n🗿 [손대리 패시브 '오기' 발동!] 실패를 발판 삼아 언변력이 +5 영구 상승했습니다! (현재 언변: ${state.speech})`;
+        resultText += `\n🗿 [손대리 패시브 '오기' 발동!] 실패를 발판 삼아 언변력이 +7 영구 상승했습니다! (현재 언변: ${state.speech})`;
       }
 
       if (state.isOvertime) {
@@ -2395,7 +2395,7 @@
 
     showScreen('screen-casino');
     updateRouletteUI();
-    alert(`💰 3억 원(${formatMoney(state.money)}) 돌파! 김드래곤 실장 뒤통수를 제대로 치고 필리핀 카지노로 튑니다!\n1~36 랜덤 룰렛(홀짝 100배 · 구간 300배 · 행운의 7·17·27 1,500배)에서 일확천금을 노려보세요!`);
+    alert(`💰 3억 원(${formatMoney(state.money)}) 돌파! 인생을 바꿀 마닐라 VIP 하이롤러 룰렛이 열립니다!\n1~36 랜덤 룰렛(홀짝 100배 · 구간 300배 · 행운의 7·17·27 1,500배)에서 일확천금을 노려보세요!`);
   }
 
   function updateRouletteUI() {
@@ -2492,7 +2492,7 @@
       if (state.money <= 0) {
         icon = "🥥";
         title = "카지노 파산 엔딩: 마닐라 노숙자";
-        desc = "김드래곤 실장 뒤통수 치고 3억 원을 들고 필리핀까지 날아갔지만 룰렛 3번 만에 전 재산을 탕진했습니다! 여권마저 뺏기고 마닐라 길거리에서 코코넛을 팔며 연명합니다...";
+        desc = "3억 원을 들고 필리핀까지 날아갔지만 룰렛 3번 만에 전 재산을 탕진했습니다! 여권마저 뺏기고 마닐라 길거리에서 코코넛을 팔며 연명합니다...";
       } else if (state.money < CASINO_UNLOCK) {
         icon = "🚤";
         title = "카지노 본전치기 엔딩: 동남아 밀항";
@@ -2500,11 +2500,11 @@
       } else if (state.money >= 100000) {
         icon = "👑";
         title = "일확천금 신화 엔딩: 마닐라 카지노 접수!";
-        desc = `김드래곤 실장 뒤통수를 완벽히 치고 필리핀 카지노 룰렛까지 쓸어 담아 총 ${formatMoney(state.money)}을 거머쥐었습니다! 카지노 통째로 인수하고 전용기로 전 세계를 누빕니다!`;
+        desc = `필리핀 카지노 룰렛까지 쓸어 담아 총 ${formatMoney(state.money)}을 거머쥐었습니다! 카지노 통째로 인수하고 전용기로 전 세계를 누빕니다!`;
       } else {
         icon = "💎";
         title = "일확천금 성공 엔딩: 마닐라 VIP 제왕!";
-        desc = `김드래곤 실장 몰래 튄 돈으로 필리핀 카지노에서 일확천금을 터뜨려 총 ${formatMoney(state.money)}을 거머쥐었습니다! 평생 호화롭게 살아갑니다!`;
+        desc = `필리핀 카지노에서 일확천금을 터뜨려 총 ${formatMoney(state.money)}을 거머쥐었습니다! 평생 호화롭게 살아갑니다!`;
       }
     } else {
       if (state.money < 0) {
@@ -2518,7 +2518,7 @@
       } else {
         icon = "🥂";
         title = "성공 엔딩: 목표(1억) 달성! 한탕 성공";
-        desc = `목표 금액 1억 원을 돌파해 총 ${formatMoney(state.money)}을 땡겼습니다! 김드래곤 실장에게 몫을 떼어주고 두둑한 현금 가방을 들고 유유히 잠적합니다! (3억 원 이상 모으면 김드래곤 뒤통수 치고 마닐라 카지노 룰렛으로 직행합니다!)`;
+        desc = `목표 금액 1억 원을 돌파해 총 ${formatMoney(state.money)}을 땡겼습니다! 김드래곤 실장에게 몫을 떼어주고 두둑한 현금 가방을 들고 유유히 잠적합니다! (3억 원 이상 모으면 인생을 바꿀 마닐라 카지노 룰렛으로 직행합니다!)`;
       }
     }
 
