@@ -1441,6 +1441,26 @@
   const GOAL_MONEY = 10000;
   const CASINO_UNLOCK = 30000;
 
+  // 1만 원 단위 기준 큰 수 단위 (만 -> 억 -> 조 -> 경 -> 해 -> 자 -> 양 -> 구 -> 간 -> 정 -> 재 -> 극 -> 항하사 -> 아승기 -> 나유타 -> 불가사의 -> 무량대수)
+  const MAN_WON_UNITS = [
+    { exp: 64, label: "무량대수" },
+    { exp: 60, label: "불가사의" },
+    { exp: 56, label: "나유타" },
+    { exp: 52, label: "아승기" },
+    { exp: 48, label: "항하사" },
+    { exp: 44, label: "극" },
+    { exp: 40, label: "재" },
+    { exp: 36, label: "정" },
+    { exp: 32, label: "간" },
+    { exp: 28, label: "구" },
+    { exp: 24, label: "양" },
+    { exp: 20, label: "자" },
+    { exp: 16, label: "해" },
+    { exp: 12, label: "경" },
+    { exp: 8,  label: "조" },
+    { exp: 4,  label: "억" }
+  ];
+
   const state = {
     nickname: '',
     charId: '',
@@ -1699,37 +1719,66 @@
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
+  // 숫자나 BigInt를 BigInt로 안전 변환 (Infinity나 과학적 표기법도 처리)
+  function toBigIntSafe(val) {
+    if (typeof val === 'bigint') return val;
+    if (typeof val === 'number') {
+      if (!Number.isFinite(val)) {
+        // Infinity 등 오버플로우 시 무량대수(10^64 만원) 이상으로 표현 가능한 큰 BigInt 반환
+        return 10n ** 72n;
+      }
+      if (Number.isInteger(val)) return BigInt(val);
+      const str = val.toString();
+      if (str.includes('e') || str.includes('E')) {
+        const [mantissa, expStr] = str.split(/[eE]/);
+        const exp = parseInt(expStr, 10);
+        const [intPart, fracPart = ''] = mantissa.split('.');
+        const digits = intPart + fracPart;
+        const shift = exp - fracPart.length;
+        if (shift >= 0) {
+          return BigInt(digits) * (10n ** BigInt(shift));
+        }
+        return BigInt(digits.slice(0, digits.length + shift) || '0');
+      }
+      return BigInt(Math.round(val));
+    }
+    const parsed = Number(val);
+    return toBigIntSafe(parsed);
+  }
+
   function formatNum(num) {
-    if (!Number.isFinite(num)) return "무한대";
+    if (typeof num === 'bigint') {
+      const sign = num < 0n ? '-' : '';
+      const absStr = (num < 0n ? -num : num).toString();
+      return sign + absStr.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    }
+    if (!Number.isFinite(num)) return toBigIntSafe(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    if (Math.abs(num) > Number.MAX_SAFE_INTEGER) {
+      return formatNum(toBigIntSafe(num));
+    }
     return Math.round(num).toLocaleString('ko-KR');
   }
 
+  // manWon 파라미터는 "만원" 단위의 숫자 또는 BigInt
   function formatMoney(manWon) {
-    if (!Number.isFinite(manWon)) return "무한대";
-    const rounded = Math.round(manWon);
-    if (rounded === 0) return "0원";
+    const bigVal = toBigIntSafe(manWon);
+    if (bigVal === 0n) return "0원";
 
-    const sign = rounded < 0 ? "-" : "";
-    let rem = Math.abs(rounded);
-
-    const UNITS = [
-      { value: 1e16, label: "해" },
-      { value: 1e12, label: "경" },
-      { value: 1e8,  label: "조" },
-      { value: 1e4,  label: "억" }
-    ];
+    const sign = bigVal < 0n ? "-" : "";
+    let rem = bigVal < 0n ? -bigVal : bigVal;
 
     const parts = [];
-    for (const u of UNITS) {
-      if (rem >= u.value) {
-        const q = Math.floor(rem / u.value);
-        rem %= u.value;
-        parts.push(`${q.toLocaleString('ko-KR')}${u.label}`);
+    for (const u of MAN_WON_UNITS) {
+      const unitScale = 10n ** BigInt(u.exp);
+      if (rem >= unitScale) {
+        const q = rem / unitScale;
+        rem %= unitScale;
+        parts.push(`${formatNum(q)}${u.label}`);
       }
     }
 
-    if (rem > 0) {
-      parts.push(`${rem.toLocaleString('ko-KR')}만원`);
+    if (rem > 0n) {
+      parts.push(`${formatNum(rem)}만원`);
     }
 
     return `${sign}${parts.join(' ')}`;
@@ -1737,7 +1786,11 @@
 
   function getOvertimeMultiplier() {
     if (!state.isOvertime || state.overtimeRound <= 0) return 1;
-    return Math.pow(2, state.overtimeRound);
+    if (state.overtimeRound >= 1024) {
+      return 2n ** BigInt(state.overtimeRound);
+    }
+    const res = Math.pow(2, state.overtimeRound);
+    return Number.isFinite(res) ? res : (2n ** BigInt(state.overtimeRound));
   }
 
   function renderRankingTableHTML(ranks) {
@@ -1750,8 +1803,9 @@
       const nick = String(r.nickname || '익명');
       const initial = nick.slice(0, 2).toUpperCase();
       const charDisplay = charIconMap[r.charName] || r.charName;
-      const moneyVal = Number(r.money || 0);
-      const moneyColor = moneyVal < 0 ? '#dc2626' : '#d97706';
+      const rawMoney = r.money ?? 0;
+      const bigMoney = toBigIntSafe(rawMoney);
+      const moneyColor = bigMoney < 0n ? '#dc2626' : '#d97706';
 
       let medal = `${idx + 1}위`;
       if (idx === 0) medal = '🥇 1위';
@@ -1763,7 +1817,7 @@
           <td><b>${medal}</b></td>
           <td><span class="initial-badge">${initial}</span><b>${nick}</b></td>
           <td>${charDisplay}</td>
-          <td style="color:${moneyColor}; font-weight:800;">${formatMoney(moneyVal)}</td>
+          <td style="color:${moneyColor}; font-weight:800;">${formatMoney(rawMoney)}</td>
         </tr>
       `;
     }).join('');
@@ -1807,7 +1861,10 @@
   }
 
   async function saveRankingRecord(record) {
-    const safeMoney = Number.isFinite(Number(record.money)) ? Math.round(Number(record.money)) : Number.MAX_SAFE_INTEGER;
+    const bigM = toBigIntSafe(record.money);
+    const maxSafeBig = BigInt(Number.MAX_SAFE_INTEGER);
+    const safeMoney = bigM > maxSafeBig ? Number.MAX_SAFE_INTEGER : Number(bigM);
+
     const cleanRecord = {
       nickname: record.nickname,
       charName: record.charName,
@@ -1816,7 +1873,7 @@
 
     const localRanks = JSON.parse(localStorage.getItem("goodtime_ranks") || "[]");
     localRanks.push(cleanRecord);
-    localRanks.sort((a, b) => b.money - a.money);
+    localRanks.sort((a, b) => Number(toBigIntSafe(b.money) - toBigIntSafe(a.money)));
     const top10 = localRanks.slice(0, 10);
     localStorage.setItem("goodtime_ranks", JSON.stringify(top10));
 
@@ -2205,28 +2262,29 @@
     let resultText = `${pitchLine}\n\n`;
 
     if (isSuccess) {
-      let earned = baseReward;
+      let earned = toBigIntSafe(baseReward);
       const bonusNotes = [];
 
       if (isHidden) {
-        earned *= 2;
+        earned *= 2n;
         bonusNotes.push("히든각성 2배");
       }
       if (cust.isVip) {
-        earned *= 2;
+        earned *= 2n;
         bonusNotes.push("VIP고객 2배");
       }
       if (state.charId === 'park' && cust.weakSkill === skillType) {
-        earned = Math.round(earned * 1.5);
+        earned = (earned * 3n) / 2n;
         bonusNotes.push("박대리 약점적중 1.5배");
       }
       if (state.isOvertime) {
-        const otMult = getOvertimeMultiplier();
+        const otMult = toBigIntSafe(getOvertimeMultiplier());
         earned *= otMult;
         bonusNotes.push(`🔥연승/야근 ${formatNum(otMult)}배`);
       }
 
-      state.money += earned;
+      const nextMoney = toBigIntSafe(state.money) + earned;
+      state.money = nextMoney <= BigInt(Number.MAX_SAFE_INTEGER) ? Number(nextMoney) : nextMoney;
       state.streak++;
 
       const isBigHit = isHidden || state.isOvertime || cust.isVip;
@@ -2286,7 +2344,8 @@
 
         if (Math.random() * 100 <= sueChance) {
           const fine = (skillType === 'seduce') ? 1200 : 800;
-          state.money -= fine;
+          const nextMoney = toBigIntSafe(state.money) - BigInt(fine);
+          state.money = nextMoney <= BigInt(Number.MAX_SAFE_INTEGER) ? Number(nextMoney) : nextMoney;
 
           const crimeName = (skillType === 'seduce') ? "통신매체이용음란죄(변태 행위)" : "허위사실 유포 및 사기미수";
           dragonBox.style.display = 'flex';
@@ -2352,7 +2411,7 @@
     if (state.day >= 3) {
       state.isOvertime = false;
       state.overtimeRound = 0;
-      if (state.money >= CASINO_UNLOCK) {
+      if (toBigIntSafe(state.money) >= BigInt(CASINO_UNLOCK)) {
         startCasinoStage();
       } else {
         showEnding(false);
@@ -2399,8 +2458,12 @@
     let logMsg = "";
 
     if (type === 'speech_buff') {
-      const paid = state.money >= 200;
-      if (paid) state.money -= 200;
+      const currentBig = toBigIntSafe(state.money);
+      const paid = currentBig >= 200n;
+      if (paid) {
+        const nextM = currentBig - 200n;
+        state.money = nextM <= BigInt(Number.MAX_SAFE_INTEGER) ? Number(nextM) : nextM;
+      }
       const speechGain = randInt(5, 20);
       state.speech += speechGain;
 
@@ -2416,22 +2479,23 @@
 
       logMsg = `🕯️⚡ [용한 점집 대박 부적 적중!] 기세가 하늘을 찔러 내일 첫 영업부터 <b>${startStreak}연승</b>이 이어집니다!\n첫 통화부터 수익 <b>${formatNum(startMult)}배</b> 배수가 적용되며, 성공할 때마다 2배씩 계속 상승합니다! (실패 시 종료)`;
     } else if (type === 'doge_buff') {
-      const baseSeed = state.money > 0 ? state.money : 100;
+      const currentBig = toBigIntSafe(state.money);
+      const baseSeed = currentBig > 0n ? currentBig : 100n;
       const isWin = Math.random() < 0.55;
 
       if (isWin) {
-        const mult = randInt(5, 1000);
+        const mult = BigInt(randInt(5, 1000));
         const resultMoney = baseSeed * mult;
-        state.money = resultMoney;
-        spawnMoneyParticles(mult >= 100);
+        state.money = resultMoney <= BigInt(Number.MAX_SAFE_INTEGER) ? Number(resultMoney) : resultMoney;
+        spawnMoneyParticles(mult >= 100n);
         logMsg = `🐕🚀 [도지 레버리지 X1000배 콧털 휘날리는 떡상!!] 개가 달을 넘어 안드로메다까지 점프했습니다!!\n무려 <b>${formatNum(mult)}배</b> 배당이 터져 보유 자금이 <b>${formatMoney(resultMoney)}</b>으로 폭등했습니다!!`;
       } else {
-        const crashRatio = [0.2, 0.3, 0.5][randInt(0, 2)];
-        const afterMoney = Math.floor(baseSeed * crashRatio);
-        state.money = afterMoney;
+        const crashPct = [20, 30, 50][randInt(0, 2)];
+        const afterMoney = (baseSeed * BigInt(crashPct)) / 100n;
+        state.money = afterMoney <= BigInt(Number.MAX_SAFE_INTEGER) ? Number(afterMoney) : afterMoney;
         state.mental = Math.max(5, state.mental - 15);
         triggerShake();
-        logMsg = `🐕💥 [레버리지 1,000배의 매운맛... 0.1% 음봉에 영혼 가출] 뚝 떨어진 꼬리 한 번에 눈물이 앞을 가립니다!\n보유 자금이 <b>${Math.round(crashRatio * 100)}%</b> 토막 나 <b>${formatMoney(afterMoney)}</b>이 되었습니다... (멘탈 -15)`;
+        logMsg = `🐕💥 [레버리지 1,000배의 매운맛... 0.1% 음봉에 영혼 가출] 뚝 떨어진 꼬리 한 번에 눈물이 앞을 가립니다!\n보유 자금이 <b>${crashPct}%</b> 토막 나 <b>${formatMoney(afterMoney)}</b>이 되었습니다... (멘탈 -15)`;
       }
     }
 
@@ -2492,7 +2556,8 @@
 
   function spinRouletteRound() {
     if (state.rouletteBusy) return;
-    if (state.money <= 0) {
+    const currentBig = toBigIntSafe(state.money);
+    if (currentBig <= 0n) {
       alert("칩이 모두 떨어졌습니다!");
       showEnding(true);
       return;
@@ -2500,9 +2565,11 @@
 
     state.rouletteBusy = true;
 
-    const rawBet = Math.floor(state.money * state.rouletteRatio);
-    const betAmount = Math.max(1, Math.min(state.money, rawBet));
-    state.money -= betAmount;
+    const ratioPct = BigInt(Math.round(state.rouletteRatio * 100));
+    const rawBet = (currentBig * ratioPct) / 100n;
+    const betAmount = rawBet < 1n ? 1n : (rawBet > currentBig ? currentBig : rawBet);
+    const afterBet = currentBig - betAmount;
+    state.money = afterBet <= BigInt(Number.MAX_SAFE_INTEGER) ? Number(afterBet) : afterBet;
     document.getElementById('casino-money').textContent = formatMoney(state.money);
 
     const opt = ROULETTE_OPTIONS[state.rouletteBet];
@@ -2528,8 +2595,9 @@
 
       let msg = "";
       if (isWin) {
-        const payout = Math.round(betAmount * opt.mult);
-        state.money += payout;
+        const payout = betAmount * BigInt(opt.mult);
+        const totalAfterWin = toBigIntSafe(state.money) + payout;
+        state.money = totalAfterWin <= BigInt(Number.MAX_SAFE_INTEGER) ? Number(totalAfterWin) : totalAfterWin;
         const isMega = opt.mult >= 300;
         spawnMoneyParticles(isMega);
         document.getElementById('casino-result-badge').textContent = `🎉 [${landedNum}번] 적중! +${formatMoney(payout)}`;
@@ -2547,7 +2615,7 @@
 
       const nextBtn = document.getElementById('btn-casino-next');
       nextBtn.style.display = 'block';
-      nextBtn.textContent = (state.rouletteRound >= 3 || state.money <= 0)
+      nextBtn.textContent = (state.rouletteRound >= 3 || toBigIntSafe(state.money) <= 0n)
         ? "최종 결과 및 실시간 랭킹 확인 ➡️"
         : `${state.rouletteRound + 1}번째 스핀 진행 ➡️`;
     }, 650);
@@ -2558,47 +2626,48 @@
     document.getElementById('status-bar').style.display = 'none';
     showScreen('screen-ending');
 
+    const bigMoney = toBigIntSafe(state.money);
     let icon = "";
     let title = "";
     let desc = "";
 
     if (fromCasino) {
-      if (state.money <= 0) {
+      if (bigMoney <= 0n) {
         icon = "🥥";
         title = "카지노 파산 엔딩: 마닐라 노숙자";
         desc = "3억 원을 들고 필리핀까지 날아갔지만 룰렛 3번 만에 전 재산을 탕진했습니다! 여권마저 뺏기고 마닐라 길거리에서 코코넛을 팔며 연명합니다...";
-      } else if (state.money < CASINO_UNLOCK) {
+      } else if (bigMoney < BigInt(CASINO_UNLOCK)) {
         icon = "🚤";
         title = "카지노 본전치기 엔딩: 동남아 밀항";
-        desc = `필리핀 카지노에서 칩을 꽤 잃었지만 남은 ${formatMoney(state.money)}을 챙겨 고기잡이배를 타고 인근 섬으로 몸을 숨겼습니다.`;
-      } else if (state.money >= 100000) {
+        desc = `필리핀 카지노에서 칩을 꽤 잃었지만 남은 ${formatMoney(bigMoney)}을 챙겨 고기잡이배를 타고 인근 섬으로 몸을 숨겼습니다.`;
+      } else if (bigMoney >= 100000n) {
         icon = "👑";
         title = "일확천금 신화 엔딩: 마닐라 카지노 접수!";
-        desc = `필리핀 카지노 룰렛까지 쓸어 담아 총 ${formatMoney(state.money)}을 거머쥐었습니다! 카지노 통째로 인수하고 전용기로 전 세계를 누빕니다!`;
+        desc = `필리핀 카지노 룰렛까지 쓸어 담아 총 ${formatMoney(bigMoney)}을 거머쥐었습니다! 카지노 통째로 인수하고 전용기로 전 세계를 누빕니다!`;
       } else {
         icon = "💎";
         title = "일확천금 성공 엔딩: 마닐라 VIP 제왕!";
-        desc = `필리핀 카지노에서 일확천금을 터뜨려 총 ${formatMoney(state.money)}을 거머쥐었습니다! 평생 호화롭게 살아갑니다!`;
+        desc = `필리핀 카지노에서 일확천금을 터뜨려 총 ${formatMoney(bigMoney)}을 거머쥐었습니다! 평생 호화롭게 살아갑니다!`;
       }
     } else {
-      if (state.money < 0) {
+      if (bigMoney < 0n) {
         icon = "⛓️";
         title = "최악의 엔딩: 빚더미 & 콩밥";
-        desc = `소송 합의금 때문에 오히려 ${formatMoney(Math.abs(state.money))}의 빚만 졌습니다! 김드래곤 실장에게 두들겨 맞은 뒤 경찰에 넘겨졌습니다...`;
-      } else if (state.money < GOAL_MONEY) {
+        desc = `소송 합의금 때문에 오히려 ${formatMoney(-bigMoney)}의 빚만 졌습니다! 김드래곤 실장에게 두들겨 맞은 뒤 경찰에 넘겨졌습니다...`;
+      } else if (bigMoney < BigInt(GOAL_MONEY)) {
         icon = "🚐";
         title = "실패 엔딩: 목표(1억) 미달! 야반도주";
-        desc = `목표 금액(1억 원)을 채우지 못하고 ${formatMoney(state.money)}만 손에 쥐었습니다. 김드래곤 실장의 눈을 피해 낡은 봉고차를 타고 지방으로 도망쳤습니다.`;
+        desc = `목표 금액(1억 원)을 채우지 못하고 ${formatMoney(bigMoney)}만 손에 쥐었습니다. 김드래곤 실장의 눈을 피해 낡은 봉고차를 타고 지방으로 도망쳤습니다.`;
       } else {
         icon = "🥂";
         title = "성공 엔딩: 목표(1억) 달성! 한탕 성공";
-        desc = `목표 금액 1억 원을 돌파해 총 ${formatMoney(state.money)}을 땡겼습니다! 김드래곤 실장에게 몫을 떼어주고 두둑한 현금 가방을 들고 유유히 잠적합니다! (3억 원 이상 모으면 인생을 바꿀 마닐라 카지노 룰렛으로 직행합니다!)`;
+        desc = `목표 금액 1억 원을 돌파해 총 ${formatMoney(bigMoney)}을 땡겼습니다! 김드래곤 실장에게 몫을 떼어주고 두둑한 현금 가방을 들고 유유히 잠적합니다! (3억 원 이상 모으면 인생을 바꿀 마닐라 카지노 룰렛으로 직행합니다!)`;
       }
     }
 
     document.getElementById('ending-icon').textContent = icon;
     document.getElementById('ending-title').textContent = title;
-    document.getElementById('ending-score').textContent = `[${state.nickname}] 최종 수익: ${formatMoney(state.money)} (${state.charName})`;
+    document.getElementById('ending-score').textContent = `[${state.nickname}] 최종 수익: ${formatMoney(bigMoney)} (${state.charName})`;
     typeText('ending-desc', desc);
 
     const statusBox = document.getElementById('auto-rank-status');
@@ -2607,12 +2676,12 @@
     const savedToCloud = await saveRankingRecord({
       nickname: state.nickname,
       charName: state.charName,
-      money: state.money
+      money: bigMoney
     });
 
     statusBox.innerHTML = savedToCloud
-      ? `✅ <b>[${state.nickname}]</b>님의 기록(<b>${formatMoney(state.money)}</b>)이 Firebase 실시간 랭킹에 등록되었습니다!`
-      : `✅ <b>[${state.nickname}]</b>님의 기록(<b>${formatMoney(state.money)}</b>)이 랭킹에 등록되었습니다!`;
+      ? `✅ <b>[${state.nickname}]</b>님의 기록(<b>${formatMoney(bigMoney)}</b>)이 Firebase 실시간 랭킹에 등록되었습니다!`
+      : `✅ <b>[${state.nickname}]</b>님의 기록(<b>${formatMoney(bigMoney)}</b>)이 랭킹에 등록되었습니다!`;
 
     refreshRankingsUI();
   }
@@ -2681,7 +2750,7 @@
 
   document.getElementById('btn-play-roulette').addEventListener('click', spinRouletteRound);
   document.getElementById('btn-casino-next').addEventListener('click', () => {
-    if (state.rouletteRound >= 3 || state.money <= 0) {
+    if (state.rouletteRound >= 3 || toBigIntSafe(state.money) <= 0n) {
       showEnding(true);
     } else {
       state.rouletteRound++;
