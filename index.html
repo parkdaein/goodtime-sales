@@ -1218,7 +1218,6 @@
       </div>
 
       <div id="roulette-controls">
-        <!-- 1단계 베팅: 홀짝 -->
         <div class="bet-tier-box">
           <div class="bet-tier-title">
             <span>1️⃣ 첫 번째 베팅: 홀수 / 짝수 선택</span>
@@ -1234,7 +1233,6 @@
           </div>
         </div>
 
-        <!-- 2단계 베팅: 1~12 / 13~24 / 25~36 -->
         <div class="bet-tier-box">
           <div class="bet-tier-title">
             <span>2️⃣ 두 번째 베팅: 숫자 구간 선택</span>
@@ -1253,7 +1251,6 @@
           </div>
         </div>
 
-        <!-- 3단계 베팅: 행운의 숫자 7, 17, 27 -->
         <div class="bet-tier-box" style="background:#fffbeb; border-color:#f59e0b;">
           <div class="bet-tier-title">
             <span>3️⃣ 세 번째 베팅: 행운의 숫자 7 · 17 · 27</span>
@@ -1353,7 +1350,6 @@
   </div>
 </div>
 
-<!-- 단일 통합 모듈 스크립트 (Firebase 연동 완료) -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getFirestore, collection, addDoc, query, orderBy, limit, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -1376,7 +1372,6 @@
     { nickname: "SDR (야근장인)", charName: "손대리", money: 14500 }
   ];
 
-  // 게임 상수 및 상태 (money 단위는 '만원')
   const GOAL_MONEY = 10000;
   const CASINO_UNLOCK = 30000;
 
@@ -1625,38 +1620,13 @@
     }
   };
 
-  // 1~36 실제 추첨 숫자 기반 룰렛 베팅 설정
   const ROULETTE_OPTIONS = {
-    odd: {
-      label: "🔴 홀수 (ODD)",
-      mult: 100,
-      check: (n) => n % 2 === 1
-    },
-    even: {
-      label: "⚫ 짝수 (EVEN)",
-      mult: 100,
-      check: (n) => n % 2 === 0
-    },
-    range_1_12: {
-      label: "🎯 1 ~ 12 구간",
-      mult: 300,
-      check: (n) => n >= 1 && n <= 12
-    },
-    range_13_24: {
-      label: "🎯 13 ~ 24 구간",
-      mult: 300,
-      check: (n) => n >= 13 && n <= 24
-    },
-    range_25_36: {
-      label: "🎯 25 ~ 36 구간",
-      mult: 300,
-      check: (n) => n >= 25 && n <= 36
-    },
-    lucky7: {
-      label: "💎 행운의 숫자 [7, 17, 27]",
-      mult: 1500,
-      check: (n) => n === 7 || n === 17 || n === 27
-    }
+    odd: { label: "🔴 홀수 (ODD)", mult: 100, check: (n) => n % 2 === 1 },
+    even: { label: "⚫ 짝수 (EVEN)", mult: 100, check: (n) => n % 2 === 0 },
+    range_1_12: { label: "🎯 1 ~ 12 구간", mult: 300, check: (n) => n >= 1 && n <= 12 },
+    range_13_24: { label: "🎯 13 ~ 24 구간", mult: 300, check: (n) => n >= 13 && n <= 24 },
+    range_25_36: { label: "🎯 25 ~ 36 구간", mult: 300, check: (n) => n >= 25 && n <= 36 },
+    lucky7: { label: "💎 행운의 숫자 [7, 17, 27]", mult: 1500, check: (n) => n === 7 || n === 17 || n === 27 }
   };
 
   function randInt(min, max) {
@@ -1668,9 +1638,6 @@
     return Math.round(num).toLocaleString('ko-KR');
   }
 
-  /**
-   * 만원 단위 숫자를 해(10^16 만원) -> 경(10^12 만원) -> 조(10^8 만원) -> 억(10^4 만원) -> 만원 단위로 자동 변환
-   */
   function formatMoney(manWon) {
     if (!Number.isFinite(manWon)) return "무한대";
     const rounded = Math.round(manWon);
@@ -1702,15 +1669,11 @@
     return `${sign}${parts.join(' ')}`;
   }
 
-  // 연승 시 2배씩 제한 없이 무한 상승
   function getOvertimeMultiplier() {
     if (!state.isOvertime || state.overtimeRound <= 0) return 1;
     return Math.pow(2, state.overtimeRound);
   }
 
-  // =========================================================================
-  // Firebase 초기화 및 실시간 랭킹 관리
-  // =========================================================================
   function renderRankingTableHTML(ranks) {
     if (!ranks || ranks.length === 0) {
       return `<tr><td colspan="4">아직 등록된 영업왕이 없습니다!</td></tr>`;
@@ -1811,9 +1774,6 @@
     }
   }
 
-  // =========================================================================
-  // 타이핑 & UI 연출 유틸리티
-  // =========================================================================
   let typingTimer = null;
   let currentTargetEl = null;
   let currentFullText = "";
@@ -1925,9 +1885,6 @@
     container.classList.add('shake-effect');
   }
 
-  // =========================================================================
-  // 게임 흐름 컨트롤 함수
-  // =========================================================================
   function enterGame() {
     const input = document.getElementById('entry-nickname');
     const val = input.value.trim();
@@ -2332,7 +2289,7 @@
       const startStreak = randInt(5, 20);
       state.streak = startStreak;
       state.isOvertime = true;
-      state.overtimeRound = Math.max(2, startStreak - 2);
+      state.overtimeRound = startStreak - 2;
       const startMult = getOvertimeMultiplier();
 
       logMsg = `🕯️⚡ [용한 점집 대박 부적 적중!] 기세가 하늘을 찔러 내일 첫 영업부터 <b>${startStreak}연승</b>이 이어집니다!\n첫 통화부터 수익 <b>${formatNum(startMult)}배</b> 배수가 적용되며, 성공할 때마다 2배씩 계속 상승합니다! (실패 시 종료)`;
@@ -2374,9 +2331,6 @@
     startOffice();
   }
 
-  // =========================================================================
-  // 필리핀 마닐라 VIP 하이롤러 룰렛 (1~36 랜덤 추첨 · 최대 1,500배)
-  // =========================================================================
   function syncRouletteButtons() {
     document.querySelectorAll('[data-bet]').forEach(btn => {
       btn.classList.toggle('selected', btn.dataset.bet === state.rouletteBet);
@@ -2441,7 +2395,6 @@
     setTimeout(() => {
       wheel.classList.remove('spinning');
 
-      // 1~36까지 실제 완전 랜덤 숫자 추첨
       const landedNum = randInt(1, 36);
       const isWin = opt.check(landedNum);
       const parityText = (landedNum % 2 === 1) ? '홀수' : '짝수';
@@ -2476,9 +2429,6 @@
     }, 650);
   }
 
-  // =========================================================================
-  // 최종 엔딩 및 자동 랭킹 등록
-  // =========================================================================
   async function showEnding(fromCasino) {
     state.rouletteBusy = false;
     document.getElementById('status-bar').style.display = 'none';
@@ -2543,9 +2493,6 @@
     refreshRankingsUI();
   }
 
-  // =========================================================================
-  // 모든 DOM 이벤트 바인딩
-  // =========================================================================
   document.getElementById('btn-enter-game').addEventListener('click', enterGame);
   document.getElementById('entry-nickname').addEventListener('keydown', (e) => {
     if (e.key === 'Enter') enterGame();
