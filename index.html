@@ -72,6 +72,25 @@
       100% { transform: translateY(650px) rotate(360deg); opacity: 0; }
     }
 
+    .doge-burst-particle {
+      position: absolute;
+      font-size: 1.55rem;
+      pointer-events: none;
+      z-index: 60;
+      animation: dogeBurst 0.95s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes dogeBurst {
+      0% {
+        transform: translate(-50%, -50%) scale(0.4) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(1.25) rotate(var(--rot));
+        opacity: 0;
+      }
+    }
+
     /* 계약 성사 도장 스탬프 */
     .contract-stamp {
       position: absolute;
@@ -304,6 +323,7 @@
       background: #fff;
       box-shadow: var(--shadow);
       cursor: pointer;
+      position: relative;
       transition: transform 0.12s, background 0.12s, box-shadow 0.12s;
       display: flex;
       flex-direction: column;
@@ -322,6 +342,39 @@
       transform: translateY(-3px);
     }
 
+    @keyframes dogeNeonPulse {
+      0%, 100% {
+        box-shadow: 0 0 0 4px #f59e0b, 0 0 18px rgba(245, 158, 11, 0.75), 5px 5px 0px #1e293b;
+        transform: translateY(-4px) scale(1.015);
+      }
+      50% {
+        box-shadow: 0 0 0 5px #ea580c, 0 0 28px rgba(234, 88, 12, 0.9), 5px 5px 0px #1e293b;
+        transform: translateY(-6px) scale(1.025);
+      }
+    }
+
+    .char-card.doge-selected {
+      background: linear-gradient(155deg, #fffbeb 0%, #fef08a 55%, #fed7aa 100%) !important;
+      border-color: #ea580c !important;
+      animation: dogeNeonPulse 1.1s infinite ease-in-out;
+    }
+
+    .doge-lev-badge {
+      position: absolute;
+      top: -12px;
+      right: 10px;
+      background: linear-gradient(90deg, #dc2626, #ea580c);
+      color: #fde047;
+      font-size: 0.72rem;
+      font-weight: 900;
+      padding: 3px 9px;
+      border-radius: 999px;
+      border: 2px solid #1e293b;
+      box-shadow: 2px 2px 0px #1e293b;
+      z-index: 5;
+      animation: stampSlam 0.25s ease-out forwards;
+    }
+
     .char-avatar {
       font-size: 2.8rem;
       text-align: center;
@@ -330,6 +383,11 @@
       border-radius: 10px;
       padding: 8px 0;
       margin-bottom: 8px;
+    }
+
+    .char-card.doge-selected .char-avatar {
+      background: linear-gradient(135deg, #fde047, #fb923c);
+      border-color: #9a3412;
     }
 
     .char-name {
@@ -393,6 +451,14 @@
       padding: 7px 14px;
       width: 100%;
       text-align: center;
+      transition: background 0.2s, border-color 0.2s, color 0.2s;
+    }
+
+    .night-selected-label.doge-active-label {
+      background: linear-gradient(90deg, #451a03, #7c2d12);
+      border-color: #f59e0b;
+      color: #fde047;
+      box-shadow: 0 0 14px rgba(245, 158, 11, 0.5);
     }
 
     .webtoon-panel {
@@ -1155,7 +1221,7 @@
           <div class="char-passive">기세가 하늘을 찔러 다음 날 첫 영업부터 <b>특별 야근 배수</b>가 이어진 상태로 시작합니다!</div>
         </div>
 
-        <div class="char-card" data-night="doge_buff">
+        <div class="char-card" id="doge-buff-card" data-night="doge_buff">
           <div>
             <div class="char-avatar">🐕🚀</div>
             <span class="night-vibe-tag" style="background:#fef3c7; color:#92400e;">자본 버프 · 5~1,000배</span>
@@ -1861,6 +1927,59 @@
     }
   }
 
+  function spawnDogeCardBurst(cardEl) {
+    const fxLayer = document.getElementById('fx-layer');
+    const containerRect = document.getElementById('game-container').getBoundingClientRect();
+    const cardRect = cardEl.getBoundingClientRect();
+
+    const originX = cardRect.left - containerRect.left + cardRect.width / 2;
+    const originY = cardRect.top - containerRect.top + cardRect.height / 2;
+    const emojis = ['🚀', '🐕', '💎', '⚡', '🌕', '🔥'];
+
+    for (let i = 0; i < 14; i++) {
+      const p = document.createElement('div');
+      p.className = 'doge-burst-particle';
+      p.textContent = emojis[i % emojis.length];
+      const angle = (Math.PI * 2 * i) / 14 + (Math.random() * 0.25);
+      const dist = 65 + Math.random() * 75;
+      const tx = `${Math.cos(angle) * dist}px`;
+      const ty = `${Math.sin(angle) * dist - 20}px`;
+      const rot = `${randInt(-160, 160)}deg`;
+
+      p.style.left = `${originX}px`;
+      p.style.top = `${originY}px`;
+      p.style.setProperty('--tx', tx);
+      p.style.setProperty('--ty', ty);
+      p.style.setProperty('--rot', rot);
+
+      fxLayer.appendChild(p);
+      setTimeout(() => p.remove(), 1000);
+    }
+  }
+
+  function updateDogeCardVisuals(isSelected) {
+    const dogeCard = document.getElementById('doge-buff-card');
+    const labelEl = document.getElementById('night-selected-label');
+    if (!dogeCard || !labelEl) return;
+
+    const existingBadge = dogeCard.querySelector('.doge-lev-badge');
+    if (isSelected) {
+      dogeCard.classList.add('doge-selected');
+      labelEl.classList.add('doge-active-label');
+      if (!existingBadge) {
+        const badge = document.createElement('span');
+        badge.className = 'doge-lev-badge';
+        badge.textContent = '🚀 X1000 LEVERAGE';
+        dogeCard.appendChild(badge);
+      }
+      spawnDogeCardBurst(dogeCard);
+    } else {
+      dogeCard.classList.remove('doge-selected');
+      labelEl.classList.remove('doge-active-label');
+      if (existingBadge) existingBadge.remove();
+    }
+  }
+
   function triggerSuccessEffect(isBigHit) {
     const panel = document.getElementById('call-panel');
     const stampContainer = document.getElementById('stamp-container');
@@ -1907,6 +2026,7 @@
     state.selectedNightBuff = null;
     state.nightChoiceDone = false;
     state.rouletteBusy = false;
+    updateDogeCardVisuals(false);
     document.body.classList.remove('overtime-bg');
     document.getElementById('status-bar').style.display = 'none';
     showScreen('screen-nickname');
@@ -2248,6 +2368,7 @@
         c.style.opacity = '1';
         c.style.pointerEvents = 'auto';
       });
+      updateDogeCardVisuals(false);
       document.getElementById('night-selected-label').textContent = "선택된 야간 버프: 없음 (위 카드 중 하나를 선택하세요)";
       document.getElementById('btn-confirm-night').disabled = true;
       document.getElementById('night-confirm-box').style.display = 'flex';
@@ -2266,6 +2387,7 @@
       card.classList.toggle('night-selected', card.dataset.night === type);
     });
 
+    updateDogeCardVisuals(type === 'doge_buff');
     document.getElementById('night-selected-label').textContent = `선택된 야간 버프: ${NIGHT_BUFF_LABELS[type]}`;
     document.getElementById('btn-confirm-night').disabled = false;
   }
