@@ -945,7 +945,7 @@
 
     <div style="text-align:center; font-size:0.84rem; color:#64748b; line-height:1.5;">
       * 3연속 계약 성공 시 <b>[무한 폭주 야근모드 (연승마다 2배 무한 증식)]</b> 돌입!<br>
-      * 3억 원 돌파 시 김드래곤 실장 뒤통수 치고 <b>[마닐라 VIP 하이롤러 룰렛 (최대 36배)]</b> 직행!
+      * 3억 원 돌파 시 김드래곤 실장 뒤통수 치고 <b>[마닐라 VIP 하이롤러 룰렛 (최대 1,440배)]</b> 직행!
     </div>
   </div>
 
@@ -1154,7 +1154,7 @@
     </div>
   </div>
 
-  <!-- 5-2. 히든 스테이지: 필리핀 마닐라 VIP 하이롤러 룰렛 (최대 36배 초고배당) -->
+  <!-- 5-2. 히든 스테이지: 필리핀 마닐라 VIP 하이롤러 룰렛 (최대 1,440배 초고배당) -->
   <div id="screen-casino" class="screen">
     <div>
       <div class="header-row">
@@ -1164,7 +1164,7 @@
         </div>
       </div>
       <div class="subtitle">
-        김드래곤 실장 뒤통수 치고 필리핀 카지노 입성! <b>최대 36배 룰렛</b>으로 일확천금을 노려라!
+        김드래곤 실장 뒤통수 치고 필리핀 카지노 입성! <b>최대 1,440배 룰렛</b>으로 일확천금을 노려라!
       </div>
 
       <div class="casino-table">
@@ -1183,24 +1183,24 @@
         </div>
 
         <div id="casino-log" style="background:rgba(15, 23, 42, 0.75); border:1.5px solid rgba(251, 191, 36, 0.45); padding:10px; border-radius:10px; text-align:center; font-size:0.92rem; min-height:46px; line-height:1.45;">
-          김드래곤 몰래 싹쓸이한 돈으로 필리핀 카지노 판을 뒤집어라! 36배 올인 적중 시 인생 역전!
+          김드래곤 몰래 싹쓸이한 돈으로 필리핀 카지노 판을 뒤집어라! 홀짝 100배 · 1,440배 올인 적중 시 초초대박!
         </div>
       </div>
 
       <div id="roulette-controls">
-        <div style="font-weight:800; font-size:0.88rem; margin-bottom:4px;">1️⃣ 배당 구역 선택 (일확천금 찬스):</div>
+        <div style="font-weight:800; font-size:0.88rem; margin-bottom:4px;">1️⃣ 배당 구역 선택 (홀짝 100배 ~ 1,440배 초고배당):</div>
         <div class="roulette-bet-grid">
           <button type="button" class="bet-choice-btn selected" data-bet="even">
-            ⚫ 짝수 (EVEN) · <b>2.5배</b><br><span style="font-size:0.74rem; color:#475569;">적중률 50% · 안정적 시드 불리기</span>
+            ⚫ 짝수 (EVEN) · <b>100배</b><br><span style="font-size:0.74rem; color:#475569;">적중률 50% · 홀짝 100배 폭증</span>
           </button>
           <button type="button" class="bet-choice-btn" data-bet="dozen">
-            🔴 1~12 구역 · <b>4배</b><br><span style="font-size:0.74rem; color:#475569;">적중률 33% · 4배 점프</span>
+            🔴 1~12 구역 · <b>160배</b><br><span style="font-size:0.74rem; color:#475569;">적중률 33% · 160배 점프</span>
           </button>
           <button type="button" class="bet-choice-btn" data-bet="zero">
-            🟢 0 / 00 더블제로 · <b>12배</b><br><span style="font-size:0.74rem; color:#475569;">적중률 15% · 수십억 대박</span>
+            🟢 0 / 00 더블제로 · <b>480배</b><br><span style="font-size:0.74rem; color:#475569;">적중률 15% · 수천억 대박</span>
           </button>
           <button type="button" class="bet-choice-btn jackpot-opt" data-bet="lucky7">
-            💎 행운의 7 직격 · <b>36배</b><br><span style="font-size:0.74rem; color:#9a3412;">적중률 6% · 일확천금 잭팟!</span>
+            💎 행운의 7 직격 · <b>1,440배</b><br><span style="font-size:0.74rem; color:#9a3412;">적중률 6% · 일확천금 잭팟!</span>
           </button>
         </div>
 
@@ -1212,7 +1212,7 @@
         </div>
 
         <button type="button" class="btn btn-casino" style="width:100%; margin-top:12px;" id="btn-play-roulette">
-          🎡 룰렛 돌리기! 일확천금 승부
+          🎡 룰렛 돌리기! 초고배당 승부
         </button>
       </div>
 
@@ -1568,28 +1568,28 @@
   const ROULETTE_OPTIONS = {
     even: {
       label: "⚫ 짝수 (EVEN)",
-      mult: 2.5,
+      mult: 100,
       winChance: 0.50,
       winNums: ["2", "4", "6", "8", "10", "12", "14", "16", "18", "20", "24", "28", "32", "36"],
       loseNums: ["1", "3", "5", "9", "11", "13", "15", "17", "19", "21", "25", "31"]
     },
     dozen: {
       label: "🔴 1~12 구역",
-      mult: 4,
+      mult: 160,
       winChance: 0.33,
       winNums: ["1", "2", "3", "4", "5", "6", "8", "9", "10", "11", "12"],
       loseNums: ["13", "14", "17", "19", "22", "25", "27", "30", "33", "35"]
     },
     zero: {
       label: "🟢 0 / 00 더블제로",
-      mult: 12,
+      mult: 480,
       winChance: 0.15,
       winNums: ["0", "00"],
       loseNums: ["3", "8", "14", "17", "21", "24", "29", "31", "34", "36"]
     },
     lucky7: {
       label: "💎 행운의 7 직격",
-      mult: 36,
+      mult: 1440,
       winChance: 0.06,
       winNums: ["7"],
       loseNums: ["0", "2", "6", "8", "13", "16", "18", "23", "27", "34"]
@@ -1912,7 +1912,7 @@
     updateStatusBar();
     showScreen('screen-intro');
 
-    const introMsg = `어이 [${state.nickname}]! 이번에 배정받은 ${state.charName} 역할, 정신 바짝 차려!\n우리가 분양할 '굿타임 백화점'은 허허벌판 쓰레기 입지야.\n\n3일 뒤면 구청 단속반이 들이닥치니까, 그전까지 전화번호부 다 뒤져서 무조건 【최소 1억 원】 이상 계약금 뜯어내!\n만약 3억 원 이상 땡기면... 내 뒤통수 치고 필리핀 카지노(최대 36배 룰렛)로 튀어서 일확천금 노려보는 것도 나쁘지 않겠지. 당장 시작해!!`;
+    const introMsg = `어이 [${state.nickname}]! 이번에 배정받은 ${state.charName} 역할, 정신 바짝 차려!\n우리가 분양할 '굿타임 백화점'은 허허벌판 쓰레기 입지야.\n\n3일 뒤면 구청 단속반이 들이닥치니까, 그전까지 전화번호부 다 뒤져서 무조건 【최소 1억 원】 이상 계약금 뜯어내!\n만약 3억 원 이상 땡기면... 내 뒤통수 치고 필리핀 카지노(최대 1,440배 룰렛)로 튀어서 일확천금 노려보는 것도 나쁘지 않겠지. 당장 시작해!!`;
     typeText('intro-dialogue', introMsg);
   }
 
@@ -2312,7 +2312,7 @@
   }
 
   // =========================================================================
-  // 필리핀 마닐라 VIP 하이롤러 룰렛 (최대 36배 일확천금 스테이지)
+  // 필리핀 마닐라 VIP 하이롤러 룰렛 (최대 1,440배 일확천금 스테이지)
   // =========================================================================
   function syncRouletteButtons() {
     document.querySelectorAll('[data-bet]').forEach(btn => {
@@ -2332,7 +2332,7 @@
 
     showScreen('screen-casino');
     updateRouletteUI();
-    alert(`💰 3억 원(${formatMoney(state.money)}) 돌파! 김드래곤 실장 뒤통수를 제대로 치고 필리핀 카지노로 튑니다!\n마닐라 VIP 하이롤러 룰렛(최대 36배)에서 일확천금을 노려보세요!`);
+    alert(`💰 3억 원(${formatMoney(state.money)}) 돌파! 김드래곤 실장 뒤통수를 제대로 치고 필리핀 카지노로 튑니다!\n마닐라 VIP 하이롤러 룰렛(홀짝 100배 · 최대 1,440배)에서 일확천금을 노려보세요!`);
   }
 
   function updateRouletteUI() {
@@ -2343,7 +2343,7 @@
     document.getElementById('roulette-result-num').textContent = '🎰';
     document.getElementById('roulette-result-tag').textContent = `SPIN ${state.rouletteRound}`;
     document.getElementById('casino-result-badge').textContent = '베팅 구역과 판돈을 선택하세요!';
-    document.getElementById('casino-log').textContent = `필리핀 카지노 ${state.rouletteRound}번째 스핀! 김드래곤 뒤통수 친 돈으로 일확천금을 노려라!`;
+    document.getElementById('casino-log').textContent = `필리핀 카지노 ${state.rouletteRound}번째 스핀! 홀짝 100배 ~ 1,440배 배당으로 판을 뒤집어라!`;
     document.getElementById('roulette-controls').style.display = 'block';
     document.getElementById('btn-casino-next').style.display = 'none';
     syncRouletteButtons();
@@ -2372,7 +2372,7 @@
     wheel.classList.add('spinning');
     numEl.textContent = '🌀';
     tagEl.textContent = 'SPINNING...';
-    document.getElementById('casino-result-badge').textContent = `🎲 ${opt.label} (${opt.mult}배) 베팅 중...`;
+    document.getElementById('casino-result-badge').textContent = `🎲 ${opt.label} (${formatNum(opt.mult)}배) 베팅 중...`;
     document.getElementById('roulette-controls').style.display = 'none';
 
     setTimeout(() => {
@@ -2384,18 +2384,18 @@
         : opt.loseNums[randInt(0, opt.loseNums.length - 1)];
 
       numEl.textContent = landedNum;
-      tagEl.textContent = isWin ? `HIT ×${opt.mult}` : 'MISS';
+      tagEl.textContent = isWin ? `HIT ×${formatNum(opt.mult)}` : 'MISS';
 
       let msg = "";
       if (isWin) {
         const payout = Math.round(betAmount * opt.mult);
         state.money += payout;
-        const isMega = opt.mult >= 12;
+        const isMega = opt.mult >= 480;
         spawnMoneyParticles(isMega);
-        document.getElementById('casino-result-badge').textContent = `🎉 일확천금 적중! +${formatMoney(payout)}`;
+        document.getElementById('casino-result-badge').textContent = `🎉 초고배당 적중! +${formatMoney(payout)}`;
         msg = isMega
-          ? `🚨💎 [일확천금 잭팟!!] 구슬이 [${landedNum}]번에 꽂혔습니다!! 베팅금 ${formatMoney(betAmount)} × ${opt.mult}배 = 【${formatMoney(payout)}】 획득!!`
-          : `🔥 [룰렛 적중!] 구슬이 [${landedNum}]번에 안착! 베팅금 ${formatMoney(betAmount)} × ${opt.mult}배 = ${formatMoney(payout)} 획득!`;
+          ? `🚨💎 [일확천금 잭팟!!] 구슬이 [${landedNum}]번에 꽂혔습니다!! 베팅금 ${formatMoney(betAmount)} × ${formatNum(opt.mult)}배 = 【${formatMoney(payout)}】 획득!!`
+          : `🔥 [룰렛 적중!] 구슬이 [${landedNum}]번에 안착! 베팅금 ${formatMoney(betAmount)} × ${formatNum(opt.mult)}배 = ${formatMoney(payout)} 획득!`;
       } else {
         triggerShake();
         document.getElementById('casino-result-badge').textContent = `💀 빗나감 (-${formatMoney(betAmount)})`;
