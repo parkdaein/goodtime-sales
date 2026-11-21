@@ -1128,7 +1128,7 @@
     </button>
   </div>
 
-  <!-- 5. 야간 이벤트 화면 (언변버프 / 연승버프 / 도지코인 5~20배 풀매수) -->
+  <!-- 5. 야간 이벤트 화면 (언변버프 / 연승버프 / 도지 레버리지 X1000배) -->
   <div id="screen-night" class="screen">
     <div>
       <div class="webtoon-title" style="font-size:1.95rem; text-align:center;">🌙 <span id="night-day">1</span>일차 영업 종료 · 심야 승부수</div>
@@ -1158,11 +1158,11 @@
         <div class="char-card" data-night="doge_buff">
           <div>
             <div class="char-avatar">🐕🚀</div>
-            <span class="night-vibe-tag" style="background:#fef3c7; color:#92400e;">자본 도박 · 5~20배</span>
-            <div class="char-name">새벽 3시 도지코인 풀매수</div>
-            <div class="char-stats">판돈: <b>현재 보유금 전액</b><br>효과: 대박 시 <b>5 ~ 20배 폭등!</b> (실패 시 반토막)</div>
+            <span class="night-vibe-tag" style="background:#fef3c7; color:#92400e;">자본 버프 · 5~1,000배</span>
+            <div class="char-name">도지 레버리지 X1000배</div>
+            <div class="char-stats">투입: <b>보유금 풀스윙</b><br>효과: 떡상 시 <b>5 ~ 1,000배 랜덤 폭등!</b> (삐끗 시 반토막)</div>
           </div>
-          <div class="char-passive">일론 머스크 트윗 한 방이면 한 번에 3억(마닐라 VIP 룰렛) 직행!</div>
+          <div class="char-passive">손가락만 살짝 스쳐도 계좌가 우주선 타고 날아가는 광기의 레버리지! (단, 콧털 주의)</div>
         </div>
       </div>
 
@@ -1402,7 +1402,7 @@
   const NIGHT_BUFF_LABELS = {
     speech_buff: "🎤🔥 역삼동 도깨비 구라 특강 (언변 +5~20)",
     streak_buff: "🕯️⚡ 용한 점집 대박 부적 (5~20연승 & 야근 배수)",
-    doge_buff: "🐕🚀 새벽 3시 도지코인 풀매수 (5~20배 대박/반토막)"
+    doge_buff: "🐕🚀 도지 레버리지 X1000배 (자본 버프 · 5~1,000배 폭등/반토막)"
   };
 
   const CHARACTERS = {
@@ -2298,16 +2298,18 @@
       const isWin = Math.random() < 0.55;
 
       if (isWin) {
-        const mult = randInt(5, 20);
+        const mult = randInt(5, 1000);
         const resultMoney = baseSeed * mult;
         state.money = resultMoney;
-        logMsg = `🐕🚀 [일론 머스크 화성 밈 투하!!] 새벽 3시 도지코인이 <b>${mult}배</b> 폭등했습니다!!\n보유 자금이 단숨에 <b>${formatMoney(resultMoney)}</b>으로 불어났습니다!!`;
+        spawnMoneyParticles(mult >= 100);
+        logMsg = `🐕🚀 [도지 레버리지 X1000배 콧털 휘날리는 떡상!!] 개가 달을 넘어 안드로메다까지 점프했습니다!!\n무려 <b>${formatNum(mult)}배</b> 배당이 터져 보유 자금이 <b>${formatMoney(resultMoney)}</b>으로 폭등했습니다!!`;
       } else {
         const crashRatio = [0.2, 0.3, 0.5][randInt(0, 2)];
         const afterMoney = Math.floor(baseSeed * crashRatio);
         state.money = afterMoney;
         state.mental = Math.max(5, state.mental - 15);
-        logMsg = `🐕💥 [새벽 빔 맞고 강제 청산...] 차트가 지하실로 뚫고 내려갔습니다!\n보유 자금이 <b>${Math.round(crashRatio * 100)}%</b> 토막 나 <b>${formatMoney(afterMoney)}</b>이 되었습니다... (멘탈 -15)`;
+        triggerShake();
+        logMsg = `🐕💥 [레버리지 1,000배의 매운맛... 0.1% 음봉에 영혼 가출] 뚝 떨어진 꼬리 한 번에 눈물이 앞을 가립니다!\n보유 자금이 <b>${Math.round(crashRatio * 100)}%</b> 토막 나 <b>${formatMoney(afterMoney)}</b>이 되었습니다... (멘탈 -15)`;
       }
     }
 
