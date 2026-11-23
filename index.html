@@ -1106,7 +1106,7 @@
           </div>
           <div class="char-passive">
             <b>[패시브: 강철멘탈 & 오기]</b><br>
-            멘탈 피해·고소 확률 절반! 영업 실패 시 <b>'오기'가 발동해 언변력이 +7씩 영구 증가</b>합니다!
+            멘탈 피해·고소 확률 절반! 영업 실패 시 <b>'오기'가 발동해 언변력이 +8씩 영구 증가</b>합니다!
           </div>
         </div>
 
@@ -2383,7 +2383,7 @@
       if (state.charId === 'kim') mentalLoss = Math.round(mentalLoss * 1.5);
       if (state.charId === 'son') {
         mentalLoss = Math.round(mentalLoss * 0.5);
-        state.speech += 7;
+        state.speech += 8;
       }
 
       state.mental = Math.max(0, state.mental - mentalLoss);
@@ -2400,7 +2400,7 @@
       }
 
       if (state.charId === 'son') {
-        resultText += `\n🗿 [손대리 패시브 '오기' 발동!] 실패를 발판 삼아 언변력이 +7 영구 상승했습니다! (현재 언변: ${state.speech})`;
+        resultText += `\n🗿 [손대리 패시브 '오기' 발동!] 실패를 발판 삼아 언변력이 +8 영구 상승했습니다! (현재 언변: ${state.speech})`;
       }
 
       if (state.isOvertime) {
