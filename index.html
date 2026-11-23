@@ -316,6 +316,17 @@
       .char-grid { grid-template-columns: 1fr; }
     }
 
+    .escape-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin-top: 10px;
+    }
+
+    @media (max-width: 640px) {
+      .escape-grid { grid-template-columns: 1fr; }
+    }
+
     .char-card {
       border: 3px solid var(--border-color);
       border-radius: 12px;
@@ -559,6 +570,7 @@
     .btn-blue { background: #dbeafe; }
     .btn-orange { background: #ffedd5; }
     .btn-pink { background: #fce7f3; }
+    .btn-green { background: #dcfce7; }
     .btn-dark { background: #1e293b; color: #fff; }
     .btn-casino {
       background: linear-gradient(135deg, #fde047, #f59e0b);
@@ -1041,7 +1053,7 @@
 
     <div style="text-align:center; font-size:0.84rem; color:#64748b; line-height:1.5;">
       * 3연속 계약 성공 시 <b>[무한 폭주 야근모드 (연승마다 2배 무한 증식)]</b> 돌입!<br>
-      * 3억 원 돌파 시 <b>[마닐라 VIP 하이롤러 룰렛 (100배 ~ 1,500배)]</b> 직행!
+      * 3억 원 돌파 시 <b>[자카르타 잠적 vs 마닐라 VIP 룰렛 (최대 15,000배)]</b> 선택!
     </div>
   </div>
 
@@ -1062,7 +1074,7 @@
       <div class="subtitle">환영합니다, <b id="welcome-nick" style="color:#1e293b;">사원</b>님! 오늘 현장에 투입할 대리를 선택하세요.</div>
       
       <div class="mission-banner">
-        🚨 [긴급 미션] 3일 안에 최소 <b>1억 원</b>을 벌어라! (3억 원 돌파 시 <b>마닐라 VIP 룰렛</b> 직행!)
+        🚨 [긴급 미션] 3일 안에 최소 <b>1억 원</b>을 벌어라! (3억 원 돌파 시 <b>해외 도피 분기</b> 해금!)
       </div>
 
       <div class="char-grid">
@@ -1194,7 +1206,7 @@
     </button>
   </div>
 
-  <!-- 5. 야간 이벤트 화면 (언변버프 / 연승버프 / 도지 레버리지 X1000배) -->
+  <!-- 5. 야간 이벤트 화면 -->
   <div id="screen-night" class="screen">
     <div>
       <div class="webtoon-title" style="font-size:1.95rem; text-align:center;">🌙 <span id="night-day">1</span>일차 영업 종료 · 심야 승부수</div>
@@ -1250,7 +1262,63 @@
     </div>
   </div>
 
-  <!-- 5-2. 히든 스테이지: 필리핀 마닐라 VIP 하이롤러 룰렛 (1~36 랜덤 추첨 · 최대 1,500배) -->
+  <!-- 5-1. 3일차 종료 후 갈림길: 자카르타 잠적 vs 마닐라 카지노 -->
+  <div id="screen-escape-choice" class="screen">
+    <div>
+      <div class="webtoon-title" style="font-size:1.95rem; text-align:center;">✈️ 3일차 종료 · 운명의 갈림길</div>
+      <div class="subtitle" style="text-align:center;" id="escape-summary">
+        3억 원 이상을 확보했습니다! 김드래곤 실장의 뒤통수를 치고 어디로 튈까요?
+      </div>
+
+      <div class="webtoon-panel" style="margin-bottom:12px;">
+        <div class="portrait-box" style="margin-bottom:0;">
+          <div class="portrait-icon">💼💰</div>
+          <div>
+            <div class="speaker-name">현재 확보한 현금 가방: <span id="escape-money-text" style="color:#d97706;">3억</span></div>
+            <div class="speaker-role">인천공항 출국장 앞 · 단속반이 들이닥치기 직전입니다!</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="escape-grid">
+        <div class="char-card" id="btn-choose-jakarta" style="background:#f0fdf4; border-color:#15803d;">
+          <div>
+            <div class="char-avatar" style="background:#dcfce7;">🏝️🥂</div>
+            <span class="char-tag" style="background:#dcfce7; color:#15803d;">안전 도주 · 수익 100% 보존</span>
+            <div class="char-name">자카르타로 조용히 잠적</div>
+            <div class="char-stats">
+              결과: <b>현재 보유 금액 그대로 확정</b><br>
+              위험도: <b>없음 (완벽한 은신 성공)</b>
+            </div>
+          </div>
+          <div class="char-passive">
+            김드래곤 실장의 뒤통수를 치고 대포폰을 부순 뒤, 인도네시아 자카르타 최고급 풀빌라로 잠적해 여생을 즐깁니다!
+          </div>
+        </div>
+
+        <div class="char-card" id="btn-choose-manila" style="background:#fffbeb; border-color:#b45309;">
+          <div>
+            <div class="char-avatar" style="background:#fef3c7;">🎰🔥</div>
+            <span class="char-tag" style="background:#fef3c7; color:#b45309;">초고배당 승부 · 최대 15,000배!</span>
+            <div class="char-name">마닐라 VIP 카지노 행</div>
+            <div class="char-stats">
+              결과: <b>룰렛 3회 스핀으로 랭킹 1위 도전</b><br>
+              배당: <b>1,000배 / 3,000배 / 15,000배</b>
+            </div>
+          </div>
+          <div class="char-passive">
+            여기서 만족할 수 없다! 전 재산을 칩으로 바꿔 필리핀 마닐라 VIP 하이롤러 룰렛에서 전설의 잭팟을 노립니다!
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align:center; font-size:0.84rem; color:#64748b;">
+      * 원하는 행선지 카드를 터치하면 즉시 비행기에 탑승합니다!
+    </div>
+  </div>
+
+  <!-- 5-2. 히든 스테이지: 필리핀 마닐라 VIP 하이롤러 룰렛 (1,000배 / 3,000배 / 15,000배) -->
   <div id="screen-casino" class="screen">
     <div>
       <div class="header-row">
@@ -1279,7 +1347,7 @@
         </div>
 
         <div id="casino-log" style="background:rgba(15, 23, 42, 0.75); border:1.5px solid rgba(251, 191, 36, 0.45); padding:10px; border-radius:10px; text-align:center; font-size:0.9rem; min-height:46px; line-height:1.45;">
-          🎲 <b>1~36 숫자 랜덤 추첨!</b> 홀/짝(100배), 구간 선택(300배), 행운의 7·17·27(1,500배) 중 승부를 걸어보세요!
+          🎲 <b>1~36 숫자 랜덤 추첨!</b> 홀/짝(1,000배), 구간 선택(3,000배), 행운의 7·17·27(15,000배) 중 승부를 걸어보세요!
         </div>
       </div>
 
@@ -1287,14 +1355,14 @@
         <div class="bet-tier-box">
           <div class="bet-tier-title">
             <span>1️⃣ 첫 번째 베팅: 홀수 / 짝수 선택</span>
-            <span class="bet-tier-badge">배당 100배 · 적중률 50%</span>
+            <span class="bet-tier-badge">배당 1,000배 · 적중률 50%</span>
           </div>
           <div class="bet-row-2">
             <button type="button" class="bet-choice-btn selected" data-bet="odd">
-              🔴 홀수 (ODD) · <b>100배</b>
+              🔴 홀수 (ODD) · <b>1,000배</b>
             </button>
             <button type="button" class="bet-choice-btn" data-bet="even">
-              ⚫ 짝수 (EVEN) · <b>100배</b>
+              ⚫ 짝수 (EVEN) · <b>1,000배</b>
             </button>
           </div>
         </div>
@@ -1302,17 +1370,17 @@
         <div class="bet-tier-box">
           <div class="bet-tier-title">
             <span>2️⃣ 두 번째 베팅: 숫자 구간 선택</span>
-            <span class="bet-tier-badge">배당 300배 · 적중률 33.3%</span>
+            <span class="bet-tier-badge">배당 3,000배 · 적중률 33.3%</span>
           </div>
           <div class="bet-row-3">
             <button type="button" class="bet-choice-btn" data-bet="range_1_12">
-              🎯 1 ~ 12<br><span style="font-size:0.75rem; color:#475569;">300배</span>
+              🎯 1 ~ 12<br><span style="font-size:0.75rem; color:#475569;">3,000배</span>
             </button>
             <button type="button" class="bet-choice-btn" data-bet="range_13_24">
-              🎯 13 ~ 24<br><span style="font-size:0.75rem; color:#475569;">300배</span>
+              🎯 13 ~ 24<br><span style="font-size:0.75rem; color:#475569;">3,000배</span>
             </button>
             <button type="button" class="bet-choice-btn" data-bet="range_25_36">
-              🎯 25 ~ 36<br><span style="font-size:0.75rem; color:#475569;">300배</span>
+              🎯 25 ~ 36<br><span style="font-size:0.75rem; color:#475569;">3,000배</span>
             </button>
           </div>
         </div>
@@ -1320,10 +1388,10 @@
         <div class="bet-tier-box" style="background:#fffbeb; border-color:#f59e0b;">
           <div class="bet-tier-title">
             <span>3️⃣ 세 번째 베팅: 행운의 숫자 7 · 17 · 27</span>
-            <span class="bet-tier-badge" style="background:#b45309; color:#fff;">배당 1,500배 · 적중률 8.3%</span>
+            <span class="bet-tier-badge" style="background:#b45309; color:#fff;">배당 15,000배 · 적중률 8.3%</span>
           </div>
           <button type="button" class="bet-choice-btn jackpot-opt" data-bet="lucky7">
-            💎 행운의 숫자 [ 7 · 17 · 27 ] 적중 · <b>1,500배 초고배당!</b>
+            💎 행운의 숫자 [ 7 · 17 · 27 ] 적중 · <b>15,000배 초고배당!</b>
           </button>
         </div>
 
@@ -1441,7 +1509,7 @@
   const GOAL_MONEY = 10000;
   const CASINO_UNLOCK = 30000;
 
-  // 1만 원 단위 기준 큰 수 단위 (만 -> 억 -> 조 -> 경 -> 해 -> 자 -> 양 -> 구 -> 간 -> 정 -> 재 -> 극 -> 항하사 -> 아승기 -> 나유타 -> 불가사의 -> 무량대수)
+  // 1만 원 단위 기준 큰 수 단위
   const MAN_WON_UNITS = [
     { exp: 64, label: "무량대수" },
     { exp: 60, label: "불가사의" },
@@ -1706,20 +1774,20 @@
     }
   };
 
+  // 카지노 룰렛 배수 10배 상향 (1,000배 / 3,000배 / 15,000배)
   const ROULETTE_OPTIONS = {
-    odd: { label: "🔴 홀수 (ODD)", mult: 100, check: (n) => n % 2 === 1 },
-    even: { label: "⚫ 짝수 (EVEN)", mult: 100, check: (n) => n % 2 === 0 },
-    range_1_12: { label: "🎯 1 ~ 12 구간", mult: 300, check: (n) => n >= 1 && n <= 12 },
-    range_13_24: { label: "🎯 13 ~ 24 구간", mult: 300, check: (n) => n >= 13 && n <= 24 },
-    range_25_36: { label: "🎯 25 ~ 36 구간", mult: 300, check: (n) => n >= 25 && n <= 36 },
-    lucky7: { label: "💎 행운의 숫자 [7, 17, 27]", mult: 1500, check: (n) => n === 7 || n === 17 || n === 27 }
+    odd: { label: "🔴 홀수 (ODD)", mult: 1000, check: (n) => n % 2 === 1 },
+    even: { label: "⚫ 짝수 (EVEN)", mult: 1000, check: (n) => n % 2 === 0 },
+    range_1_12: { label: "🎯 1 ~ 12 구간", mult: 3000, check: (n) => n >= 1 && n <= 12 },
+    range_13_24: { label: "🎯 13 ~ 24 구간", mult: 3000, check: (n) => n >= 13 && n <= 24 },
+    range_25_36: { label: "🎯 25 ~ 36 구간", mult: 3000, check: (n) => n >= 25 && n <= 36 },
+    lucky7: { label: "💎 행운의 숫자 [7, 17, 27]", mult: 15000, check: (n) => n === 7 || n === 17 || n === 27 }
   };
 
   function randInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
-  // BigInt, 문자열, Number 모두 정밀도 손실 없이 안전 변환
   function toBigIntSafe(val) {
     if (typeof val === 'bigint') return val;
     if (typeof val === 'string') {
@@ -1850,7 +1918,6 @@
     db = getFirestore(app);
     document.getElementById('firebase-status-text').innerHTML = "🟢 <b>Firebase(goodtime-sales) 실시간 연결됨</b>";
 
-    // 문자열/숫자 혼합 및 무량대수 단위까지 정확 정렬하기 위해 상위 100개 조회 후 BigInt 내림차순 정렬
     const q = query(collection(db, "goodtime_rankings"), limit(100));
     onSnapshot(q, (snapshot) => {
       const liveRanks = snapshot.docs.map(doc => doc.data());
@@ -1868,7 +1935,6 @@
 
   async function saveRankingRecord(record) {
     const bigM = toBigIntSafe(record.money);
-    // 900조 만원 이상 초거대 단위도 절대 잘리지 않도록 문자열(string)로 원본 저장
     const cleanRecord = {
       nickname: record.nickname,
       charName: record.charName,
@@ -2415,9 +2481,9 @@
       state.isOvertime = false;
       state.overtimeRound = 0;
       if (toBigIntSafe(state.money) >= BigInt(CASINO_UNLOCK)) {
-        startCasinoStage();
+        showEscapeChoice();
       } else {
-        showEnding(false);
+        showEnding('normal');
       }
     } else {
       state.selectedNightBuff = null;
@@ -2439,6 +2505,15 @@
       document.getElementById('night-summary').textContent = `기본 숙면으로 멘탈 +15 회복! (현재 수익: ${formatMoney(state.money)} / 멘탈: ${state.mental}/${state.maxMental})`;
       showScreen('screen-night');
     }
+  }
+
+  // 3일차 종료 후 자카르타 잠적 vs 마닐라 카지노 선택 화면
+  function showEscapeChoice() {
+    document.getElementById('status-bar').style.display = 'none';
+    document.getElementById('escape-money-text').textContent = formatMoney(state.money);
+    document.getElementById('escape-summary').innerHTML =
+      `3억 원 돌파 성공! 김드래곤 실장의 뒤통수를 치고 <b>자카르타로 조용히 잠적</b>할지, <b>마닐라 카지노</b>에서 한 방을 노릴지 선택하세요!`;
+    showScreen('screen-escape-choice');
   }
 
   function previewNightBuff(type) {
@@ -2539,7 +2614,6 @@
 
     showScreen('screen-casino');
     updateRouletteUI();
-    alert(`💰 3억 원(${formatMoney(state.money)}) 돌파! 인생을 바꿀 마닐라 VIP 하이롤러 룰렛이 열립니다!\n1~36 랜덤 룰렛(홀짝 100배 · 구간 300배 · 행운의 7·17·27 1,500배)에서 일확천금을 노려보세요!`);
   }
 
   function updateRouletteUI() {
@@ -2561,7 +2635,7 @@
     const currentBig = toBigIntSafe(state.money);
     if (currentBig <= 0n) {
       alert("칩이 모두 떨어졌습니다!");
-      showEnding(true);
+      showEnding('casino');
       return;
     }
 
@@ -2598,11 +2672,11 @@
       if (isWin) {
         const payout = betAmount * BigInt(opt.mult);
         state.money = toBigIntSafe(state.money) + payout;
-        const isMega = opt.mult >= 300;
+        const isMega = opt.mult >= 3000;
         spawnMoneyParticles(isMega);
         document.getElementById('casino-result-badge').textContent = `🎉 [${landedNum}번] 적중! +${formatMoney(payout)}`;
-        msg = (opt.mult >= 1500)
-          ? `🚨💎 [1,500배 행운의 7 시리즈 잭팟!!] 1~36 중 【${landedNum}번】이 나왔습니다!! 베팅금 ${formatMoney(betAmount)} × 1,500배 = 【${formatMoney(payout)}】 대폭발!!`
+        msg = (opt.mult >= 15000)
+          ? `🚨💎 [15,000배 행운의 7 시리즈 울트라 잭팟!!] 1~36 중 【${landedNum}번】이 나왔습니다!! 베팅금 ${formatMoney(betAmount)} × 15,000배 = 【${formatMoney(payout)}】 대폭발!!`
           : `🔥 [룰렛 적중!] 1~36 중 【${landedNum}번 (${parityText})】 당첨! 베팅금 ${formatMoney(betAmount)} × ${formatNum(opt.mult)}배 = ${formatMoney(payout)} 획득!`;
       } else {
         triggerShake();
@@ -2621,7 +2695,8 @@
     }, 650);
   }
 
-  async function showEnding(fromCasino) {
+  // endingType: 'jakarta' | 'casino' | 'normal'
+  async function showEnding(endingType) {
     state.rouletteBusy = false;
     document.getElementById('status-bar').style.display = 'none';
     showScreen('screen-ending');
@@ -2631,7 +2706,12 @@
     let title = "";
     let desc = "";
 
-    if (fromCasino) {
+    if (endingType === 'jakarta') {
+      icon = "🏝️";
+      title = "완벽 잠적 엔딩: 자카르타의 밤";
+      desc = `김드래곤 실장의 뒤통수를 완벽하게 치고 대포폰을 한강에 던진 뒤, 확보한 ${formatMoney(bigMoney)}을 몽땅 챙겨 인도네시아 자카르타 최고급 풀빌라로 잠적했습니다! 단속반도 실장도 절대 찾지 못할 완벽한 승리입니다!`;
+      spawnMoneyParticles(true);
+    } else if (endingType === 'casino') {
       if (bigMoney <= 0n) {
         icon = "🥥";
         title = "카지노 파산 엔딩: 마닐라 노숙자";
@@ -2661,7 +2741,7 @@
       } else {
         icon = "🥂";
         title = "성공 엔딩: 목표(1억) 달성! 한탕 성공";
-        desc = `목표 금액 1억 원을 돌파해 총 ${formatMoney(bigMoney)}을 땡겼습니다! 김드래곤 실장에게 몫을 떼어주고 두둑한 현금 가방을 들고 유유히 잠적합니다! (3억 원 이상 모으면 인생을 바꿀 마닐라 카지노 룰렛으로 직행합니다!)`;
+        desc = `목표 금액 1억 원을 돌파해 총 ${formatMoney(bigMoney)}을 땡겼습니다! 김드래곤 실장에게 몫을 떼어주고 두둑한 현금 가방을 들고 유유히 잠적합니다! (3억 원 이상 모으면 자카르타 잠적 또는 마닐라 카지노 루트가 열립니다!)`;
       }
     }
 
@@ -2697,6 +2777,10 @@
   document.getElementById('btn-next-turn').addEventListener('click', nextTurn);
   document.getElementById('btn-night-next-day').addEventListener('click', proceedNextDay);
   document.getElementById('btn-ending-restart').addEventListener('click', restartGame);
+
+  // 3일차 종료 선택 버튼 바인딩
+  document.getElementById('btn-choose-jakarta').addEventListener('click', () => showEnding('jakarta'));
+  document.getElementById('btn-choose-manila').addEventListener('click', startCasinoStage);
 
   document.getElementById('btn-top-restart').addEventListener('click', () => {
     if (confirm("현재 진행 중인 영업을 포기하고 처음 화면(사원증 발급)으로 돌아가시겠습니까?")) {
@@ -2751,7 +2835,7 @@
   document.getElementById('btn-play-roulette').addEventListener('click', spinRouletteRound);
   document.getElementById('btn-casino-next').addEventListener('click', () => {
     if (state.rouletteRound >= 3 || toBigIntSafe(state.money) <= 0n) {
-      showEnding(true);
+      showEnding('casino');
     } else {
       state.rouletteRound++;
       updateRouletteUI();
