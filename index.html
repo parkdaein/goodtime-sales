@@ -1418,7 +1418,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, query, orderBy, limit, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getFirestore, collection, addDoc, query, limit, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyAb46SIjqEir6zRym1EWLvQYSRkj0t_oHo",
@@ -1433,9 +1433,9 @@
   let cachedRanks = [];
 
   const DEFAULT_RANKS = [
-    { nickname: "KDG (김드래곤)", charName: "김대리", money: 52000 },
-    { nickname: "PDR (VIP헌터)", charName: "박대리", money: 34000 },
-    { nickname: "SDR (야근장인)", charName: "손대리", money: 14500 }
+    { nickname: "KDG (김드래곤)", charName: "김대리", money: "52000" },
+    { nickname: "PDR (VIP헌터)", charName: "박대리", money: "34000" },
+    { nickname: "SDR (야근장인)", charName: "손대리", money: "14500" }
   ];
 
   const GOAL_MONEY = 10000;
@@ -1719,14 +1719,15 @@
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
-  // 숫자나 BigInt를 BigInt로 안전 변환 (Infinity나 과학적 표기법도 처리)
+  // BigInt, 문자열, Number 모두 정밀도 손실 없이 안전 변환
   function toBigIntSafe(val) {
     if (typeof val === 'bigint') return val;
+    if (typeof val === 'string') {
+      const cleaned = val.trim();
+      if (/^-?\d+$/.test(cleaned)) return BigInt(cleaned);
+    }
     if (typeof val === 'number') {
-      if (!Number.isFinite(val)) {
-        // Infinity 등 오버플로우 시 무량대수(10^64 만원) 이상으로 표현 가능한 큰 BigInt 반환
-        return 10n ** 72n;
-      }
+      if (!Number.isFinite(val)) return 10n ** 72n;
       if (Number.isInteger(val)) return BigInt(val);
       const str = val.toString();
       if (str.includes('e') || str.includes('E')) {
@@ -1735,15 +1736,18 @@
         const [intPart, fracPart = ''] = mantissa.split('.');
         const digits = intPart + fracPart;
         const shift = exp - fracPart.length;
-        if (shift >= 0) {
-          return BigInt(digits) * (10n ** BigInt(shift));
-        }
-        return BigInt(digits.slice(0, digits.length + shift) || '0');
+        return shift >= 0
+          ? BigInt(digits) * (10n ** BigInt(shift))
+          : BigInt(digits.slice(0, digits.length + shift) || '0');
       }
       return BigInt(Math.round(val));
     }
-    const parsed = Number(val);
-    return toBigIntSafe(parsed);
+    return 0n;
+  }
+
+  function compareBigIntDesc(a, b) {
+    const diff = toBigIntSafe(b.money) - toBigIntSafe(a.money);
+    return diff > 0n ? 1 : (diff < 0n ? -1 : 0);
   }
 
   function formatNum(num) {
@@ -1759,7 +1763,6 @@
     return Math.round(num).toLocaleString('ko-KR');
   }
 
-  // manWon 파라미터는 "만원" 단위의 숫자 또는 BigInt
   function formatMoney(manWon) {
     const bigVal = toBigIntSafe(manWon);
     if (bigVal === 0n) return "0원";
@@ -1837,6 +1840,7 @@
       updateAllRankingTables(cachedRanks);
     } else if (!db) {
       const localRanks = JSON.parse(localStorage.getItem("goodtime_ranks") || "[]");
+      localRanks.sort(compareBigIntDesc);
       updateAllRankingTables(localRanks.length > 0 ? localRanks : DEFAULT_RANKS);
     }
   }
@@ -1846,10 +1850,12 @@
     db = getFirestore(app);
     document.getElementById('firebase-status-text').innerHTML = "🟢 <b>Firebase(goodtime-sales) 실시간 연결됨</b>";
 
-    const q = query(collection(db, "goodtime_rankings"), orderBy("money", "desc"), limit(10));
+    // 문자열/숫자 혼합 및 무량대수 단위까지 정확 정렬하기 위해 상위 100개 조회 후 BigInt 내림차순 정렬
+    const q = query(collection(db, "goodtime_rankings"), limit(100));
     onSnapshot(q, (snapshot) => {
       const liveRanks = snapshot.docs.map(doc => doc.data());
-      updateAllRankingTables(liveRanks.length > 0 ? liveRanks : DEFAULT_RANKS);
+      liveRanks.sort(compareBigIntDesc);
+      updateAllRankingTables(liveRanks.length > 0 ? liveRanks.slice(0, 10) : DEFAULT_RANKS);
     }, (err) => {
       console.warn("Firestore 읽기 권한/네트워크 확인 필요:", err);
       document.getElementById('firebase-status-text').innerHTML = "🟠 <b>Firebase 규칙 확인 필요</b> (로컬 데이터 표시 중)";
@@ -1862,18 +1868,16 @@
 
   async function saveRankingRecord(record) {
     const bigM = toBigIntSafe(record.money);
-    const maxSafeBig = BigInt(Number.MAX_SAFE_INTEGER);
-    const safeMoney = bigM > maxSafeBig ? Number.MAX_SAFE_INTEGER : Number(bigM);
-
+    // 900조 만원 이상 초거대 단위도 절대 잘리지 않도록 문자열(string)로 원본 저장
     const cleanRecord = {
       nickname: record.nickname,
       charName: record.charName,
-      money: safeMoney
+      money: bigM.toString()
     };
 
     const localRanks = JSON.parse(localStorage.getItem("goodtime_ranks") || "[]");
     localRanks.push(cleanRecord);
-    localRanks.sort((a, b) => Number(toBigIntSafe(b.money) - toBigIntSafe(a.money)));
+    localRanks.sort(compareBigIntDesc);
     const top10 = localRanks.slice(0, 10);
     localStorage.setItem("goodtime_ranks", JSON.stringify(top10));
 
@@ -2284,7 +2288,7 @@
       }
 
       const nextMoney = toBigIntSafe(state.money) + earned;
-      state.money = nextMoney <= BigInt(Number.MAX_SAFE_INTEGER) ? Number(nextMoney) : nextMoney;
+      state.money = nextMoney;
       state.streak++;
 
       const isBigHit = isHidden || state.isOvertime || cust.isVip;
@@ -2344,8 +2348,7 @@
 
         if (Math.random() * 100 <= sueChance) {
           const fine = (skillType === 'seduce') ? 1200 : 800;
-          const nextMoney = toBigIntSafe(state.money) - BigInt(fine);
-          state.money = nextMoney <= BigInt(Number.MAX_SAFE_INTEGER) ? Number(nextMoney) : nextMoney;
+          state.money = toBigIntSafe(state.money) - BigInt(fine);
 
           const crimeName = (skillType === 'seduce') ? "통신매체이용음란죄(변태 행위)" : "허위사실 유포 및 사기미수";
           dragonBox.style.display = 'flex';
@@ -2461,8 +2464,7 @@
       const currentBig = toBigIntSafe(state.money);
       const paid = currentBig >= 200n;
       if (paid) {
-        const nextM = currentBig - 200n;
-        state.money = nextM <= BigInt(Number.MAX_SAFE_INTEGER) ? Number(nextM) : nextM;
+        state.money = currentBig - 200n;
       }
       const speechGain = randInt(5, 20);
       state.speech += speechGain;
@@ -2486,13 +2488,13 @@
       if (isWin) {
         const mult = BigInt(randInt(5, 1000));
         const resultMoney = baseSeed * mult;
-        state.money = resultMoney <= BigInt(Number.MAX_SAFE_INTEGER) ? Number(resultMoney) : resultMoney;
+        state.money = resultMoney;
         spawnMoneyParticles(mult >= 100n);
         logMsg = `🐕🚀 [도지 레버리지 X1000배 콧털 휘날리는 떡상!!] 개가 달을 넘어 안드로메다까지 점프했습니다!!\n무려 <b>${formatNum(mult)}배</b> 배당이 터져 보유 자금이 <b>${formatMoney(resultMoney)}</b>으로 폭등했습니다!!`;
       } else {
         const crashPct = [20, 30, 50][randInt(0, 2)];
         const afterMoney = (baseSeed * BigInt(crashPct)) / 100n;
-        state.money = afterMoney <= BigInt(Number.MAX_SAFE_INTEGER) ? Number(afterMoney) : afterMoney;
+        state.money = afterMoney;
         state.mental = Math.max(5, state.mental - 15);
         triggerShake();
         logMsg = `🐕💥 [레버리지 1,000배의 매운맛... 0.1% 음봉에 영혼 가출] 뚝 떨어진 꼬리 한 번에 눈물이 앞을 가립니다!\n보유 자금이 <b>${crashPct}%</b> 토막 나 <b>${formatMoney(afterMoney)}</b>이 되었습니다... (멘탈 -15)`;
@@ -2568,8 +2570,7 @@
     const ratioPct = BigInt(Math.round(state.rouletteRatio * 100));
     const rawBet = (currentBig * ratioPct) / 100n;
     const betAmount = rawBet < 1n ? 1n : (rawBet > currentBig ? currentBig : rawBet);
-    const afterBet = currentBig - betAmount;
-    state.money = afterBet <= BigInt(Number.MAX_SAFE_INTEGER) ? Number(afterBet) : afterBet;
+    state.money = currentBig - betAmount;
     document.getElementById('casino-money').textContent = formatMoney(state.money);
 
     const opt = ROULETTE_OPTIONS[state.rouletteBet];
@@ -2596,8 +2597,7 @@
       let msg = "";
       if (isWin) {
         const payout = betAmount * BigInt(opt.mult);
-        const totalAfterWin = toBigIntSafe(state.money) + payout;
-        state.money = totalAfterWin <= BigInt(Number.MAX_SAFE_INTEGER) ? Number(totalAfterWin) : totalAfterWin;
+        state.money = toBigIntSafe(state.money) + payout;
         const isMega = opt.mult >= 300;
         spawnMoneyParticles(isMega);
         document.getElementById('casino-result-badge').textContent = `🎉 [${landedNum}번] 적중! +${formatMoney(payout)}`;
