@@ -40,7 +40,7 @@
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      padding: 12px;
+      padding: 10px;
       transition: background-color 0.4s;
     }
 
@@ -192,119 +192,72 @@
     .screen.active { display: flex; }
 
     /* ============================================================
-       오락실 타이틀 & 프롤로그 도입부 전용 스타일
+       오락실 풀스크린 타이틀 화면 (이미지 + 게임시작하기 버튼 전용)
        ============================================================ */
-    .arcade-hero {
-      position: relative;
-      border: 3px solid var(--border-color);
-      border-radius: 14px;
-      overflow: hidden;
-      box-shadow: 4px 4px 0px var(--border-color);
-      margin-bottom: 14px;
+    #screen-prologue {
+      padding: 14px;
+      min-height: 84vh;
+      gap: 14px;
       background: #0f172a;
     }
 
-    .arcade-hero img {
+    .arcade-hero-full {
+      position: relative;
+      flex: 1;
       width: 100%;
-      max-height: 270px;
+      border: 3px solid #fde047;
+      border-radius: 14px;
+      overflow: hidden;
+      background: #1e293b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 360px;
+    }
+
+    .arcade-hero-full img {
+      width: 100%;
+      height: 100%;
       object-fit: cover;
       display: block;
     }
 
-    .arcade-coin-bar {
-      background: #0f172a;
+    .floating-rank-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      z-index: 10;
+      background: rgba(15, 23, 42, 0.85);
       color: #fde047;
-      padding: 7px 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-family: 'Jua', sans-serif;
-      font-size: 0.92rem;
-      border-top: 2.5px solid var(--border-color);
-    }
-
-    .blink-coin {
-      animation: coinBlink 1s steps(2, start) infinite;
-      color: #4ade80;
-    }
-
-    @keyframes coinBlink {
-      to { visibility: hidden; }
-    }
-
-    .story-cut-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      margin-bottom: 14px;
-    }
-
-    @media (max-width: 660px) {
-      .story-cut-grid { grid-template-columns: 1fr; }
-    }
-
-    .story-cut {
-      border: 2.5px solid var(--border-color);
-      border-radius: 12px;
-      background: #f8fafc;
-      padding: 13px;
-      box-shadow: 3px 3px 0px var(--border-color);
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .story-cut-header {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-family: 'Jua', sans-serif;
-      font-size: 1.05rem;
-      color: #1e293b;
-    }
-
-    .story-badge {
-      background: #1e293b;
-      color: #fde047;
-      font-size: 0.72rem;
-      padding: 2px 8px;
-      border-radius: 6px;
-      font-family: 'Pretendard', sans-serif;
+      border: 2px solid #fde047;
+      border-radius: 999px;
+      padding: 6px 13px;
+      font-size: 0.85rem;
       font-weight: 800;
-    }
-
-    .job-ad-paper {
-      background: #fef9c3;
-      border: 2px dashed #b45309;
-      border-radius: 8px;
-      padding: 9px 10px;
-      font-size: 0.83rem;
-      color: #78350f;
-      line-height: 1.45;
-      font-weight: 700;
-    }
-
-    .phone-call-box {
-      background: #fff;
-      border: 2px solid #cbd5e1;
-      border-radius: 8px;
-      padding: 9px 10px;
-      font-size: 0.84rem;
-      line-height: 1.5;
-      color: #1e293b;
+      cursor: pointer;
+      box-shadow: 2px 2px 0px #000;
     }
 
     @keyframes startBtnPulse {
-      0%, 100% { transform: scale(1); box-shadow: 4px 4px 0px #1e293b; }
-      50% { transform: scale(1.015); box-shadow: 0 0 16px rgba(250, 204, 21, 0.8), 4px 4px 0px #1e293b; }
+      0%, 100% { transform: scale(1); box-shadow: 0 4px 0px #b45309; }
+      50% { transform: scale(1.015); box-shadow: 0 0 20px rgba(250, 204, 21, 0.9), 0 4px 0px #b45309; }
     }
 
     .btn-arcade-start {
       background: linear-gradient(135deg, #fde047 0%, #facc15 100%);
+      color: #1e293b;
+      border: 3px solid #1e293b;
+      border-radius: 14px;
       font-family: 'Jua', sans-serif;
-      font-size: 1.3rem;
-      padding: 15px 18px;
-      animation: startBtnPulse 1.4s infinite ease-in-out;
+      font-size: 1.55rem;
+      padding: 18px 20px;
+      width: 100%;
+      cursor: pointer;
+      animation: startBtnPulse 1.3s infinite ease-in-out;
+    }
+
+    .btn-arcade-start:active {
+      transform: translateY(2px);
     }
 
     .header-row {
@@ -1137,56 +1090,16 @@
   </div>
 
   <!-- =====================================================================
-       -1. 오락실 타이틀 & 프롤로그 도입부 화면 (가장 먼저 뜨는 첫 화면)
+       첫 화면: 타이틀 이미지 + 게임 시작하기 버튼 (모바일 풀스크린 최적화)
        ===================================================================== -->
   <div id="screen-prologue" class="screen active">
-    <div>
-      <!-- 오락실 타이틀 히어로 이미지 -->
-      <div class="arcade-hero">
-        <img src="thumbnail.png" alt="굿타임 영업백서 타이틀" onerror="this.style.display='none'">
-        <div class="arcade-coin-bar">
-          <span class="blink-coin">🪙 INSERT COIN · PRESS START</span>
-          <button type="button" class="btn-mini" id="btn-prologue-rank" style="padding:3px 9px;">🏆 실시간 랭킹</button>
-        </div>
-      </div>
-
-      <div class="promo-banner">
-        🍗 <b>[긴급 이벤트] 11월 27일 밤 10시까지 랭킹 1위에게 치킨 기프티콘 증정!</b> 🔥
-      </div>
-
-      <!-- 20살 휴학생 알바 구직 스토리 2컷 만화 -->
-      <div class="story-cut-grid">
-        <div class="story-cut">
-          <div class="story-cut-header">
-            <span class="story-badge">SCENE 01</span>
-            <span>🍜 20살 휴학생의 텅 빈 통장</span>
-          </div>
-          <p style="font-size:0.84rem; color:#334155; line-height:1.45;">
-            월세와 등록금을 벌기 위해 여름방학 알바를 찾던 20살 휴학생. 컵라면 국물을 마시며 알바 사이트를 뒤지다 눈이 번쩍 뜨이는 공고를 발견한다!
-          </p>
-          <div class="job-ad-paper">
-            📢 <b>[초단기 꿀알바 급구] 굿타임 백화점 분양팀</b><br>
-            • 자격: 목소리 크고 패기 넘치는 20대 누구나<br>
-            • 급여: <b>3일 근무 후 최소 1억 원 정산 가능!</b><br>
-            • 문의: 김드래곤 실장 (즉시 면접 · 당일 출근)
-          </div>
-        </div>
-
-        <div class="story-cut">
-          <div class="story-cut-header">
-            <span class="story-badge">SCENE 02</span>
-            <span>📞 김드래곤 실장과의 첫 통화</span>
-          </div>
-          <div class="phone-call-box">
-            <b>🧑 20살 휴학생:</b> "여보세요? 저기... 알바 공고 보고 전화드렸는데요. 영업은 한 번도 안 해봤는데 괜찮을까요?"<br><br>
-            <b>🐉 김드래곤 실장:</b> "크하하! 젊은 친구 목소리가 아주 쩌렁쩌렁하네! 경력 필요 없어! <b>구청 단속 뜨기 전까지 3일만 전화기 붙잡고 버텨!</b> 당장 출근해!!"
-          </div>
-        </div>
-      </div>
+    <div class="arcade-hero-full">
+      <button type="button" class="floating-rank-btn" id="btn-prologue-rank">🏆 랭킹</button>
+      <img src="thumbnail.png" alt="굿타임 영업백서 타이틀" onerror="this.style.display='none'">
     </div>
 
-    <button type="button" class="btn btn-arcade-start" style="width:100%;" id="btn-prologue-start">
-      🕹️ 게임 시작하기 (사원증 발급받으러 가기) ➡️
+    <button type="button" class="btn-arcade-start" id="btn-prologue-start">
+      🕹️ 게임 시작하기
     </button>
   </div>
 
@@ -1197,7 +1110,7 @@
         <div class="webtoon-title">🏢 굿타임 영업백서</div>
         <div style="display:flex; gap:6px;">
           <button type="button" class="btn" style="padding:8px 12px; font-size:0.88rem;" id="btn-back-prologue">
-            🎬 도입부 다시보기
+            🏠 타이틀로
           </button>
           <button type="button" class="btn btn-primary" style="padding:8px 14px; font-size:0.88rem;" id="btn-entry-rank">
             🏆 실시간 랭킹
@@ -1695,7 +1608,6 @@
   const GOAL_MONEY = 10000;
   const CASINO_UNLOCK = 30000;
 
-  // 1만 원 단위 기준 큰 수 단위 (구골 10^100원 = 10^96만원까지 확장)
   const MAN_WON_UNITS = [
     { exp: 96, label: "구골" },
     { exp: 64, label: "무량대수" },
@@ -1967,7 +1879,6 @@
     }
   };
 
-  // 도파민형 카지노 룰렛 배수 (1,000배 / 10,000배 / 100,000배)
   const ROULETTE_OPTIONS = {
     odd: { label: "🔴 홀수 (ODD)", mult: 1000, check: (n) => n % 2 === 1 },
     even: { label: "⚫ 짝수 (EVEN)", mult: 1000, check: (n) => n % 2 === 0 },
@@ -2989,7 +2900,6 @@
     refreshRankingsUI();
   }
 
-  // 프롤로그 화면 버튼 바인딩
   document.getElementById('btn-prologue-start').addEventListener('click', () => showScreen('screen-nickname'));
   document.getElementById('btn-back-prologue').addEventListener('click', () => showScreen('screen-prologue'));
 
