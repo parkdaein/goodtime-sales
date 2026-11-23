@@ -4,6 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>굿타임 영업백서 - 3일간의 기적</title>
+  
+  <!-- 카카오톡 / SNS 링크 공유 썸네일 설정 (Open Graph) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://parkdaein.github.io/goodtime-sales/" />
+  <meta property="og:title" content="🏢 굿타임 영업백서 - 3일간의 기적" />
+  <meta property="og:description" content="단속반이 들이닥치기 전 유령 백화점을 완판하고 튀어라! (실시간 랭킹 경쟁)" />
+  <meta property="og:image" content="https://parkdaein.github.io/goodtime-sales/thumbnail.png" />
+
   <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
   <style>
@@ -346,7 +354,7 @@
       background: #fefce8;
     }
 
-    .char-card.night-selected {
+    .char-card.night-selected, .char-card.escape-selected {
       background: #fef08a;
       border-color: #b45309;
       box-shadow: 0 0 0 3px #f59e0b, 5px 5px 0px #1e293b;
@@ -444,7 +452,7 @@
       border: 1.5px solid #1e293b;
     }
 
-    .night-confirm-box {
+    .night-confirm-box, .escape-confirm-box {
       margin-top: 14px;
       display: flex;
       flex-direction: column;
@@ -452,7 +460,7 @@
       align-items: center;
     }
 
-    .night-selected-label {
+    .night-selected-label, .escape-selected-label {
       font-size: 0.9rem;
       font-weight: 800;
       color: #1e293b;
@@ -1052,8 +1060,8 @@
     </div>
 
     <div style="text-align:center; font-size:0.84rem; color:#64748b; line-height:1.5;">
-      * 3연속 계약 성공 시 <b>[무한 폭주 야근모드 (연승마다 2배 무한 증식)]</b> 돌입!<br>
-      * 3억 원 돌파 시 <b>[자카르타 잠적 vs 마닐라 VIP 룰렛 (최대 15,000배)]</b> 선택!
+- 3연속 계약 성공 시 <b>[무한 폭주 야근모드 (연승마다 2배 무한 증식)]</b> 돌입!<br>
+- 3억 원 돌파 시 <b>[자카르타 잠적 vs 마닐라 VIP 룰렛 (최대 15,000배)]</b> 선택!
     </div>
   </div>
 
@@ -1128,7 +1136,7 @@
       </div>
     </div>
     <div style="text-align:center; font-size:0.84rem; color:#64748b;">
-      * 원하는 캐릭터 카드를 터치하여 임무를 전달받으세요!
+- 원하는 캐릭터 카드를 터치하여 임무를 전달받으세요!
     </div>
   </div>
 
@@ -1281,7 +1289,7 @@
       </div>
 
       <div class="escape-grid">
-        <div class="char-card" id="btn-choose-jakarta" style="background:#f0fdf4; border-color:#15803d;">
+        <div class="char-card" id="card-jakarta" data-escape="jakarta" style="background:#f0fdf4; border-color:#15803d;">
           <div>
             <div class="char-avatar" style="background:#dcfce7;">🏝️🥂</div>
             <span class="char-tag" style="background:#dcfce7; color:#15803d;">안전 도주 · 수익 100% 보존</span>
@@ -1296,7 +1304,7 @@
           </div>
         </div>
 
-        <div class="char-card" id="btn-choose-manila" style="background:#fffbeb; border-color:#b45309;">
+        <div class="char-card" id="card-manila" data-escape="manila" style="background:#fffbeb; border-color:#b45309;">
           <div>
             <div class="char-avatar" style="background:#fef3c7;">🎰🔥</div>
             <span class="char-tag" style="background:#fef3c7; color:#b45309;">초고배당 승부 · 최대 15,000배!</span>
@@ -1311,10 +1319,19 @@
           </div>
         </div>
       </div>
+
+      <div class="escape-confirm-box" id="escape-confirm-box">
+        <div class="escape-selected-label" id="escape-selected-label">
+          선택된 탈출 행선지: 없음 (위 카드 중 하나를 선택하세요)
+        </div>
+        <button type="button" class="btn btn-primary" style="width:100%; font-size:1.05rem;" id="btn-confirm-escape" disabled>
+          ✈️ 비행기 탑승 및 도망치기 확정 ✅
+        </button>
+      </div>
     </div>
 
-    <div style="text-align:center; font-size:0.84rem; color:#64748b;">
-      * 원하는 행선지 카드를 터치하면 즉시 비행기에 탑승합니다!
+    <div style="text-align:center; font-size:0.84rem; color:#64748b; margin-top:10px;">
+- 행선지 카드를 터치한 후, 하단 확정 버튼을 눌러 최종 탈출을 감행하세요!
     </div>
   </div>
 
@@ -1547,6 +1564,7 @@
     hiddenSkills: [],
     selectedNightBuff: null,
     nightChoiceDone: false,
+    selectedEscapeRoute: null, // 신규: 탈출 분기 선택 상태 저장용
     rouletteRound: 1,
     rouletteBet: 'odd',
     rouletteRatio: 0.3,
@@ -1557,6 +1575,11 @@
     speech_buff: "🎤🔥 역삼동 도깨비 구라 특강 (언변 +5~20)",
     streak_buff: "🕯️⚡ 용한 점집 대박 부적 (5~20연승 & 야근 배수)",
     doge_buff: "🐕🚀 도지 레버리지 X1000배 (자본 버프 · 5~1,000배 폭등/반토막)"
+  };
+
+  const ESCAPE_ROUTE_LABELS = {
+    jakarta: "🏝️🥂 자카르타로 조용히 잠적 (수익 100% 보존)",
+    manila: "🎰🔥 마닐라 VIP 카지노 행 (룰렛으로 최대 15,000배 도전)"
   };
 
   const CHARACTERS = {
@@ -1639,7 +1662,7 @@
       weakSkill: "logic",
       greeting: "여보세요. 우리 건물 1층 카페 월세 밀린 세입자 아니지? 아니면 또 기획부동산이야?",
       successReply: "그래, 수치로 딱딱 떨어지니까 믿음이 가네. 내일 은행 가서 바로 이체해 줄게!",
-      failLogic: "말이 앞뒤가 안 맞잖아! 우리 집 보일러 배관보다 구멍이 숭숭 뚫렸구먼!",
+      failLogic: "말이 앞뒤가 안 맞잖아! 우리 집 보일러 배관보다 구멍이 숭 뚫렸구먼!",
       failExaggerate: "역세권이고 뭐고 내 눈으로 직접 보기 전엔 절대 안 믿어! 경찰 부르기 전에 끊어!",
       failSeduce: "아이고 맙소사! 할머니한테 무슨 추파를 던지는 거야?! 쇠파이프 든다!"
     },
@@ -1774,7 +1797,7 @@
     }
   };
 
-  // 카지노 룰렛 배수 10배 상향 (1,000배 / 3,000배 / 15,000배)
+  // 카지노 룰렛 배수 (1,000배 / 3,000배 / 15,000배)
   const ROULETTE_OPTIONS = {
     odd: { label: "🔴 홀수 (ODD)", mult: 1000, check: (n) => n % 2 === 1 },
     even: { label: "⚫ 짝수 (EVEN)", mult: 1000, check: (n) => n % 2 === 0 },
@@ -2152,6 +2175,7 @@
     state.streak = 0;
     state.selectedNightBuff = null;
     state.nightChoiceDone = false;
+    state.selectedEscapeRoute = null; // 초기화
     state.rouletteBusy = false;
     updateDogeCardVisuals(false);
     document.body.classList.remove('overtime-bg');
@@ -2175,6 +2199,7 @@
     state.overtimeRound = 0;
     state.selectedNightBuff = null;
     state.nightChoiceDone = false;
+    state.selectedEscapeRoute = null; // 초기화
 
     updateStatusBar();
     showScreen('screen-intro');
@@ -2507,13 +2532,46 @@
     }
   }
 
-  // 3일차 종료 후 자카르타 잠적 vs 마닐라 카지노 선택 화면
+  // 3일차 종료 후 자카르타 잠적 vs 마닐라 카지노 선택 화면 (확정 버튼화 개편)
   function showEscapeChoice() {
     document.getElementById('status-bar').style.display = 'none';
     document.getElementById('escape-money-text').textContent = formatMoney(state.money);
     document.getElementById('escape-summary').innerHTML =
       `3억 원 돌파 성공! 김드래곤 실장의 뒤통수를 치고 <b>자카르타로 조용히 잠적</b>할지, <b>마닐라 카지노</b>에서 한 방을 노릴지 선택하세요!`;
+    
+    // 카드 초기화 및 신규 선택 로직 적용
+    state.selectedEscapeRoute = null;
+    document.querySelectorAll('#screen-escape-choice .char-card').forEach(c => {
+      c.classList.remove('escape-selected');
+      c.style.opacity = '1';
+    });
+    document.getElementById('escape-selected-label').textContent = "선택된 탈출 행선지: 없음 (위 카드 중 하나를 선택하세요)";
+    document.getElementById('btn-confirm-escape').disabled = true;
+    
     showScreen('screen-escape-choice');
+  }
+
+  // 탈출 가이드 선택용 함수
+  function previewEscapeRoute(route) {
+    state.selectedEscapeRoute = route;
+
+    document.querySelectorAll('#screen-escape-choice .char-card').forEach(card => {
+      card.classList.toggle('escape-selected', card.dataset.escape === route);
+    });
+
+    document.getElementById('escape-selected-label').textContent = `선택된 탈출 행선지: ${ESCAPE_ROUTE_LABELS[route]}`;
+    document.getElementById('btn-confirm-escape').disabled = false;
+  }
+
+  // 최종 탈출 행선지 결정
+  function confirmEscapeRoute() {
+    if (!state.selectedEscapeRoute) return;
+
+    if (state.selectedEscapeRoute === 'jakarta') {
+      showEnding('jakarta');
+    } else if (state.selectedEscapeRoute === 'manila') {
+      startCasinoStage();
+    }
   }
 
   function previewNightBuff(type) {
@@ -2695,7 +2753,6 @@
     }, 650);
   }
 
-  // endingType: 'jakarta' | 'casino' | 'normal'
   async function showEnding(endingType) {
     state.rouletteBusy = false;
     document.getElementById('status-bar').style.display = 'none';
@@ -2778,9 +2835,10 @@
   document.getElementById('btn-night-next-day').addEventListener('click', proceedNextDay);
   document.getElementById('btn-ending-restart').addEventListener('click', restartGame);
 
-  // 3일차 종료 선택 버튼 바인딩
-  document.getElementById('btn-choose-jakarta').addEventListener('click', () => showEnding('jakarta'));
-  document.getElementById('btn-choose-manila').addEventListener('click', startCasinoStage);
+  // 3일차 종료 선택 및 확정 버튼 이벤트 연결
+  document.getElementById('card-jakarta').addEventListener('click', () => previewEscapeRoute('jakarta'));
+  document.getElementById('card-manila').addEventListener('click', () => previewEscapeRoute('manila'));
+  document.getElementById('btn-confirm-escape').addEventListener('click', confirmEscapeRoute);
 
   document.getElementById('btn-top-restart').addEventListener('click', () => {
     if (confirm("현재 진행 중인 영업을 포기하고 처음 화면(사원증 발급)으로 돌아가시겠습니까?")) {
