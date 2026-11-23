@@ -89,14 +89,8 @@
     }
 
     @keyframes dogeBurst {
-      0% {
-        transform: translate(-50%, -50%) scale(0.4) rotate(0deg);
-        opacity: 1;
-      }
-      100% {
-        transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(1.25) rotate(var(--rot));
-        opacity: 0;
-      }
+      0% { transform: translate(-50%, -50%) scale(0.4) rotate(0deg); opacity: 1; }
+      100% { transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(1.25) rotate(var(--rot)); opacity: 0; }
     }
 
     /* 계약 성사 도장 스탬프 */
@@ -190,12 +184,128 @@
 
     .screen {
       display: none;
-      padding: 22px;
+      padding: 20px;
       min-height: 520px;
       flex-direction: column;
       justify-content: space-between;
     }
     .screen.active { display: flex; }
+
+    /* ============================================================
+       오락실 타이틀 & 프롤로그 도입부 전용 스타일
+       ============================================================ */
+    .arcade-hero {
+      position: relative;
+      border: 3px solid var(--border-color);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 4px 4px 0px var(--border-color);
+      margin-bottom: 14px;
+      background: #0f172a;
+    }
+
+    .arcade-hero img {
+      width: 100%;
+      max-height: 270px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .arcade-coin-bar {
+      background: #0f172a;
+      color: #fde047;
+      padding: 7px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: 'Jua', sans-serif;
+      font-size: 0.92rem;
+      border-top: 2.5px solid var(--border-color);
+    }
+
+    .blink-coin {
+      animation: coinBlink 1s steps(2, start) infinite;
+      color: #4ade80;
+    }
+
+    @keyframes coinBlink {
+      to { visibility: hidden; }
+    }
+
+    .story-cut-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    @media (max-width: 660px) {
+      .story-cut-grid { grid-template-columns: 1fr; }
+    }
+
+    .story-cut {
+      border: 2.5px solid var(--border-color);
+      border-radius: 12px;
+      background: #f8fafc;
+      padding: 13px;
+      box-shadow: 3px 3px 0px var(--border-color);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .story-cut-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Jua', sans-serif;
+      font-size: 1.05rem;
+      color: #1e293b;
+    }
+
+    .story-badge {
+      background: #1e293b;
+      color: #fde047;
+      font-size: 0.72rem;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-family: 'Pretendard', sans-serif;
+      font-weight: 800;
+    }
+
+    .job-ad-paper {
+      background: #fef9c3;
+      border: 2px dashed #b45309;
+      border-radius: 8px;
+      padding: 9px 10px;
+      font-size: 0.83rem;
+      color: #78350f;
+      line-height: 1.45;
+      font-weight: 700;
+    }
+
+    .phone-call-box {
+      background: #fff;
+      border: 2px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 9px 10px;
+      font-size: 0.84rem;
+      line-height: 1.5;
+      color: #1e293b;
+    }
+
+    @keyframes startBtnPulse {
+      0%, 100% { transform: scale(1); box-shadow: 4px 4px 0px #1e293b; }
+      50% { transform: scale(1.015); box-shadow: 0 0 16px rgba(250, 204, 21, 0.8), 4px 4px 0px #1e293b; }
+    }
+
+    .btn-arcade-start {
+      background: linear-gradient(135deg, #fde047 0%, #facc15 100%);
+      font-family: 'Jua', sans-serif;
+      font-size: 1.3rem;
+      padding: 15px 18px;
+      animation: startBtnPulse 1.4s infinite ease-in-out;
+    }
 
     .header-row {
       display: flex;
@@ -221,20 +331,20 @@
       line-height: 1.45;
     }
 
-    /* 첫 화면 치킨 프로모션 배너 */
+    /* 치킨 프로모션 배너 */
     .promo-banner {
       background: linear-gradient(90deg, #fff7ed 0%, #ffedd5 50%, #fef9c3 100%);
       border: 2.5px solid #ea580c;
       border-radius: 12px;
-      padding: 10px 14px;
-      margin-bottom: 14px;
+      padding: 9px 12px;
+      margin-bottom: 12px;
       box-shadow: 3px 3px 0px #ea580c;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
       text-align: center;
-      font-size: 0.92rem;
+      font-size: 0.9rem;
       font-weight: 800;
       color: #9a3412;
       line-height: 1.4;
@@ -1026,14 +1136,73 @@
     </div>
   </div>
 
-  <!-- 0. 입장 화면 (닉네임 입력) -->
-  <div id="screen-nickname" class="screen active">
+  <!-- =====================================================================
+       -1. 오락실 타이틀 & 프롤로그 도입부 화면 (가장 먼저 뜨는 첫 화면)
+       ===================================================================== -->
+  <div id="screen-prologue" class="screen active">
+    <div>
+      <!-- 오락실 타이틀 히어로 이미지 -->
+      <div class="arcade-hero">
+        <img src="thumbnail.png" alt="굿타임 영업백서 타이틀" onerror="this.style.display='none'">
+        <div class="arcade-coin-bar">
+          <span class="blink-coin">🪙 INSERT COIN · PRESS START</span>
+          <button type="button" class="btn-mini" id="btn-prologue-rank" style="padding:3px 9px;">🏆 실시간 랭킹</button>
+        </div>
+      </div>
+
+      <div class="promo-banner">
+        🍗 <b>[긴급 이벤트] 11월 27일 밤 10시까지 랭킹 1위에게 치킨 기프티콘 증정!</b> 🔥
+      </div>
+
+      <!-- 20살 휴학생 알바 구직 스토리 2컷 만화 -->
+      <div class="story-cut-grid">
+        <div class="story-cut">
+          <div class="story-cut-header">
+            <span class="story-badge">SCENE 01</span>
+            <span>🍜 20살 휴학생의 텅 빈 통장</span>
+          </div>
+          <p style="font-size:0.84rem; color:#334155; line-height:1.45;">
+            월세와 등록금을 벌기 위해 여름방학 알바를 찾던 20살 휴학생. 컵라면 국물을 마시며 알바 사이트를 뒤지다 눈이 번쩍 뜨이는 공고를 발견한다!
+          </p>
+          <div class="job-ad-paper">
+            📢 <b>[초단기 꿀알바 급구] 굿타임 백화점 분양팀</b><br>
+            • 자격: 목소리 크고 패기 넘치는 20대 누구나<br>
+            • 급여: <b>3일 근무 후 최소 1억 원 정산 가능!</b><br>
+            • 문의: 김드래곤 실장 (즉시 면접 · 당일 출근)
+          </div>
+        </div>
+
+        <div class="story-cut">
+          <div class="story-cut-header">
+            <span class="story-badge">SCENE 02</span>
+            <span>📞 김드래곤 실장과의 첫 통화</span>
+          </div>
+          <div class="phone-call-box">
+            <b>🧑 20살 휴학생:</b> "여보세요? 저기... 알바 공고 보고 전화드렸는데요. 영업은 한 번도 안 해봤는데 괜찮을까요?"<br><br>
+            <b>🐉 김드래곤 실장:</b> "크하하! 젊은 친구 목소리가 아주 쩌렁쩌렁하네! 경력 필요 없어! <b>구청 단속 뜨기 전까지 3일만 전화기 붙잡고 버텨!</b> 당장 출근해!!"
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button type="button" class="btn btn-arcade-start" style="width:100%;" id="btn-prologue-start">
+      🕹️ 게임 시작하기 (사원증 발급받으러 가기) ➡️
+    </button>
+  </div>
+
+  <!-- 0. 사원증 발급 화면 (닉네임 입력) -->
+  <div id="screen-nickname" class="screen">
     <div>
       <div class="header-row">
         <div class="webtoon-title">🏢 굿타임 영업백서</div>
-        <button type="button" class="btn btn-primary" style="padding:8px 14px; font-size:0.9rem;" id="btn-entry-rank">
-          🏆 실시간 랭킹 보기
-        </button>
+        <div style="display:flex; gap:6px;">
+          <button type="button" class="btn" style="padding:8px 12px; font-size:0.88rem;" id="btn-back-prologue">
+            🎬 도입부 다시보기
+          </button>
+          <button type="button" class="btn btn-primary" style="padding:8px 14px; font-size:0.88rem;" id="btn-entry-rank">
+            🏆 실시간 랭킹
+          </button>
+        </div>
       </div>
       <div class="subtitle">3일 뒤 구청 단속이 들이닥친다! 유령 백화점을 분양하고 튀어라!</div>
 
@@ -2181,7 +2350,7 @@
     updateDogeCardVisuals(false);
     document.body.classList.remove('overtime-bg');
     document.getElementById('status-bar').style.display = 'none';
-    showScreen('screen-nickname');
+    showScreen('screen-prologue');
   }
 
   function selectCharacter(id) {
@@ -2205,7 +2374,7 @@
     updateStatusBar();
     showScreen('screen-intro');
 
-    const introMsg = `어이 [${state.nickname}]! 이번에 배정받은 ${state.charName} 역할, 정신 바짝 차려!\n우리가 분양할 '굿타임 백화점'은 허허벌판 쓰레기 입지야.\n\n3일 뒤면 구청 단속반이 들이닥치니까, 그전까지 전화번호부 다 뒤져서 무조건 【최소 1억 원】 이상 계약금 뜯어내!\n만약 3억 원이 넘으면... 뭔가 네 인생을 바꾸는 기회가 올 수도 있겠지. 당장 시작해!!`;
+    const introMsg = `어이 [${state.nickname}]! 알바생에서 바로 정식 발령받은 ${state.charName} 역할, 정신 바짝 차려!\n우리가 분양할 '굿타임 백화점'은 허허벌판 쓰레기 입지야.\n\n3일 뒤면 구청 단속반이 들이닥치니까, 그전까지 전화번호부 다 뒤져서 무조건 【최소 1억 원】 이상 계약금 뜯어내!\n만약 3억 원이 넘으면... 뭔가 네 인생을 바꾸는 기회가 올 수도 있겠지. 당장 시작해!!`;
     typeText('intro-dialogue', introMsg);
   }
 
@@ -2533,7 +2702,6 @@
     }
   }
 
-  // 3일차 종료 후 자카르타 잠적 vs 마닐라 카지노 선택 화면
   function showEscapeChoice() {
     document.getElementById('status-bar').style.display = 'none';
     document.getElementById('escape-money-text').textContent = formatMoney(state.money);
@@ -2821,6 +2989,10 @@
     refreshRankingsUI();
   }
 
+  // 프롤로그 화면 버튼 바인딩
+  document.getElementById('btn-prologue-start').addEventListener('click', () => showScreen('screen-nickname'));
+  document.getElementById('btn-back-prologue').addEventListener('click', () => showScreen('screen-prologue'));
+
   document.getElementById('btn-enter-game').addEventListener('click', enterGame);
   document.getElementById('entry-nickname').addEventListener('keydown', (e) => {
     if (e.key === 'Enter') enterGame();
@@ -2838,7 +3010,7 @@
   document.getElementById('btn-confirm-escape').addEventListener('click', confirmEscapeRoute);
 
   document.getElementById('btn-top-restart').addEventListener('click', () => {
-    if (confirm("현재 진행 중인 영업을 포기하고 처음 화면(사원증 발급)으로 돌아가시겠습니까?")) {
+    if (confirm("현재 진행 중인 영업을 포기하고 처음 화면으로 돌아가시겠습니까?")) {
       restartGame();
     }
   });
@@ -2849,6 +3021,7 @@
   };
   const closeModal = () => document.getElementById('ranking-modal').classList.remove('open');
 
+  document.getElementById('btn-prologue-rank').addEventListener('click', openModal);
   document.getElementById('btn-entry-rank').addEventListener('click', openModal);
   document.getElementById('btn-select-rank').addEventListener('click', openModal);
   document.getElementById('btn-top-rank').addEventListener('click', openModal);
