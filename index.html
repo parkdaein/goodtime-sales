@@ -40,7 +40,7 @@
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      padding: 10px;
+      padding: 12px;
       transition: background-color 0.4s;
     }
 
@@ -50,7 +50,7 @@
 
     #game-container {
       width: 100%;
-      max-width: 860px;
+      max-width: 960px;
       background: var(--panel-bg);
       border: 3px solid var(--border-color);
       border-radius: 16px;
@@ -89,8 +89,14 @@
     }
 
     @keyframes dogeBurst {
-      0% { transform: translate(-50%, -50%) scale(0.4) rotate(0deg); opacity: 1; }
-      100% { transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(1.25) rotate(var(--rot)); opacity: 0; }
+      0% {
+        transform: translate(-50%, -50%) scale(0.4) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(1.25) rotate(var(--rot));
+        opacity: 0;
+      }
     }
 
     /* 계약 성사 도장 스탬프 */
@@ -184,81 +190,12 @@
 
     .screen {
       display: none;
-      padding: 20px;
+      padding: 22px;
       min-height: 520px;
       flex-direction: column;
       justify-content: space-between;
     }
     .screen.active { display: flex; }
-
-    /* ============================================================
-       오락실 풀스크린 타이틀 화면 (이미지 + 게임시작하기 버튼 전용)
-       ============================================================ */
-    #screen-prologue {
-      padding: 14px;
-      min-height: 84vh;
-      gap: 14px;
-      background: #0f172a;
-    }
-
-    .arcade-hero-full {
-      position: relative;
-      flex: 1;
-      width: 100%;
-      border: 3px solid #fde047;
-      border-radius: 14px;
-      overflow: hidden;
-      background: #1e293b;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 360px;
-    }
-
-    .arcade-hero-full img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    .floating-rank-btn {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      z-index: 10;
-      background: rgba(15, 23, 42, 0.85);
-      color: #fde047;
-      border: 2px solid #fde047;
-      border-radius: 999px;
-      padding: 6px 13px;
-      font-size: 0.85rem;
-      font-weight: 800;
-      cursor: pointer;
-      box-shadow: 2px 2px 0px #000;
-    }
-
-    @keyframes startBtnPulse {
-      0%, 100% { transform: scale(1); box-shadow: 0 4px 0px #b45309; }
-      50% { transform: scale(1.015); box-shadow: 0 0 20px rgba(250, 204, 21, 0.9), 0 4px 0px #b45309; }
-    }
-
-    .btn-arcade-start {
-      background: linear-gradient(135deg, #fde047 0%, #facc15 100%);
-      color: #1e293b;
-      border: 3px solid #1e293b;
-      border-radius: 14px;
-      font-family: 'Jua', sans-serif;
-      font-size: 1.55rem;
-      padding: 18px 20px;
-      width: 100%;
-      cursor: pointer;
-      animation: startBtnPulse 1.3s infinite ease-in-out;
-    }
-
-    .btn-arcade-start:active {
-      transform: translateY(2px);
-    }
 
     .header-row {
       display: flex;
@@ -284,20 +221,20 @@
       line-height: 1.45;
     }
 
-    /* 치킨 프로모션 배너 */
+    /* 첫 화면 치킨 프로모션 배너 */
     .promo-banner {
       background: linear-gradient(90deg, #fff7ed 0%, #ffedd5 50%, #fef9c3 100%);
       border: 2.5px solid #ea580c;
       border-radius: 12px;
-      padding: 9px 12px;
-      margin-bottom: 12px;
+      padding: 10px 14px;
+      margin-bottom: 14px;
       box-shadow: 3px 3px 0px #ea580c;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
       text-align: center;
-      font-size: 0.9rem;
+      font-size: 0.92rem;
       font-weight: 800;
       color: #9a3412;
       line-height: 1.4;
@@ -376,14 +313,19 @@
       to { transform: scale(1.015); }
     }
 
+    /* 4인 캐릭터 선택 그리드 */
     .char-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 11px;
       margin-bottom: 14px;
     }
 
-    @media (max-width: 680px) {
+    @media (max-width: 860px) {
+      .char-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 520px) {
       .char-grid { grid-template-columns: 1fr; }
     }
 
@@ -401,7 +343,7 @@
     .char-card {
       border: 3px solid var(--border-color);
       border-radius: 12px;
-      padding: 14px;
+      padding: 13px;
       background: #fff;
       box-shadow: var(--shadow);
       cursor: pointer;
@@ -458,7 +400,7 @@
     }
 
     .char-avatar {
-      font-size: 2.8rem;
+      font-size: 2.6rem;
       text-align: center;
       background: #f1f5f9;
       border: 2px solid var(--border-color);
@@ -474,13 +416,13 @@
 
     .char-name {
       font-family: 'Jua', sans-serif;
-      font-size: 1.3rem;
+      font-size: 1.25rem;
       margin-bottom: 4px;
     }
 
     .char-tag {
       display: inline-block;
-      font-size: 0.74rem;
+      font-size: 0.72rem;
       font-weight: 800;
       padding: 3px 8px;
       border-radius: 6px;
@@ -489,14 +431,14 @@
     }
 
     .char-stats {
-      font-size: 0.84rem;
+      font-size: 0.82rem;
       line-height: 1.5;
       margin-bottom: 8px;
       color: #334155;
     }
 
     .char-passive {
-      font-size: 0.78rem;
+      font-size: 0.76rem;
       background: #f8fafc;
       border: 1.5px dashed #94a3b8;
       padding: 8px;
@@ -1089,33 +1031,14 @@
     </div>
   </div>
 
-  <!-- =====================================================================
-       첫 화면: 타이틀 이미지 + 게임 시작하기 버튼 (모바일 풀스크린 최적화)
-       ===================================================================== -->
-  <div id="screen-prologue" class="screen active">
-    <div class="arcade-hero-full">
-      <button type="button" class="floating-rank-btn" id="btn-prologue-rank">🏆 랭킹</button>
-      <img src="thumbnail.png" alt="굿타임 영업백서 타이틀" onerror="this.style.display='none'">
-    </div>
-
-    <button type="button" class="btn-arcade-start" id="btn-prologue-start">
-      🕹️ 게임 시작하기
-    </button>
-  </div>
-
-  <!-- 0. 사원증 발급 화면 (닉네임 입력) -->
-  <div id="screen-nickname" class="screen">
+  <!-- 0. 입장 화면 (닉네임 입력) -->
+  <div id="screen-nickname" class="screen active">
     <div>
       <div class="header-row">
         <div class="webtoon-title">🏢 굿타임 영업백서</div>
-        <div style="display:flex; gap:6px;">
-          <button type="button" class="btn" style="padding:8px 12px; font-size:0.88rem;" id="btn-back-prologue">
-            🏠 타이틀로
-          </button>
-          <button type="button" class="btn btn-primary" style="padding:8px 14px; font-size:0.88rem;" id="btn-entry-rank">
-            🏆 실시간 랭킹
-          </button>
-        </div>
+        <button type="button" class="btn btn-primary" style="padding:8px 14px; font-size:0.9rem;" id="btn-entry-rank">
+          🏆 실시간 랭킹 보기
+        </button>
       </div>
       <div class="subtitle">3일 뒤 구청 단속이 들이닥친다! 유령 백화점을 분양하고 튀어라!</div>
 
@@ -1142,8 +1065,8 @@
     </div>
 
     <div style="text-align:center; font-size:0.84rem; color:#64748b; line-height:1.5;">
-      * 3연속 계약 성공 시 <b>[무한 폭주 야근모드 (연승마다 2배 무한 증식)]</b> 돌입!<br>
-      * 3억 원 돌파 시 <b>[자카르타 잠적 vs 마닐라 VIP 룰렛 (최대 100,000배)]</b> 선택!
+      • 3연속 계약 성공 시 <b>[무한 폭주 야근모드 (연승마다 2배 무한 증식)]</b> 돌입!<br>
+      • 3억 원 돌파 시 <b>[자카르타 잠적 vs 마닐라 VIP 룰렛 (최대 100,000배 / 나대리 500,000배)]</b> 선택!
     </div>
   </div>
 
@@ -1215,10 +1138,26 @@
             고객 약점 힌트 투시 + 약점 적중 시 <b>수익 1.5배</b>! 전화번호부에 <b>💎VIP 자산가(수익 2배)</b>가 등장합니다.
           </div>
         </div>
+
+        <div class="char-card" data-char="na" style="background:#fffbeb; border-color:#d97706;">
+          <div>
+            <div class="char-avatar" style="background:#fef3c7;">🎰</div>
+            <div class="char-name">나대리</div>
+            <span class="char-tag" style="background:#fef3c7; color:#b45309;">겜블러형 / 마닐라 타짜</span>
+            <div class="char-stats">
+              🗣️ <b>언변력:</b> 45 (낮음)<br>
+              🧠 <b>멘탈력:</b> 45 (약함)
+            </div>
+          </div>
+          <div class="char-passive">
+            <b>[패시브: 타짜의 승부수]</b><br>
+            영업은 서툴지만 카지노의 제왕! 마닐라 VIP 카지노 진입 시 <b>기회 5회</b> 획득 + <b>모든 배당 5배 적용(최대 500,000배)</b>!
+          </div>
+        </div>
       </div>
     </div>
     <div style="text-align:center; font-size:0.84rem; color:#64748b;">
-      * 원하는 캐릭터 카드를 터치하여 임무를 전달받으세요!
+      • 원하는 캐릭터 카드를 터치하여 임무를 전달받으세요!
     </div>
   </div>
 
@@ -1391,7 +1330,7 @@
             <div class="char-avatar" style="background:#fef3c7;">🎰🔥</div>
             <span class="char-tag" style="background:#fef3c7; color:#b45309;">도파민 승부 · 최대 100,000배!</span>
             <div class="char-name">마닐라 VIP 카지노 행</div>
-            <div class="char-stats">
+            <div class="char-stats" id="escape-manila-stats">
               결과: <b>룰렛 3회 스핀으로 랭킹 1위 도전</b><br>
               배당: <b>1,000배 / 10,000배 / 100,000배</b>
             </div>
@@ -1413,11 +1352,11 @@
     </div>
 
     <div style="text-align:center; font-size:0.84rem; color:#64748b; margin-top:10px;">
-      * 행선지 카드를 터치한 후, 하단 확정 버튼을 눌러 최종 탈출을 감행하세요!
+      • 행선지 카드를 터치한 후, 하단 확정 버튼을 눌러 최종 탈출을 감행하세요!
     </div>
   </div>
 
-  <!-- 5-2. 히든 스테이지: 필리핀 마닐라 VIP 하이롤러 룰렛 (도파민형: 1,000배 / 10,000배 / 100,000배) -->
+  <!-- 5-2. 히든 스테이지: 필리핀 마닐라 VIP 하이롤러 룰렛 -->
   <div id="screen-casino" class="screen">
     <div>
       <div class="header-row">
@@ -1426,7 +1365,7 @@
           스핀: <span id="roulette-round">1 / 3</span>회
         </div>
       </div>
-      <div class="subtitle">
+      <div class="subtitle" id="casino-subtitle">
         인생 역전의 기회! <b>1부터 36까지의 숫자가 완전히 랜덤</b>으로 나옵니다!
       </div>
 
@@ -1446,7 +1385,7 @@
         </div>
 
         <div id="casino-log" style="background:rgba(15, 23, 42, 0.75); border:1.5px solid rgba(251, 191, 36, 0.45); padding:10px; border-radius:10px; text-align:center; font-size:0.9rem; min-height:46px; line-height:1.45;">
-          🎲 <b>1~36 숫자 랜덤 추첨!</b> 홀/짝(1,000배), 구간 선택(10,000배), 행운의 7·17·27(100,000배) 중 승부를 걸어보세요!
+          🎲 <b>1~36 숫자 랜덤 추첨!</b> 홀/짝, 구간 선택, 행운의 7·17·27 중 승부를 걸어보세요!
         </div>
       </div>
 
@@ -1454,13 +1393,13 @@
         <div class="bet-tier-box">
           <div class="bet-tier-title">
             <span>1️⃣ 첫 번째 베팅: 홀수 / 짝수 선택</span>
-            <span class="bet-tier-badge">배당 1,000배 · 적중률 50%</span>
+            <span class="bet-tier-badge" id="tier1-badge">배당 1,000배 · 적중률 50%</span>
           </div>
           <div class="bet-row-2">
-            <button type="button" class="bet-choice-btn selected" data-bet="odd">
+            <button type="button" class="bet-choice-btn selected" data-bet="odd" id="btn-bet-odd">
               🔴 홀수 (ODD) · <b>1,000배</b>
             </button>
-            <button type="button" class="bet-choice-btn" data-bet="even">
+            <button type="button" class="bet-choice-btn" data-bet="even" id="btn-bet-even">
               ⚫ 짝수 (EVEN) · <b>1,000배</b>
             </button>
           </div>
@@ -1469,16 +1408,16 @@
         <div class="bet-tier-box">
           <div class="bet-tier-title">
             <span>2️⃣ 두 번째 베팅: 숫자 구간 선택</span>
-            <span class="bet-tier-badge">배당 10,000배 · 적중률 33.3%</span>
+            <span class="bet-tier-badge" id="tier2-badge">배당 10,000배 · 적중률 33.3%</span>
           </div>
           <div class="bet-row-3">
-            <button type="button" class="bet-choice-btn" data-bet="range_1_12">
+            <button type="button" class="bet-choice-btn" data-bet="range_1_12" id="btn-bet-r1">
               🎯 1 ~ 12<br><span style="font-size:0.75rem; color:#475569;">10,000배</span>
             </button>
-            <button type="button" class="bet-choice-btn" data-bet="range_13_24">
+            <button type="button" class="bet-choice-btn" data-bet="range_13_24" id="btn-bet-r2">
               🎯 13 ~ 24<br><span style="font-size:0.75rem; color:#475569;">10,000배</span>
             </button>
-            <button type="button" class="bet-choice-btn" data-bet="range_25_36">
+            <button type="button" class="bet-choice-btn" data-bet="range_25_36" id="btn-bet-r3">
               🎯 25 ~ 36<br><span style="font-size:0.75rem; color:#475569;">10,000배</span>
             </button>
           </div>
@@ -1487,9 +1426,9 @@
         <div class="bet-tier-box" style="background:#fffbeb; border-color:#f59e0b;">
           <div class="bet-tier-title">
             <span>3️⃣ 세 번째 베팅: 행운의 숫자 7 · 17 · 27</span>
-            <span class="bet-tier-badge" style="background:#b45309; color:#fff;">배당 100,000배 · 적중률 8.3%</span>
+            <span class="bet-tier-badge" style="background:#b45309; color:#fff;" id="tier3-badge">배당 100,000배 · 적중률 8.3%</span>
           </div>
-          <button type="button" class="bet-choice-btn jackpot-opt" data-bet="lucky7">
+          <button type="button" class="bet-choice-btn jackpot-opt" data-bet="lucky7" id="btn-bet-lucky7">
             💎 행운의 숫자 [ 7 · 17 · 27 ] 적중 · <b>100,000배 초고배당!</b>
           </button>
         </div>
@@ -1608,6 +1547,7 @@
   const GOAL_MONEY = 10000;
   const CASINO_UNLOCK = 30000;
 
+  // 1만 원 단위 기준 큰 수 단위 (구골 10^100원 = 10^96만원까지 확장)
   const MAN_WON_UNITS = [
     { exp: 96, label: "구골" },
     { exp: 64, label: "무량대수" },
@@ -1667,7 +1607,8 @@
   const CHARACTERS = {
     kim: { name: '김대리', speech: 80, mental: 55 },
     son: { name: '손대리', speech: 60, mental: 120 },
-    park: { name: '박대리', speech: 72, mental: 85 }
+    park: { name: '박대리', speech: 72, mental: 85 },
+    na: { name: '나대리', speech: 45, mental: 45 }
   };
 
   const CUSTOMER_POOL = [
@@ -1879,14 +1820,28 @@
     }
   };
 
+  // 기본 룰렛 배수 (나대리 선택 시 모든 배수 x5, 최대 기회 5회)
   const ROULETTE_OPTIONS = {
-    odd: { label: "🔴 홀수 (ODD)", mult: 1000, check: (n) => n % 2 === 1 },
-    even: { label: "⚫ 짝수 (EVEN)", mult: 1000, check: (n) => n % 2 === 0 },
-    range_1_12: { label: "🎯 1 ~ 12 구간", mult: 10000, check: (n) => n >= 1 && n <= 12 },
-    range_13_24: { label: "🎯 13 ~ 24 구간", mult: 10000, check: (n) => n >= 13 && n <= 24 },
-    range_25_36: { label: "🎯 25 ~ 36 구간", mult: 10000, check: (n) => n >= 25 && n <= 36 },
-    lucky7: { label: "💎 행운의 숫자 [7, 17, 27]", mult: 100000, check: (n) => n === 7 || n === 17 || n === 27 }
+    odd: { label: "🔴 홀수 (ODD)", baseMult: 1000, check: (n) => n % 2 === 1 },
+    even: { label: "⚫ 짝수 (EVEN)", baseMult: 1000, check: (n) => n % 2 === 0 },
+    range_1_12: { label: "🎯 1 ~ 12 구간", baseMult: 10000, check: (n) => n >= 1 && n <= 12 },
+    range_13_24: { label: "🎯 13 ~ 24 구간", baseMult: 10000, check: (n) => n >= 13 && n <= 24 },
+    range_25_36: { label: "🎯 25 ~ 36 구간", baseMult: 10000, check: (n) => n >= 25 && n <= 36 },
+    lucky7: { label: "💎 행운의 숫자 [7, 17, 27]", baseMult: 100000, check: (n) => n === 7 || n === 17 || n === 27 }
   };
+
+  function getCasinoBonusMult() {
+    return state.charId === 'na' ? 5 : 1;
+  }
+
+  function getMaxCasinoRounds() {
+    return state.charId === 'na' ? 5 : 3;
+  }
+
+  function getRouletteMult(betKey) {
+    const base = ROULETTE_OPTIONS[betKey].baseMult;
+    return base * getCasinoBonusMult();
+  }
 
   function randInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -1972,7 +1927,12 @@
     if (!ranks || ranks.length === 0) {
       return `<tr><td colspan="4">아직 등록된 영업왕이 없습니다!</td></tr>`;
     }
-    const charIconMap = { '김대리': '😎 김대리', '손대리': '🗿 손대리', '박대리': '👩‍💼 박대리' };
+    const charIconMap = {
+      '김대리': '😎 김대리',
+      '손대리': '🗿 손대리',
+      '박대리': '👩‍💼 박대리',
+      '나대리': '🎰 나대리'
+    };
 
     return ranks.map((r, idx) => {
       const nick = String(r.nickname || '익명');
@@ -2261,7 +2221,7 @@
     updateDogeCardVisuals(false);
     document.body.classList.remove('overtime-bg');
     document.getElementById('status-bar').style.display = 'none';
-    showScreen('screen-prologue');
+    showScreen('screen-nickname');
   }
 
   function selectCharacter(id) {
@@ -2285,7 +2245,10 @@
     updateStatusBar();
     showScreen('screen-intro');
 
-    const introMsg = `어이 [${state.nickname}]! 알바생에서 바로 정식 발령받은 ${state.charName} 역할, 정신 바짝 차려!\n우리가 분양할 '굿타임 백화점'은 허허벌판 쓰레기 입지야.\n\n3일 뒤면 구청 단속반이 들이닥치니까, 그전까지 전화번호부 다 뒤져서 무조건 【최소 1억 원】 이상 계약금 뜯어내!\n만약 3억 원이 넘으면... 뭔가 네 인생을 바꾸는 기회가 올 수도 있겠지. 당장 시작해!!`;
+    const extraLine = (id === 'na')
+      ? `\n(특히 네놈은 3억만 넘겨서 마닐라 카지노만 뚫으면 판을 5배로 뒤집을 타짜 기질이 있더군. 무조건 3억부터 맞춰!)`
+      : '';
+    const introMsg = `어이 [${state.nickname}]! 이번에 배정받은 ${state.charName} 역할, 정신 바짝 차려!\n우리가 분양할 '굿타임 백화점'은 허허벌판 쓰레기 입지야.\n\n3일 뒤면 구청 단속반이 들이닥치니까, 그전까지 전화번호부 다 뒤져서 무조건 【최소 1억 원】 이상 계약금 뜯어내!\n만약 3억 원이 넘으면... 뭔가 네 인생을 바꾸는 기회가 올 수도 있겠지.${extraLine} 당장 시작해!!`;
     typeText('intro-dialogue', introMsg);
   }
 
@@ -2613,12 +2576,25 @@
     }
   }
 
+  // 3일차 종료 후 자카르타 잠적 vs 마닐라 카지노 선택 화면
   function showEscapeChoice() {
     document.getElementById('status-bar').style.display = 'none';
     document.getElementById('escape-money-text').textContent = formatMoney(state.money);
     document.getElementById('escape-summary').innerHTML =
       `3억 원 돌파 성공! 김드래곤 실장의 뒤통수를 치고 <b>자카르타로 조용히 잠적</b>할지, <b>마닐라 카지노</b>에서 한 방을 노릴지 선택하세요!`;
-    
+
+    const isNa = state.charId === 'na';
+    const maxRounds = getMaxCasinoRounds();
+    const m1 = formatNum(getRouletteMult('odd'));
+    const m2 = formatNum(getRouletteMult('range_1_12'));
+    const m3 = formatNum(getRouletteMult('lucky7'));
+
+    document.getElementById('escape-manila-stats').innerHTML = isNa
+      ? `결과: <b>🎰 나대리 패시브! 룰렛 ${maxRounds}회 스핀</b><br>배당: <b>${m1}배 / ${m2}배 / ${m3}배 (5배 특혜!)</b>`
+      : `결과: <b>룰렛 ${maxRounds}회 스핀으로 랭킹 1위 도전</b><br>배당: <b>${m1}배 / ${m2}배 / ${m3}배</b>`;
+
+    ESCAPE_ROUTE_LABELS.manila = `🎰🔥 마닐라 VIP 카지노 행 (${maxRounds}회 스핀 · 최대 ${m3}배 도전)`;
+
     state.selectedEscapeRoute = null;
     document.querySelectorAll('#screen-escape-choice .char-card').forEach(c => {
       c.classList.remove('escape-selected');
@@ -2740,6 +2716,29 @@
     });
   }
 
+  function renderCasinoOddsTexts() {
+    const isNa = state.charId === 'na';
+    const m1 = formatNum(getRouletteMult('odd'));
+    const m2 = formatNum(getRouletteMult('range_1_12'));
+    const m3 = formatNum(getRouletteMult('lucky7'));
+
+    document.getElementById('casino-subtitle').innerHTML = isNa
+      ? `🎰 <b>[나대리 패시브 발동] 기회 5회 + 전 구간 배당 5배 적용!</b> 1부터 36까지의 숫자가 랜덤으로 추첨됩니다!`
+      : `인생 역전의 기회! <b>1부터 36까지의 숫자가 완전히 랜덤</b>으로 나옵니다!`;
+
+    document.getElementById('tier1-badge').textContent = `배당 ${m1}배 · 적중률 50%`;
+    document.getElementById('btn-bet-odd').innerHTML = `🔴 홀수 (ODD) · <b>${m1}배</b>`;
+    document.getElementById('btn-bet-even').innerHTML = `⚫ 짝수 (EVEN) · <b>${m1}배</b>`;
+
+    document.getElementById('tier2-badge').textContent = `배당 ${m2}배 · 적중률 33.3%`;
+    document.getElementById('btn-bet-r1').innerHTML = `🎯 1 ~ 12<br><span style="font-size:0.75rem; color:#475569;">${m2}배</span>`;
+    document.getElementById('btn-bet-r2').innerHTML = `🎯 13 ~ 24<br><span style="font-size:0.75rem; color:#475569;">${m2}배</span>`;
+    document.getElementById('btn-bet-r3').innerHTML = `🎯 25 ~ 36<br><span style="font-size:0.75rem; color:#475569;">${m2}배</span>`;
+
+    document.getElementById('tier3-badge').textContent = `배당 ${m3}배 · 적중률 8.3%`;
+    document.getElementById('btn-bet-lucky7').innerHTML = `💎 행운의 숫자 [ 7 · 17 · 27 ] 적중 · <b>${m3}배 초고배당!</b>`;
+  }
+
   function startCasinoStage() {
     document.getElementById('status-bar').style.display = 'none';
     state.rouletteRound = 1;
@@ -2748,18 +2747,20 @@
     state.rouletteBusy = false;
 
     showScreen('screen-casino');
+    renderCasinoOddsTexts();
     updateRouletteUI();
   }
 
   function updateRouletteUI() {
     state.rouletteBusy = false;
-    document.getElementById('roulette-round').textContent = `${state.rouletteRound} / 3`;
+    const maxRounds = getMaxCasinoRounds();
+    document.getElementById('roulette-round').textContent = `${state.rouletteRound} / ${maxRounds}`;
     document.getElementById('casino-money').textContent = formatMoney(state.money);
     document.getElementById('roulette-wheel').classList.remove('spinning');
     document.getElementById('roulette-result-num').textContent = '1~36';
     document.getElementById('roulette-result-tag').textContent = `SPIN ${state.rouletteRound}`;
     document.getElementById('casino-result-badge').textContent = '1~36 랜덤 룰렛 · 베팅을 선택하세요!';
-    document.getElementById('casino-log').innerHTML = `🎲 <b>1부터 36까지의 숫자 중 하나가 랜덤으로 추첨됩니다!</b> (${state.rouletteRound}번째 스핀)`;
+    document.getElementById('casino-log').innerHTML = `🎲 <b>1부터 36까지의 숫자 중 하나가 랜덤으로 추첨됩니다!</b> (${state.rouletteRound}/${maxRounds}번째 스핀)`;
     document.getElementById('roulette-controls').style.display = 'block';
     document.getElementById('btn-casino-next').style.display = 'none';
     syncRouletteButtons();
@@ -2783,6 +2784,7 @@
     document.getElementById('casino-money').textContent = formatMoney(state.money);
 
     const opt = ROULETTE_OPTIONS[state.rouletteBet];
+    const mult = getRouletteMult(state.rouletteBet);
     const wheel = document.getElementById('roulette-wheel');
     const numEl = document.getElementById('roulette-result-num');
     const tagEl = document.getElementById('roulette-result-tag');
@@ -2790,7 +2792,7 @@
     wheel.classList.add('spinning');
     numEl.textContent = '🌀';
     tagEl.textContent = '1~36 추첨중';
-    document.getElementById('casino-result-badge').textContent = `🎲 ${opt.label} (${formatNum(opt.mult)}배) 베팅 중...`;
+    document.getElementById('casino-result-badge').textContent = `🎲 ${opt.label} (${formatNum(mult)}배) 베팅 중...`;
     document.getElementById('roulette-controls').style.display = 'none';
 
     setTimeout(() => {
@@ -2801,18 +2803,18 @@
       const parityText = (landedNum % 2 === 1) ? '홀수' : '짝수';
 
       numEl.textContent = `${landedNum}번`;
-      tagEl.textContent = isWin ? `HIT ×${formatNum(opt.mult)}` : parityText;
+      tagEl.textContent = isWin ? `HIT ×${formatNum(mult)}` : parityText;
 
       let msg = "";
       if (isWin) {
-        const payout = betAmount * BigInt(opt.mult);
+        const payout = betAmount * BigInt(mult);
         state.money = toBigIntSafe(state.money) + payout;
-        const isMega = opt.mult >= 10000;
+        const isMega = mult >= 10000;
         spawnMoneyParticles(isMega);
         document.getElementById('casino-result-badge').textContent = `🎉 [${landedNum}번] 적중! +${formatMoney(payout)}`;
-        msg = (opt.mult >= 100000)
-          ? `🚨💎 [100,000배 행운의 7 시리즈 울트라 잭팟!!] 1~36 중 【${landedNum}번】이 나왔습니다!! 베팅금 ${formatMoney(betAmount)} × 100,000배 = 【${formatMoney(payout)}】 대폭발!!`
-          : `🔥 [룰렛 적중!] 1~36 중 【${landedNum}번 (${parityText})】 당첨! 베팅금 ${formatMoney(betAmount)} × ${formatNum(opt.mult)}배 = ${formatMoney(payout)} 획득!`;
+        msg = (opt.baseMult >= 100000)
+          ? `🚨💎 [${formatNum(mult)}배 행운의 7 시리즈 울트라 잭팟!!] 1~36 중 【${landedNum}번】이 나왔습니다!! 베팅금 ${formatMoney(betAmount)} × ${formatNum(mult)}배 = 【${formatMoney(payout)}】 대폭발!!`
+          : `🔥 [룰렛 적중!] 1~36 중 【${landedNum}번 (${parityText})】 당첨! 베팅금 ${formatMoney(betAmount)} × ${formatNum(mult)}배 = ${formatMoney(payout)} 획득!`;
       } else {
         triggerShake();
         document.getElementById('casino-result-badge').textContent = `💀 [${landedNum}번] 빗나감 (-${formatMoney(betAmount)})`;
@@ -2822,9 +2824,10 @@
       document.getElementById('casino-money').textContent = formatMoney(state.money);
       document.getElementById('casino-log').textContent = msg;
 
+      const maxRounds = getMaxCasinoRounds();
       const nextBtn = document.getElementById('btn-casino-next');
       nextBtn.style.display = 'block';
-      nextBtn.textContent = (state.rouletteRound >= 3 || toBigIntSafe(state.money) <= 0n)
+      nextBtn.textContent = (state.rouletteRound >= maxRounds || toBigIntSafe(state.money) <= 0n)
         ? "최종 결과 및 실시간 랭킹 확인 ➡️"
         : `${state.rouletteRound + 1}번째 스핀 진행 ➡️`;
     }, 650);
@@ -2846,10 +2849,11 @@
       desc = `김드래곤 실장의 뒤통수를 완벽하게 치고 대포폰을 한강에 던진 뒤, 확보한 ${formatMoney(bigMoney)}을 몽땅 챙겨 인도네시아 자카르타 최고급 풀빌라로 잠적했습니다! 단속반도 실장도 절대 찾지 못할 완벽한 승리입니다!`;
       spawnMoneyParticles(true);
     } else if (endingType === 'casino') {
+      const rounds = getMaxCasinoRounds();
       if (bigMoney <= 0n) {
         icon = "🥥";
         title = "카지노 파산 엔딩: 마닐라 노숙자";
-        desc = "3억 원을 들고 필리핀까지 날아갔지만 룰렛 3번 만에 전 재산을 탕진했습니다! 여권마저 뺏기고 마닐라 길거리에서 코코넛을 팔며 연명합니다...";
+        desc = `3억 원을 들고 필리핀까지 날아갔지만 룰렛 ${rounds}번 만에 전 재산을 탕진했습니다! 여권마저 뺏기고 마닐라 길거리에서 코코넛을 팔며 연명합니다...`;
       } else if (bigMoney < BigInt(CASINO_UNLOCK)) {
         icon = "🚤";
         title = "카지노 본전치기 엔딩: 동남아 밀항";
@@ -2900,9 +2904,6 @@
     refreshRankingsUI();
   }
 
-  document.getElementById('btn-prologue-start').addEventListener('click', () => showScreen('screen-nickname'));
-  document.getElementById('btn-back-prologue').addEventListener('click', () => showScreen('screen-prologue'));
-
   document.getElementById('btn-enter-game').addEventListener('click', enterGame);
   document.getElementById('entry-nickname').addEventListener('keydown', (e) => {
     if (e.key === 'Enter') enterGame();
@@ -2920,7 +2921,7 @@
   document.getElementById('btn-confirm-escape').addEventListener('click', confirmEscapeRoute);
 
   document.getElementById('btn-top-restart').addEventListener('click', () => {
-    if (confirm("현재 진행 중인 영업을 포기하고 처음 화면으로 돌아가시겠습니까?")) {
+    if (confirm("현재 진행 중인 영업을 포기하고 처음 화면(사원증 발급)으로 돌아가시겠습니까?")) {
       restartGame();
     }
   });
@@ -2931,7 +2932,6 @@
   };
   const closeModal = () => document.getElementById('ranking-modal').classList.remove('open');
 
-  document.getElementById('btn-prologue-rank').addEventListener('click', openModal);
   document.getElementById('btn-entry-rank').addEventListener('click', openModal);
   document.getElementById('btn-select-rank').addEventListener('click', openModal);
   document.getElementById('btn-top-rank').addEventListener('click', openModal);
@@ -2972,7 +2972,8 @@
 
   document.getElementById('btn-play-roulette').addEventListener('click', spinRouletteRound);
   document.getElementById('btn-casino-next').addEventListener('click', () => {
-    if (state.rouletteRound >= 3 || toBigIntSafe(state.money) <= 0n) {
+    const maxRounds = getMaxCasinoRounds();
+    if (state.rouletteRound >= maxRounds || toBigIntSafe(state.money) <= 0n) {
       showEnding('casino');
     } else {
       state.rouletteRound++;
