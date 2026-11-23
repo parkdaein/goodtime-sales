@@ -1524,7 +1524,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, query, limit, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getFirestore, collection, addDoc, query, orderBy, limit, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyAb46SIjqEir6zRym1EWLvQYSRkj0t_oHo",
@@ -1872,6 +1872,17 @@
     return 0n;
   }
 
+  // BigInt 금액을 Firestore orderBy 정렬이 가능한 단일 숫자(sortScore)로 변환
+  function calcSortScore(bigVal) {
+    if (bigVal === 0n) return 0;
+    const isNeg = bigVal < 0n;
+    const absStr = (isNeg ? -bigVal : bigVal).toString();
+    const len = absStr.length;
+    const sig12 = Number(absStr.padEnd(12, '0').slice(0, 12));
+    const score = len * 1e12 + sig12;
+    return isNeg ? -score : score;
+  }
+
   function compareBigIntDesc(a, b) {
     const diff = toBigIntSafe(b.money) - toBigIntSafe(a.money);
     return diff > 0n ? 1 : (diff < 0n ? -1 : 0);
@@ -1982,7 +1993,13 @@
     db = getFirestore(app);
     document.getElementById('firebase-status-text').innerHTML = "🟢 <b>Firebase(goodtime-sales) 실시간 연결됨</b>";
 
-    const q = query(collection(db, "goodtime_rankings"), limit(100));
+    // 데이터가 100개 이상 쌓여도 누락 없이 상위 10위만 정확히 추출
+    const q = query(
+      collection(db, "goodtime_rankings"),
+      orderBy("sortScore", "desc"),
+      limit(10)
+    );
+
     onSnapshot(q, (snapshot) => {
       const liveRanks = snapshot.docs.map(doc => doc.data());
       liveRanks.sort(compareBigIntDesc);
@@ -1999,10 +2016,12 @@
 
   async function saveRankingRecord(record) {
     const bigM = toBigIntSafe(record.money);
+    const sortScore = calcSortScore(bigM);
     const cleanRecord = {
       nickname: record.nickname,
       charName: record.charName,
-      money: bigM.toString()
+      money: bigM.toString(),
+      sortScore: sortScore
     };
 
     const localRanks = JSON.parse(localStorage.getItem("goodtime_ranks") || "[]");
@@ -2017,6 +2036,7 @@
           nickname: cleanRecord.nickname,
           charName: cleanRecord.charName,
           money: cleanRecord.money,
+          sortScore: cleanRecord.sortScore,
           createdAt: serverTimestamp()
         });
         return true;
