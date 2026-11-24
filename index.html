@@ -3029,7 +3029,7 @@
     syncRouletteButtons();
   }
 
-  // 약 3.2초 동안 숫자가 빠르게 굴러가다 서서히 감속하며 멈추는 룰렛 연출
+  // 약 3.2초 동안 숫자가 빠르게 굴러가다 최종 당첨 번호(landedNum)에 정확히 감속 안착하는 연출
   function spinRouletteRound() {
     if (state.rouletteBusy) return;
     const currentBig = toBigIntSafe(state.money);
@@ -3067,34 +3067,38 @@
 
     wheel.classList.add('spinning-fast');
 
-    const startTime = Date.now();
-    const totalDuration = 3200; // 총 3.2초 회전
-    let rollingNum = randInt(1, 36);
+    // 최종 번호(landedNum)에 정확히 멈추도록 총 이동 칸수(totalSteps)를 역산
+    const totalSteps = randInt(58, 72);
+    let currentStep = 0;
+
+    function getNumberAtStep(step) {
+      // landedNum에서 (totalSteps - step)만큼 뒤로 간 숫자에서 시작해 1씩 전진
+      const offset = ((landedNum - 1 - (totalSteps - step)) % 36 + 36) % 36;
+      return offset + 1;
+    }
 
     function stepRoll() {
-      const elapsed = Date.now() - startTime;
-      const progress = Math.min(1, elapsed / totalDuration);
+      const progress = currentStep / totalSteps;
+      const displayNum = getNumberAtStep(currentStep);
 
-      if (progress < 1) {
-        // 진행률에 따라 휠 회전 속도를 빠름 -> 느림으로 전환
+      if (currentStep < totalSteps) {
         if (progress > 0.55) {
           wheel.classList.remove('spinning-fast');
           wheel.classList.add('spinning-slow');
         }
 
-        // 다음 번호로 틱틱 넘어가며 출력
-        rollingNum = (rollingNum % 36) + 1;
-        const rParity = (rollingNum % 2 === 1) ? 'ODD · 홀' : 'EVEN · 짝';
-        numEl.textContent = `${rollingNum}번`;
-        tagEl.textContent = progress > 0.65 ? '두근두근...' : rParity;
+        const rParity = (displayNum % 2 === 1) ? 'ODD · 홀' : 'EVEN · 짝';
+        numEl.textContent = `${displayNum}번`;
+        tagEl.textContent = progress > 0.72 ? '두근두근...' : rParity;
 
-        // 초반 45ms 간격에서 후반 340ms 간격까지 점진적 감속
-        const nextDelay = Math.round(45 + Math.pow(progress, 2.3) * 310);
+        currentStep++;
+        // 총 약 3.2초에 걸쳐 초반 빠르게 -> 후반 1칸씩 틱틱 감속
+        const nextDelay = Math.round(22 + Math.pow(progress, 2.8) * 320);
         rouletteRollTimer = setTimeout(stepRoll, nextDelay);
         return;
       }
 
-      // 3.2초 경과: 최종 당첨 번호 확정
+      // 마지막 스텝(currentStep === totalSteps): displayNum이 정확히 landedNum과 일치
       wheel.classList.remove('spinning-fast', 'spinning-slow');
       numEl.textContent = `${landedNum}번`;
       tagEl.textContent = isWin ? `HIT ×${formatNum(mult)}` : parityText;
