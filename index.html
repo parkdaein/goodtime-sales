@@ -604,7 +604,7 @@
     .btn-casino {
       background: linear-gradient(135deg, #fde047, #f59e0b);
       color: #1e293b;
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       font-weight: 900;
     }
 
@@ -772,11 +772,31 @@
       border: 5px solid #fbbf24;
       outline: 3px solid #1e293b;
       border-radius: 22px;
-      padding: 16px;
+      padding: 15px;
       color: #fff;
       box-shadow: inset 0 0 28px rgba(0, 0, 0, 0.55), 5px 5px 0px #1e293b;
       margin-bottom: 12px;
       position: relative;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    @keyframes casinoJackpotFlash {
+      0% {
+        box-shadow: 0 0 0 8px #fde047, 0 0 40px #f59e0b, 5px 5px 0px #1e293b;
+        transform: scale(1.02);
+      }
+      50% {
+        box-shadow: 0 0 0 12px #ef4444, 0 0 55px #fde047, 5px 5px 0px #1e293b;
+        transform: scale(1.03);
+      }
+      100% {
+        box-shadow: inset 0 0 28px rgba(0, 0, 0, 0.55), 5px 5px 0px #1e293b;
+        transform: scale(1);
+      }
+    }
+
+    .casino-table.jackpot-hit {
+      animation: casinoJackpotFlash 1.1s ease-out;
     }
 
     .casino-felt-header {
@@ -805,12 +825,22 @@
       align-items: center;
       justify-content: center;
       margin: 12px 0;
-      gap: 8px;
+      gap: 6px;
+      position: relative;
+    }
+
+    .roulette-pointer {
+      font-size: 1.25rem;
+      line-height: 1;
+      color: #fde047;
+      text-shadow: 0 2px 4px #000;
+      margin-bottom: -4px;
+      z-index: 5;
     }
 
     .roulette-wheel-box {
-      width: 132px;
-      height: 132px;
+      width: 146px;
+      height: 146px;
       border-radius: 50%;
       background: conic-gradient(
         #dc2626 0deg 60deg,
@@ -830,8 +860,14 @@
       position: relative;
     }
 
-    .roulette-wheel-box.spinning {
-      animation: wheelSpin 0.25s linear infinite;
+    .roulette-wheel-box.spinning-fast {
+      animation: wheelSpin 0.14s linear infinite;
+      box-shadow: 0 0 34px rgba(251, 191, 36, 0.9), inset 0 0 14px rgba(0, 0, 0, 0.7);
+    }
+
+    .roulette-wheel-box.spinning-slow {
+      animation: wheelSpin 0.42s linear infinite;
+      box-shadow: 0 0 28px rgba(239, 68, 68, 0.85), inset 0 0 14px rgba(0, 0, 0, 0.7);
     }
 
     @keyframes wheelSpin {
@@ -840,8 +876,8 @@
     }
 
     .roulette-center {
-      width: 86px;
-      height: 86px;
+      width: 96px;
+      height: 96px;
       border-radius: 50%;
       background: #0f172a;
       border: 3px solid #fbbf24;
@@ -855,15 +891,49 @@
 
     .roulette-ball-num {
       font-family: 'Jua', sans-serif;
-      font-size: 1.5rem;
+      font-size: 1.65rem;
       color: #fde047;
       line-height: 1.1;
     }
 
     .roulette-ball-tag {
-      font-size: 0.7rem;
+      font-size: 0.72rem;
       font-weight: 800;
       color: #cbd5e1;
+      margin-top: 2px;
+    }
+
+    /* 실시간 예상 당첨금 도파민 전광판 */
+    .bet-preview-board {
+      background: linear-gradient(135deg, #1e1b4b 0%, #31102f 100%);
+      border: 3px solid #f59e0b;
+      border-radius: 12px;
+      padding: 11px 14px;
+      margin-top: 9px;
+      color: #fff;
+      box-shadow: 3px 3px 0px #1e293b;
+      text-align: center;
+    }
+
+    .bet-preview-top {
+      font-size: 0.84rem;
+      color: #e2e8f0;
+      margin-bottom: 4px;
+      font-weight: 700;
+    }
+
+    .bet-preview-payout {
+      font-family: 'Jua', sans-serif;
+      font-size: 1.3rem;
+      color: #fde047;
+      text-shadow: 0 2px 6px rgba(245, 158, 11, 0.6);
+      line-height: 1.3;
+    }
+
+    .bet-preview-total {
+      font-size: 0.8rem;
+      color: #6ee7b7;
+      font-weight: 800;
       margin-top: 2px;
     }
 
@@ -1103,7 +1173,7 @@
       <div class="subtitle">환영합니다, <b id="welcome-nick" style="color:#1e293b;">사원</b>님! 오늘 현장에 투입할 대리를 선택하세요.</div>
       
       <div class="mission-banner">
-        🚨 [긴급 미션] 3일 안에 최소 <b>1억 원</b>을 벌어라! (3억 원 돌파 시 <b>해외 도피!)
+        🚨 [긴급 미션] 3일 안에 최소 <b>1억 원</b>을 벌어라! (3억 원 돌파 시 <b>해외 도피 분기</b> 해금!)
       </div>
 
       <div class="char-grid">
@@ -1419,13 +1489,14 @@
         인생 역전의 기회! <b>1부터 36까지의 숫자가 완전히 랜덤</b>으로 나옵니다!
       </div>
 
-      <div class="casino-table">
+      <div class="casino-table" id="casino-table-box">
         <div class="casino-felt-header">
           <div class="casino-chip-pill">🪙 보유 칩: <span id="casino-money">3억</span></div>
           <div id="casino-result-badge" style="color:#fde047;">1~36 랜덤 룰렛 · 베팅을 선택하세요!</div>
         </div>
 
         <div class="roulette-stage">
+          <div class="roulette-pointer">▼</div>
           <div class="roulette-wheel-box" id="roulette-wheel">
             <div class="roulette-center">
               <div class="roulette-ball-num" id="roulette-result-num">1~36</div>
@@ -1434,8 +1505,8 @@
           </div>
         </div>
 
-        <div id="casino-log" style="background:rgba(15, 23, 42, 0.75); border:1.5px solid rgba(251, 191, 36, 0.45); padding:10px; border-radius:10px; text-align:center; font-size:0.9rem; min-height:46px; line-height:1.45;">
-          🎲 <b>1~36 숫자 랜덤 추첨!</b> 홀/짝, 구간 선택, 행운의 7·17·27 중 승부를 걸어보세요!
+        <div id="casino-log" style="background:rgba(15, 23, 42, 0.78); border:1.5px solid rgba(251, 191, 36, 0.5); padding:11px; border-radius:10px; text-align:center; font-size:0.92rem; min-height:48px; line-height:1.45;">
+          🎲 <b>1~36 숫자 랜덤 추첨!</b> 아래 베팅 항목을 고르고 예상 당첨금을 확인한 뒤 룰렛을 돌리세요!
         </div>
       </div>
 
@@ -1490,8 +1561,15 @@
           <button type="button" class="bet-choice-btn" data-ratio="1.0">🔥 전 재산 올인!</button>
         </div>
 
+        <!-- 실시간 예상 당첨금 도파민 전광판 -->
+        <div class="bet-preview-board" id="bet-preview-board">
+          <div class="bet-preview-top" id="bet-preview-top">투입 칩: 9,000만원 (보유금 30%) · 배당 1,000배</div>
+          <div class="bet-preview-payout" id="bet-preview-payout">🎉 적중 시 +900억 획득!</div>
+          <div class="bet-preview-total" id="bet-preview-total">성공 시 총 보유액: 902억 1,000만원</div>
+        </div>
+
         <button type="button" class="btn btn-casino" style="width:100%; margin-top:10px;" id="btn-play-roulette">
-          🎡 1~36 룰렛 돌리기! 일확천금 승부
+          🎡 룰렛 돌리기! (적중 시 +900억 획득!)
         </button>
       </div>
 
@@ -2289,9 +2367,13 @@
     showScreen('screen-select');
   }
 
+  let rouletteRollTimer = null;
+
   function restartGame() {
     clearInterval(typingTimer);
     typingTimer = null;
+    clearTimeout(rouletteRollTimer);
+    rouletteRollTimer = null;
     state.isOvertime = false;
     state.overtimeRound = 0;
     state.baekAwakened = false;
@@ -2419,7 +2501,7 @@
       otCallBanner.style.display = 'none';
     }
 
-    // 캐릭터 전용 패시브 알림 배너 (상단 상태바의 'N연승 도전'과 숫자 기준 완전 통일)
+    // 캐릭터 전용 패시브 알림 배너
     const passiveBanner = document.getElementById('passive-call-banner');
     if (isSoondangGuaranteed()) {
       passiveBanner.style.display = 'block';
@@ -2810,7 +2892,6 @@
         : `🎤🔥 [도깨비 강사 문전박대 → 어깨너머 도청!] 수강료가 부족했지만 문틈으로 비기를 훔쳐 들었습니다!\n언변력이 <b>+${speechGain}</b> 영구 상승했습니다! (현재 언변: <b>${state.speech}</b>)`;
     } else if (type === 'streak_buff') {
       let startStreak = randInt(5, 20);
-      // 순당대리는 내일 첫 통화(startStreak + 1 연승 도전)가 곧바로 짝수 보장이 되도록 홀수 연승으로 보정
       if (state.charId === 'soondang' && startStreak % 2 === 0) {
         startStreak += 1;
       }
@@ -2861,6 +2942,30 @@
     startOffice();
   }
 
+  // 베팅 금액 및 예상 당첨금 실시간 계산 & 전광판 업데이트
+  function updateCasinoBetPreview() {
+    const currentBig = toBigIntSafe(state.money);
+    const ratioPct = BigInt(Math.round(state.rouletteRatio * 100));
+    const rawBet = (currentBig * ratioPct) / 100n;
+    const betAmount = currentBig <= 0n ? 0n : (rawBet < 1n ? 1n : (rawBet > currentBig ? currentBig : rawBet));
+
+    const opt = ROULETTE_OPTIONS[state.rouletteBet];
+    const mult = getRouletteMult(state.rouletteBet);
+    const expectedPayout = betAmount * BigInt(mult);
+    const expectedTotal = (currentBig - betAmount) + expectedPayout;
+
+    const ratioLabel = state.rouletteRatio === 1.0 ? '전 재산 올인 100%' : `보유금 ${Math.round(state.rouletteRatio * 100)}%`;
+
+    document.getElementById('bet-preview-top').innerHTML =
+      `${opt.label} · 투입 칩: <b>${formatMoney(betAmount)}</b> (${ratioLabel}) · 배당 <b>${formatNum(mult)}배</b>`;
+    document.getElementById('bet-preview-payout').textContent =
+      `🎉 적중 시 +${formatMoney(expectedPayout)} 획득!`;
+    document.getElementById('bet-preview-total').textContent =
+      `성공 시 총 보유액: ${formatMoney(expectedTotal)}`;
+    document.getElementById('btn-play-roulette').textContent =
+      `🎡 룰렛 돌리기! (적중 시 +${formatMoney(expectedPayout)} 획득!)`;
+  }
+
   function syncRouletteButtons() {
     document.querySelectorAll('[data-bet]').forEach(btn => {
       btn.classList.toggle('selected', btn.dataset.bet === state.rouletteBet);
@@ -2868,6 +2973,7 @@
     document.querySelectorAll('[data-ratio]').forEach(btn => {
       btn.classList.toggle('selected', parseFloat(btn.dataset.ratio) === state.rouletteRatio);
     });
+    updateCasinoBetPreview();
   }
 
   function renderCasinoOddsTexts() {
@@ -2908,9 +3014,12 @@
   function updateRouletteUI() {
     state.rouletteBusy = false;
     const maxRounds = getMaxCasinoRounds();
+    const tableBox = document.getElementById('casino-table-box');
+    tableBox.classList.remove('jackpot-hit');
+
     document.getElementById('roulette-round').textContent = `${state.rouletteRound} / ${maxRounds}`;
     document.getElementById('casino-money').textContent = formatMoney(state.money);
-    document.getElementById('roulette-wheel').classList.remove('spinning');
+    document.getElementById('roulette-wheel').classList.remove('spinning-fast', 'spinning-slow');
     document.getElementById('roulette-result-num').textContent = '1~36';
     document.getElementById('roulette-result-tag').textContent = `SPIN ${state.rouletteRound}`;
     document.getElementById('casino-result-badge').textContent = '1~36 랜덤 룰렛 · 베팅을 선택하세요!';
@@ -2920,6 +3029,7 @@
     syncRouletteButtons();
   }
 
+  // 약 3.2초 동안 숫자가 빠르게 굴러가다 서서히 감속하며 멈추는 룰렛 연출
   function spinRouletteRound() {
     if (state.rouletteBusy) return;
     const currentBig = toBigIntSafe(state.money);
@@ -2939,40 +3049,71 @@
 
     const opt = ROULETTE_OPTIONS[state.rouletteBet];
     const mult = getRouletteMult(state.rouletteBet);
+    const expectedPayout = betAmount * BigInt(mult);
+
     const wheel = document.getElementById('roulette-wheel');
     const numEl = document.getElementById('roulette-result-num');
     const tagEl = document.getElementById('roulette-result-tag');
+    const tableBox = document.getElementById('casino-table-box');
+    tableBox.classList.remove('jackpot-hit');
 
-    wheel.classList.add('spinning');
-    numEl.textContent = '🌀';
-    tagEl.textContent = '1~36 추첨중';
-    document.getElementById('casino-result-badge').textContent = `🎲 ${opt.label} (${formatNum(mult)}배) 베팅 중...`;
     document.getElementById('roulette-controls').style.display = 'none';
+    document.getElementById('casino-result-badge').textContent = `🔥 [${opt.label}] 적중 시 +${formatMoney(expectedPayout)}!`;
+    document.getElementById('casino-log').innerHTML = `🎡 <b>룰렛이 힘차게 돌아갑니다!!</b> 제발 멈춰라... (${opt.label} · <b>${formatNum(mult)}배</b> 승부 중!)`;
 
-    setTimeout(() => {
-      wheel.classList.remove('spinning');
+    const landedNum = randInt(1, 36);
+    const isWin = opt.check(landedNum);
+    const parityText = (landedNum % 2 === 1) ? '홀수' : '짝수';
 
-      const landedNum = randInt(1, 36);
-      const isWin = opt.check(landedNum);
-      const parityText = (landedNum % 2 === 1) ? '홀수' : '짝수';
+    wheel.classList.add('spinning-fast');
 
+    const startTime = Date.now();
+    const totalDuration = 3200; // 총 3.2초 회전
+    let rollingNum = randInt(1, 36);
+
+    function stepRoll() {
+      const elapsed = Date.now() - startTime;
+      const progress = Math.min(1, elapsed / totalDuration);
+
+      if (progress < 1) {
+        // 진행률에 따라 휠 회전 속도를 빠름 -> 느림으로 전환
+        if (progress > 0.55) {
+          wheel.classList.remove('spinning-fast');
+          wheel.classList.add('spinning-slow');
+        }
+
+        // 다음 번호로 틱틱 넘어가며 출력
+        rollingNum = (rollingNum % 36) + 1;
+        const rParity = (rollingNum % 2 === 1) ? 'ODD · 홀' : 'EVEN · 짝';
+        numEl.textContent = `${rollingNum}번`;
+        tagEl.textContent = progress > 0.65 ? '두근두근...' : rParity;
+
+        // 초반 45ms 간격에서 후반 340ms 간격까지 점진적 감속
+        const nextDelay = Math.round(45 + Math.pow(progress, 2.3) * 310);
+        rouletteRollTimer = setTimeout(stepRoll, nextDelay);
+        return;
+      }
+
+      // 3.2초 경과: 최종 당첨 번호 확정
+      wheel.classList.remove('spinning-fast', 'spinning-slow');
       numEl.textContent = `${landedNum}번`;
       tagEl.textContent = isWin ? `HIT ×${formatNum(mult)}` : parityText;
 
       let msg = "";
       if (isWin) {
-        const payout = betAmount * BigInt(mult);
+        const payout = expectedPayout;
         state.money = toBigIntSafe(state.money) + payout;
         const isMega = mult >= 10000;
         spawnMoneyParticles(isMega);
+        tableBox.classList.add('jackpot-hit');
         document.getElementById('casino-result-badge').textContent = `🎉 [${landedNum}번] 적중! +${formatMoney(payout)}`;
         msg = (opt.baseMult >= 100000)
-          ? `🚨💎 [${formatNum(mult)}배 행운의 7 시리즈 울트라 잭팟!!] 1~36 중 【${landedNum}번】이 나왔습니다!! 베팅금 ${formatMoney(betAmount)} × ${formatNum(mult)}배 = 【${formatMoney(payout)}】 대폭발!!`
-          : `🔥 [룰렛 적중!] 1~36 중 【${landedNum}번 (${parityText})】 당첨! 베팅금 ${formatMoney(betAmount)} × ${formatNum(mult)}배 = ${formatMoney(payout)} 획득!`;
+          ? `🚨💎 [${formatNum(mult)}배 행운의 7 시리즈 울트라 잭팟!!] 1~36 중 【${landedNum}번】에 멈췄습니다!! 베팅금 ${formatMoney(betAmount)} × ${formatNum(mult)}배 = 【+${formatMoney(payout)}】 대폭발!!`
+          : `🔥 [룰렛 적중 대성공!] 1~36 중 【${landedNum}번 (${parityText})】 당첨! 베팅금 ${formatMoney(betAmount)} × ${formatNum(mult)}배 = 【+${formatMoney(payout)}】 획득!`;
       } else {
         triggerShake();
         document.getElementById('casino-result-badge').textContent = `💀 [${landedNum}번] 빗나감 (-${formatMoney(betAmount)})`;
-        msg = `😭 [빗나감...] 1~36 중 【${landedNum}번 (${parityText})】이 나왔습니다. 선택한 [${opt.label}] 불발로 베팅금 ${formatMoney(betAmount)}을 잃었습니다...`;
+        msg = `😭 [아깝다! 빗나감...] 공이 【${landedNum}번 (${parityText})】에 멈췄습니다. 선택한 [${opt.label}] 불발로 베팅금 ${formatMoney(betAmount)}을 잃었습니다...`;
       }
 
       document.getElementById('casino-money').textContent = formatMoney(state.money);
@@ -2984,10 +3125,14 @@
       nextBtn.textContent = (state.rouletteRound >= maxRounds || toBigIntSafe(state.money) <= 0n)
         ? "최종 결과 및 실시간 랭킹 확인 ➡️"
         : `${state.rouletteRound + 1}번째 스핀 진행 ➡️`;
-    }, 650);
+    }
+
+    stepRoll();
   }
 
   async function showEnding(endingType) {
+    clearTimeout(rouletteRollTimer);
+    rouletteRollTimer = null;
     state.rouletteBusy = false;
     document.getElementById('status-bar').style.display = 'none';
     showScreen('screen-ending');
