@@ -308,20 +308,33 @@
       animation: pulseBanner 1s infinite alternate;
     }
 
+    .passive-call-banner {
+      background: linear-gradient(90deg, #065f46, #047857);
+      color: #ecfdf5;
+      border: 2.5px solid #1e293b;
+      border-radius: 10px;
+      padding: 9px 12px;
+      font-weight: 800;
+      font-size: 0.9rem;
+      text-align: center;
+      margin-bottom: 12px;
+      box-shadow: 3px 3px 0px #1e293b;
+    }
+
     @keyframes pulseBanner {
       from { transform: scale(1); }
       to { transform: scale(1.015); }
     }
 
-    /* 4인 캐릭터 선택 그리드 */
+    /* 6인 캐릭터 선택 그리드 (3열 x 2행) */
     .char-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       gap: 11px;
       margin-bottom: 14px;
     }
 
-    @media (max-width: 860px) {
+    @media (max-width: 820px) {
       .char-grid { grid-template-columns: repeat(2, 1fr); }
     }
 
@@ -400,12 +413,12 @@
     }
 
     .char-avatar {
-      font-size: 2.6rem;
+      font-size: 2.5rem;
       text-align: center;
       background: #f1f5f9;
       border: 2px solid var(--border-color);
       border-radius: 10px;
-      padding: 8px 0;
+      padding: 7px 0;
       margin-bottom: 8px;
     }
 
@@ -1154,6 +1167,38 @@
             영업은 서툴지만 카지노의 제왕! 마닐라 VIP 카지노 진입 시 <b>기회 5회</b> 획득 + <b>모든 배당 5배 적용(최대 500,000배)</b>!
           </div>
         </div>
+
+        <div class="char-card" data-char="baek" style="background:#eef2ff; border-color:#4338ca;">
+          <div>
+            <div class="char-avatar" style="background:#e0e7ff;">🧢</div>
+            <div class="char-name">백대리</div>
+            <span class="char-tag" style="background:#e0e7ff; color:#3730a3;">대기만성형 / 불멸의 영포티</span>
+            <div class="char-stats">
+              🗣️ <b>언변력:</b> 48 (낮음)<br>
+              🧠 <b>멘탈력:</b> 50 (약함)
+            </div>
+          </div>
+          <div class="char-passive">
+            <b>[패시브: 불멸의 영포티]</b><br>
+            초반엔 소심하지만 <b>40연승 달성 시 각성!</b> 현재 <b>언변력이 즉시 2배</b>가 되며 이후 모든 <b>계약 수익이 2배</b>로 폭증합니다!
+          </div>
+        </div>
+
+        <div class="char-card" data-char="soondang" style="background:#fdf2f8; border-color:#db2777;">
+          <div>
+            <div class="char-avatar" style="background:#fce7f3;">🏓</div>
+            <div class="char-name">순당대리</div>
+            <span class="char-tag" style="background:#fce7f3; color:#9d174d;">리듬형 / 탁구여제: 핑퐁핑퐁</span>
+            <div class="char-stats">
+              🗣️ <b>언변력:</b> 48 (낮음)<br>
+              🧠 <b>멘탈력:</b> 50 (약함)
+            </div>
+          </div>
+          <div class="char-passive">
+            <b>[패시브: 탁구여제: 핑퐁핑퐁]</b><br>
+            리듬을 타면 막을 수 없다! <b>짝수 번째 계약(2연승·4연승·6연승... 도전)은 어떤 스킬이든 100% 확정 성공</b>합니다!
+          </div>
+        </div>
       </div>
     </div>
     <div style="text-align:center; font-size:0.84rem; color:#64748b;">
@@ -1212,6 +1257,8 @@
       <div id="overtime-call-banner" class="overtime-banner" style="display:none;">
         🔥 특별 야근모드 <span id="ot-round-text">1</span>차전! 성공 시 계약금 <span id="ot-call-mult">2</span>배 지급! (실패 시 즉시 종료)
       </div>
+
+      <div id="passive-call-banner" class="passive-call-banner" style="display:none;"></div>
 
       <div class="webtoon-panel" id="call-panel">
         <div id="stamp-container"></div>
@@ -1582,6 +1629,7 @@
     streak: 0,
     isOvertime: false,
     overtimeRound: 0,
+    baekAwakened: false,
     currentCustomer: null,
     hiddenSkills: [],
     selectedNightBuff: null,
@@ -1608,7 +1656,9 @@
     kim: { name: '김대리', speech: 80, mental: 55 },
     son: { name: '손대리', speech: 60, mental: 120 },
     park: { name: '박대리', speech: 72, mental: 85 },
-    na: { name: '나대리', speech: 45, mental: 45 }
+    na: { name: '나대리', speech: 45, mental: 45 },
+    baek: { name: '백대리', speech: 48, mental: 50 },
+    soondang: { name: '순당대리', speech: 48, mental: 50 }
   };
 
   const CUSTOMER_POOL = [
@@ -1843,6 +1893,11 @@
     return base * getCasinoBonusMult();
   }
 
+  // 순당대리 패시브: 현재 연승이 홀수(1, 3, 5...)이면 다음 계약은 '짝수 번째 계약'이므로 100% 성공
+  function isSoondangGuaranteed() {
+    return state.charId === 'soondang' && state.streak > 0 && (state.streak % 2 === 1);
+  }
+
   function randInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
@@ -1942,7 +1997,9 @@
       '김대리': '😎 김대리',
       '손대리': '🗿 손대리',
       '박대리': '👩‍💼 박대리',
-      '나대리': '🎰 나대리'
+      '나대리': '🎰 나대리',
+      '백대리': '🧢 백대리',
+      '순당대리': '🏓 순당대리'
     };
 
     return ranks.map((r, idx) => {
@@ -2116,7 +2173,7 @@
     }
 
     document.getElementById('ui-nick').textContent = state.nickname;
-    document.getElementById('ui-char').textContent = state.charName;
+    document.getElementById('ui-char').textContent = state.baekAwakened ? `${state.charName}⚡` : state.charName;
     document.getElementById('ui-speech').textContent = state.speech;
     document.getElementById('ui-mental').textContent = `${state.mental}/${state.maxMental}`;
     document.getElementById('ui-streak').textContent = `${state.streak}연속`;
@@ -2233,6 +2290,7 @@
     typingTimer = null;
     state.isOvertime = false;
     state.overtimeRound = 0;
+    state.baekAwakened = false;
     state.streak = 0;
     state.selectedNightBuff = null;
     state.nightChoiceDone = false;
@@ -2258,6 +2316,7 @@
     state.streak = 0;
     state.isOvertime = false;
     state.overtimeRound = 0;
+    state.baekAwakened = false;
     state.selectedNightBuff = null;
     state.nightChoiceDone = false;
     state.selectedEscapeRoute = null;
@@ -2265,9 +2324,15 @@
     updateStatusBar();
     showScreen('screen-intro');
 
-    const extraLine = (id === 'na')
-      ? `\n(특히 네놈은 3억만 넘겨서 마닐라 카지노만 뚫으면 판을 5배로 뒤집을 타짜 기질이 있더군. 무조건 3억부터 맞춰!)`
-      : '';
+    let extraLine = '';
+    if (id === 'na') {
+      extraLine = `\n(특히 네놈은 3억만 넘겨서 마닐라 카지노만 뚫으면 판을 5배로 뒤집을 타짜 기질이 있더군. 무조건 3억부터 맞춰!)`;
+    } else if (id === 'baek') {
+      extraLine = `\n(초반엔 좀 쭈뼛거려도 40연승만 찍으면 '불멸의 영포티'가 터져서 언변이랑 수익이 2배로 뛴다며? 끈기 있게 버텨봐!)`;
+    } else if (id === 'soondang') {
+      extraLine = `\n(탁구 리듬 타듯이 첫 계약만 뚫어내면 짝수 번째 계약은 100% 백발백중이라니, 핑퐁핑퐁 리듬 잘 타라고!)`;
+    }
+
     const introMsg = `어이 [${state.nickname}]! 이번에 배정받은 ${state.charName} 역할, 정신 바짝 차려!\n우리가 분양할 '굿타임 백화점'은 허허벌판 쓰레기 입지야.\n\n3일 뒤면 구청 단속반이 들이닥치니까, 그전까지 전화번호부 다 뒤져서 무조건 【최소 1억 원】 이상 계약금 뜯어내!\n만약 3억 원이 넘으면... 뭔가 네 인생을 바꾸는 기회가 올 수도 있겠지.${extraLine} 당장 시작해!!`;
     typeText('intro-dialogue', introMsg);
   }
@@ -2350,6 +2415,18 @@
       otCallBanner.style.display = 'none';
     }
 
+    // 캐릭터 전용 패시브 알림 배너
+    const passiveBanner = document.getElementById('passive-call-banner');
+    if (isSoondangGuaranteed()) {
+      passiveBanner.style.display = 'block';
+      passiveBanner.innerHTML = `🏓 <b>[탁구여제: 핑퐁핑퐁 발동!]</b> ${state.streak + 1}번째(짝수) 계약 차례! 어떤 스킬을 골라도 <b>100% 확정 성공</b>합니다!`;
+    } else if (state.charId === 'baek' && state.baekAwakened) {
+      passiveBanner.style.display = 'block';
+      passiveBanner.innerHTML = `🧢⚡ <b>[불멸의 영포티 각성 중!]</b> 언변 2배(${state.speech}) & 모든 계약 수익 <b>추가 2배</b> 적용!`;
+    } else {
+      passiveBanner.style.display = 'none';
+    }
+
     const keys = ['logic', 'exaggerate', 'seduce'].sort(() => 0.5 - Math.random());
     state.hiddenSkills = [keys[0]];
     if (state.charId === 'kim' && Math.random() < 0.6) {
@@ -2365,6 +2442,8 @@
     container.style.display = 'grid';
     container.innerHTML = '';
 
+    const isGuaranteed = isSoondangGuaranteed();
+
     ['logic', 'exaggerate', 'seduce'].forEach(type => {
       const info = SKILL_DATA[type];
       const isHidden = state.hiddenSkills.includes(type);
@@ -2374,10 +2453,14 @@
       btn.className = `btn ${info.btnClass} skill-btn ${isHidden ? 'skill-hidden' : ''}`;
       btn.addEventListener('click', () => useSkill(type));
 
+      const descText = isGuaranteed
+        ? `🏓 [핑퐁핑퐁 100% 성공!] ${isHidden ? info.hiddenDesc : info.normalDesc}`
+        : (isHidden ? info.hiddenDesc : info.normalDesc);
+
       btn.innerHTML = `
         ${isHidden ? '<span class="hidden-badge">🔥 히든 각성! 수익 2배</span>' : ''}
         <span class="skill-title">${isHidden ? info.hiddenTitle : info.title}</span>
-        <span class="skill-desc">${isHidden ? info.hiddenDesc : info.normalDesc}</span>
+        <span class="skill-desc">${descText}</span>
       `;
       container.appendChild(btn);
     });
@@ -2414,8 +2497,12 @@
     const speechBonus = (state.speech - 60) * 0.4;
     const weakBonus = (cust.weakSkill === skillType) ? 25 : 0;
 
-    const finalChance = Math.min(95, Math.max(12, baseChance + speechBonus + weakBonus + hiddenBonus));
-    const isSuccess = (Math.random() * 100) <= finalChance;
+    const pingpongActive = isSoondangGuaranteed();
+    const finalChance = pingpongActive
+      ? 100
+      : Math.min(95, Math.max(12, baseChance + speechBonus + weakBonus + hiddenBonus));
+
+    const isSuccess = pingpongActive || ((Math.random() * 100) <= finalChance);
     const pitchLine = isHidden ? info.hiddenPitch : info.normalPitch;
 
     let resultText = `${pitchLine}\n\n`;
@@ -2424,6 +2511,9 @@
       let earned = toBigIntSafe(baseReward);
       const bonusNotes = [];
 
+      if (pingpongActive) {
+        bonusNotes.push("🏓핑퐁핑퐁 100%성공");
+      }
       if (isHidden) {
         earned *= 2n;
         bonusNotes.push("히든각성 2배");
@@ -2442,16 +2532,36 @@
         bonusNotes.push(`🔥연승/야근 ${formatNum(otMult)}배`);
       }
 
+      // 백대리: 40연승 달성 시(이번 성공으로 40연승이 되거나 이미 40연승 이상인 경우) 불멸의 영포티 발동
+      let justAwakenedBaek = false;
+      if (state.charId === 'baek' && (state.streak + 1) >= 40) {
+        if (!state.baekAwakened) {
+          state.baekAwakened = true;
+          state.speech *= 2;
+          justAwakenedBaek = true;
+        }
+        earned *= 2n;
+        bonusNotes.push("🧢영포티 수익2배");
+      }
+
       const nextMoney = toBigIntSafe(state.money) + earned;
       state.money = nextMoney;
       state.streak++;
 
-      const isBigHit = isHidden || state.isOvertime || cust.isVip;
+      const isBigHit = isHidden || state.isOvertime || cust.isVip || state.baekAwakened;
       triggerSuccessEffect(isBigHit);
 
       const noteStr = bonusNotes.length > 0 ? ` [${bonusNotes.join(' × ')}]` : '';
       const successQuote = cust.successReply || "말씀을 듣고 보니 당장 계약해야겠네요! 계좌번호 불러주세요!";
       resultText += `✅ [분양 계약 성사!]${noteStr}\n"${successQuote}"\n💰 계약금 +${formatMoney(earned)} 획득!`;
+
+      if (justAwakenedBaek) {
+        resultText += `\n\n🧢⚡ [40연승 돌파! 백대리 패시브 '불멸의 영포티' 각성!] ⚡🧢\n나이는 숫자에 불과하다! 언변력이 즉시 2배(${state.speech})로 폭등하고, 앞으로 모든 계약 수익이 2배로 적용됩니다!`;
+      }
+
+      if (state.charId === 'soondang' && (state.streak % 2 === 1)) {
+        resultText += `\n\n🏓 [탁구여제: 핑퐁핑퐁 리듬 ON!] 다음 ${state.streak + 1}번째(짝수) 계약은 100% 무조건 성공합니다!`;
+      }
 
       if (!state.isOvertime && state.streak >= 3) {
         state.isOvertime = true;
@@ -2466,6 +2576,14 @@
     } else {
       triggerShake();
       state.streak = 0;
+
+      // 백대리 각성 상태에서 연승이 끊기면 언변 2배 버프 해제
+      let baekLostBuff = false;
+      if (state.charId === 'baek' && state.baekAwakened) {
+        state.baekAwakened = false;
+        state.speech = Math.max(1, Math.floor(state.speech / 2));
+        baekLostBuff = true;
+      }
 
       let mentalLoss = (skillType === 'seduce') ? 26 : 15;
       if (state.isOvertime) mentalLoss *= 2;
@@ -2490,6 +2608,10 @@
 
       if (state.charId === 'son') {
         resultText += `\n🗿 [손대리 패시브 '오기' 발동!] 실패를 발판 삼아 언변력이 +8 영구 상승했습니다! (현재 언변: ${state.speech})`;
+      }
+
+      if (baekLostBuff) {
+        resultText += `\n🧢💤 [불멸의 영포티 해제] 연승이 끊겨 언변 및 수익 2배 효과가 초기화되었습니다! (현재 언변: ${state.speech})`;
       }
 
       if (state.isOvertime) {
@@ -2546,6 +2668,10 @@
       state.streak = 0;
       state.isOvertime = false;
       state.overtimeRound = 0;
+      if (state.charId === 'baek' && state.baekAwakened) {
+        state.baekAwakened = false;
+        state.speech = Math.max(1, Math.floor(state.speech / 2));
+      }
       endOfDay();
       return;
     }
