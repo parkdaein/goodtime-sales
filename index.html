@@ -260,7 +260,8 @@
       color: #fde047;
       font-family: 'Jua', sans-serif;
       font-size: 1.15rem;
-      padding: 8px;
+      line-height: 1.4;
+      padding: 10px 8px;
       border-radius: 8px;
       margin-bottom: 14px;
     }
@@ -1037,7 +1038,7 @@
       <div class="stat-badge">👤 <span id="ui-char">김대리</span></div>
       <div class="stat-badge stat-speech">🗣️ <span id="ui-speech">80</span></div>
       <div class="stat-badge stat-mental">🧠 <span id="ui-mental">60/60</span></div>
-      <div class="stat-badge stat-streak">🔥 <span id="ui-streak">0연승</span></div>
+      <div class="stat-badge stat-streak">🔥 <span id="ui-streak">1연승 도전</span></div>
       <div class="stat-badge stat-money">💰 <span id="ui-money">0원</span> / 1억</div>
     </div>
     <div class="top-btn-group">
@@ -1063,7 +1064,7 @@
     </div>
 
     <div class="id-card-box">
-      <div class="id-card-header" style="line-height: 1.4;">🪪 굿타임 분양대행사<br>임시 사원증 발급</div>
+      <div class="id-card-header">🪪 굿타임 분양대행사<br>임시 사원증 발급</div>
       <p style="font-size:0.92rem; color:#475569; margin-bottom:14px; line-height:1.5;">
         실시간 랭킹에 기록될 <b>닉네임 또는 이니셜</b>을 입력하고 출근하세요!
       </p>
@@ -1257,7 +1258,7 @@
   <div id="screen-call" class="screen">
     <div>
       <div id="overtime-call-banner" class="overtime-banner" style="display:none;">
-        🔥 특별 야근모드 (현재 <span id="ot-streak-text">3</span>연승 중)! 성공 시 계약금 <span id="ot-call-mult">2</span>배 지급! (실패 시 즉시 종료)
+        🔥 특별 야근모드 (<span id="ot-streak-text">4연승 도전</span> 중)! 성공 시 계약금 <span id="ot-call-mult">2</span>배 지급! (실패 시 즉시 종료)
       </div>
 
       <div id="passive-call-banner" class="passive-call-banner" style="display:none;"></div>
@@ -1895,9 +1896,10 @@
     return base * getCasinoBonusMult();
   }
 
-  // 순당대리 패시브: 현재 연승이 홀수(1, 3, 5...)이면 다음 계약은 '짝수 연승(2, 4, 6...) 도전'이므로 100% 성공
+  // 순당대리 패시브: 현재 도전 중인 회차(state.streak + 1)가 짝수(2, 4, 6...)이면 100% 성공
   function isSoondangGuaranteed() {
-    return state.charId === 'soondang' && state.streak > 0 && (state.streak % 2 === 1);
+    const currentChallengeCount = state.streak + 1;
+    return state.charId === 'soondang' && (currentChallengeCount % 2 === 0);
   }
 
   function randInt(min, max) {
@@ -2178,7 +2180,7 @@
     document.getElementById('ui-char').textContent = state.baekAwakened ? `${state.charName}⚡` : state.charName;
     document.getElementById('ui-speech').textContent = state.speech;
     document.getElementById('ui-mental').textContent = `${state.mental}/${state.maxMental}`;
-    document.getElementById('ui-streak').textContent = `${state.streak}연승`;
+    document.getElementById('ui-streak').textContent = `${state.streak + 1}연승 도전`;
     document.getElementById('ui-money').textContent = formatMoney(state.money);
   }
 
@@ -2351,7 +2353,7 @@
       otBanner.style.display = 'block';
       document.getElementById('ot-mult-text').textContent = `${formatNum(mult)}배`;
       document.getElementById('desk-emoji').textContent = '🚨 ☎️ 🔥';
-      document.getElementById('desk-title').textContent = `특별 야근모드 가동 중! (현재 ${state.streak}연승 · 수익 ${formatNum(mult)}배!)`;
+      document.getElementById('desk-title').textContent = `특별 야근모드 가동 중! (${state.streak + 1}연승 도전 · 수익 ${formatNum(mult)}배!)`;
       document.getElementById('desk-desc').textContent = `연승 배수가 제한 없이 폭주 중입니다! 성공할 때마다 계약금 배율이 2배씩 계속 증가합니다!`;
     } else {
       otBanner.style.display = 'none';
@@ -2411,20 +2413,20 @@
     if (state.isOvertime) {
       const mult = getOvertimeMultiplier();
       otCallBanner.style.display = 'block';
-      document.getElementById('ot-streak-text').textContent = state.streak;
+      document.getElementById('ot-streak-text').textContent = `${state.streak + 1}연승 도전`;
       document.getElementById('ot-call-mult').textContent = formatNum(mult);
     } else {
       otCallBanner.style.display = 'none';
     }
 
-    // 캐릭터 전용 패시브 알림 배너 (상단 상태바의 state.streak과 기준 통일)
+    // 캐릭터 전용 패시브 알림 배너 (상단 상태바의 'N연승 도전'과 숫자 기준 완전 통일)
     const passiveBanner = document.getElementById('passive-call-banner');
     if (isSoondangGuaranteed()) {
       passiveBanner.style.display = 'block';
-      passiveBanner.innerHTML = `🏓 <b>[탁구여제: 핑퐁핑퐁 발동!]</b> 현재 <b>${state.streak}연승</b> 중 → 이번 <b>${state.streak + 1}연승(짝수) 도전</b>은 <b>100% 확정 성공</b>합니다!`;
+      passiveBanner.innerHTML = `🏓 <b>[탁구여제: 핑퐁핑퐁 발동!]</b> 짝수 번째(<b>${state.streak + 1}연승 도전</b>) 차례! 어떤 스킬을 골라도 <b>100% 확정 성공</b>합니다!`;
     } else if (state.charId === 'baek' && state.baekAwakened) {
       passiveBanner.style.display = 'block';
-      passiveBanner.innerHTML = `🧢⚡ <b>[불멸의 영포티 각성 중!]</b> 현재 <b>${state.streak}연승</b> · 언변 2배(${state.speech}) & 모든 계약 수익 <b>추가 2배</b> 적용!`;
+      passiveBanner.innerHTML = `🧢⚡ <b>[불멸의 영포티 각성 중!]</b> <b>${state.streak + 1}연승 도전</b> · 언변 2배(${state.speech}) & 모든 계약 수익 <b>추가 2배</b> 적용!`;
     } else {
       passiveBanner.style.display = 'none';
     }
@@ -2456,7 +2458,7 @@
       btn.addEventListener('click', () => useSkill(type));
 
       const descText = isGuaranteed
-        ? `🏓 [${state.streak + 1}연승(짝수) 100% 성공!] ${isHidden ? info.hiddenDesc : info.normalDesc}`
+        ? `🏓 [${state.streak + 1}연승 도전 100% 성공!] ${isHidden ? info.hiddenDesc : info.normalDesc}`
         : (isHidden ? info.hiddenDesc : info.normalDesc);
 
       btn.innerHTML = `
@@ -2555,25 +2557,25 @@
 
       const noteStr = bonusNotes.length > 0 ? ` [${bonusNotes.join(' × ')}]` : '';
       const successQuote = cust.successReply || "말씀을 듣고 보니 당장 계약해야겠네요! 계좌번호 불러주세요!";
-      resultText += `✅ [분양 계약 성사! · 현재 ${state.streak}연승]${noteStr}\n"${successQuote}"\n💰 계약금 +${formatMoney(earned)} 획득!`;
+      resultText += `✅ [분양 계약 성사! · ${state.streak}연승 달성]${noteStr}\n"${successQuote}"\n💰 계약금 +${formatMoney(earned)} 획득!`;
 
       if (justAwakenedBaek) {
-        resultText += `\n\n🧢⚡ [${state.streak}연승 돌파! 백대리 패시브 '불멸의 영포티' 각성!] ⚡🧢\n나이는 숫자에 불과하다! 언변력이 즉시 2배(${state.speech})로 폭등하고, 앞으로 모든 계약 수익이 2배로 적용됩니다!`;
+        resultText += `\n\n🧢⚡ [${state.streak}연승 달성! 백대리 패시브 '불멸의 영포티' 각성!] ⚡🧢\n나이는 숫자에 불과하다! 언변력이 즉시 2배(${state.speech})로 폭등하고, 앞으로 모든 계약 수익이 2배로 적용됩니다!`;
       }
 
       if (state.charId === 'soondang' && (state.streak % 2 === 1)) {
-        resultText += `\n\n🏓 [탁구여제: 핑퐁핑퐁 리듬 ON!] 현재 ${state.streak}연승 달성! 다음 ${state.streak + 1}연승(짝수) 도전은 100% 무조건 성공합니다!`;
+        resultText += `\n\n🏓 [탁구여제: 핑퐁핑퐁 리듬 ON!] 다음 【${state.streak + 1}연승 도전(짝수)】은 100% 무조건 성공합니다!`;
       }
 
       if (!state.isOvertime && state.streak >= 3) {
         state.isOvertime = true;
         state.overtimeRound = 1;
         const nextMult = getOvertimeMultiplier();
-        resultText += `\n\n🚨🔥 [${state.streak}연승 달성! 특별 야근모드 돌입!] 🔥🚨\n다음 계약부터 【${formatNum(nextMult)}배】 배수가 적용되며 연승할 때마다 2배씩 무한 상승합니다!`;
+        resultText += `\n\n🚨🔥 [${state.streak}연승 달성! 특별 야근모드 돌입!] 🔥🚨\n다음 【${state.streak + 1}연승 도전】부터 【${formatNum(nextMult)}배】 배수가 적용되며 연승할 때마다 2배씩 무한 상승합니다!`;
       } else if (state.isOvertime) {
         state.overtimeRound += 1;
         const nextMult = getOvertimeMultiplier();
-        resultText += `\n\n🔥 [현재 ${state.streak}연승 달성! 2배 무한 증식] 다음 계약금 배율이 【${formatNum(nextMult)}배】로 폭등합니다!`;
+        resultText += `\n\n🔥 [${state.streak}연승 달성! 2배 무한 증식] 다음 【${state.streak + 1}연승 도전】 배율이 【${formatNum(nextMult)}배】로 폭등합니다!`;
       }
     } else {
       triggerShake();
@@ -2599,13 +2601,13 @@
 
       if (skillType === 'seduce') {
         const quote = cust.failSeduce || "야 이 미친 변태 새끼야!! 어디서 음란 전화를 걸어?! 신고할 거야!! 뚝!";
-        resultText += `🤬 [변태 취급 당함!] "${quote}" (멘탈 -${mentalLoss} · 연승 초기화: 0연승)`;
+        resultText += `🤬 [변태 취급 당함!] "${quote}" (멘탈 -${mentalLoss} · 연승 초기화)`;
       } else if (skillType === 'exaggerate') {
         const quote = cust.failExaggerate || "디즈니랜드는 개뿔! 사기꾼 새끼가 어디서 약을 팔아! 끊어!";
-        resultText += `❌ [허풍 들통!] "${quote}" (멘탈 -${mentalLoss} · 연승 초기화: 0연승)`;
+        resultText += `❌ [허풍 들통!] "${quote}" (멘탈 -${mentalLoss} · 연승 초기화)`;
       } else {
         const quote = cust.failLogic || "관심 없으니 다시는 전화하지 마세요. 뚝.";
-        resultText += `❌ [영업 거절] "${quote}" (멘탈 -${mentalLoss} · 연승 초기화: 0연승)`;
+        resultText += `❌ [영업 거절] "${quote}" (멘탈 -${mentalLoss} · 연승 초기화)`;
       }
 
       if (state.charId === 'son') {
@@ -2719,7 +2721,7 @@
       document.getElementById('night-confirm-box').style.display = 'flex';
       document.getElementById('night-event-result').style.display = 'none';
       document.getElementById('night-day').textContent = state.day;
-      document.getElementById('night-summary').textContent = `기본 숙면으로 멘탈 +15 회복! (현재 수익: ${formatMoney(state.money)} / 현재 연승: ${state.streak}연승)`;
+      document.getElementById('night-summary').textContent = `기본 숙면으로 멘탈 +15 회복! (현재 수익: ${formatMoney(state.money)} / 다음: ${state.streak + 1}연승 도전)`;
       showScreen('screen-night');
     }
   }
@@ -2807,13 +2809,17 @@
         ? `🎤🔥 [역삼동 도깨비 구라 특강 완료!] 수강료 200만원을 내고 특훈을 받았습니다!\n내일 영업부터 언변력이 무려 <b>+${speechGain}</b> 영구 상승합니다! (현재 언변: <b>${state.speech}</b>)`
         : `🎤🔥 [도깨비 강사 문전박대 → 어깨너머 도청!] 수강료가 부족했지만 문틈으로 비기를 훔쳐 들었습니다!\n언변력이 <b>+${speechGain}</b> 영구 상승했습니다! (현재 언변: <b>${state.speech}</b>)`;
     } else if (type === 'streak_buff') {
-      const startStreak = randInt(5, 20);
+      let startStreak = randInt(5, 20);
+      // 순당대리는 내일 첫 통화(startStreak + 1 연승 도전)가 곧바로 짝수 보장이 되도록 홀수 연승으로 보정
+      if (state.charId === 'soondang' && startStreak % 2 === 0) {
+        startStreak += 1;
+      }
       state.streak = startStreak;
       state.isOvertime = true;
       state.overtimeRound = startStreak - 2;
       const startMult = getOvertimeMultiplier();
 
-      logMsg = `🕯️⚡ [용한 점집 대박 부적 적중!] 기세가 하늘을 찔러 내일 첫 영업부터 <b>${startStreak}연승</b> 상태로 시작합니다!\n첫 통화부터 수익 <b>${formatNum(startMult)}배</b> 배수가 적용되며, 성공할 때마다 2배씩 계속 상승합니다! (실패 시 종료)`;
+      logMsg = `🕯️⚡ [용한 점집 대박 부적 적중!] 기세가 하늘을 찔러 내일 첫 영업부터 <b>${startStreak + 1}연승 도전</b>으로 시작합니다!\n첫 통화부터 수익 <b>${formatNum(startMult)}배</b> 배수가 적용되며, 성공할 때마다 2배씩 계속 상승합니다! (실패 시 종료)`;
     } else if (type === 'doge_buff') {
       const currentBig = toBigIntSafe(state.money);
       const baseSeed = currentBig > 0n ? currentBig : 100n;
